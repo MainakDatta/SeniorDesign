@@ -13,6 +13,8 @@ import com.me.gestureGym.screens.GameBoard;
 
 import com.badlogic.gdx.Game;
 
+import almonds.*;
+
 public class GestureGym extends Game {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -22,6 +24,9 @@ public class GestureGym extends Game {
 	@Override
 	public void create() {		
 		setScreen(new GameBoard());
+		
+		Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY", "fvjFSvTnypy9zgLEiXbv3kgC3YhlY2zt4MvssEP3");
+		
 //		float w = Gdx.graphics.getWidth();
 //		float h = Gdx.graphics.getHeight();
 //		
