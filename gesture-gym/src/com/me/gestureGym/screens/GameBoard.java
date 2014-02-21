@@ -1,5 +1,6 @@
 package com.me.gestureGym.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -16,6 +17,9 @@ public class GameBoard implements Screen {
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite;
+	
+  
+     
 	
 	@Override
 	public void render(float delta) {
@@ -46,12 +50,13 @@ public class GameBoard implements Screen {
 		texture = new Texture(Gdx.files.internal("data/title.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
+		TextureRegion region = new TextureRegion(texture, 0, 0, w, h);
 		
 		sprite = new Sprite(region);
 		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
 	}
 
 	@Override
