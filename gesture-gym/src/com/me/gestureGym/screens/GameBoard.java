@@ -15,16 +15,20 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.me.gestureGym.controllers.BoardRenderer;
 import com.me.gestureGym.models.Sequence;
 
 public class GameBoard implements Screen {
-
+	
+	
+	private Sequence sequence;
     private SpriteBatch spriteBatch;
     private Texture splsh;
     private Game myGame;
     private TextureRegion region;
     float w;
     float h;
+	private BoardRenderer renderer;
 	
   
     public GameBoard(Game g){
@@ -33,10 +37,9 @@ public class GameBoard implements Screen {
 	
 	
     private Sequence getSequence(){
-    	//Will call our beautiful algorithm later
-    	
-    	
+    	//Will call our beautiful algorithm later    		
     	//Returns hardcoded sequence  for now
+    	
 		return null;
     }
     
@@ -44,14 +47,14 @@ public class GameBoard implements Screen {
     @Override
 	public void render(float delta) {
 		 //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//		renderer.startSequence();
+
         spriteBatch.begin();
         spriteBatch.draw(splsh, 0, 0);
         spriteBatch.draw(splsh, 0, 0, w, h, 
         		0, 0, splsh.getWidth(), splsh.getHeight(), false, false);
         spriteBatch.end();
         
-       if(Gdx.input.justTouched())
-                myGame.setScreen(new GameBoard(myGame));
 	}
 
 	@Override
@@ -61,6 +64,10 @@ public class GameBoard implements Screen {
 
 	@Override
 	public void show() {
+		
+//		sequence = getSequence();
+//		renderer = new BoardRenderer(sequence);
+		
     	w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();	
         spriteBatch = new SpriteBatch();
