@@ -13,6 +13,9 @@ public class Splash implements Screen
         private SpriteBatch spriteBatch;
         private Texture splsh;
         private Game myGame;
+        private TextureRegion region;
+        float w;
+        float h;
         
         /**
          * Constructor for the splash screen
@@ -24,22 +27,23 @@ public class Splash implements Screen
 
         @Override
         public void render(float delta){
-                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
                 spriteBatch.begin();
                 spriteBatch.draw(splsh, 0, 0);
+                spriteBatch.draw(splsh, 0, 0, w, h, 
+                		0, 0, splsh.getWidth(), splsh.getHeight(), false, false);
                 spriteBatch.end();
                 
-                //if(Gdx.input.justTouched())
-                        //myGame.setScreen(new GameScreen());
+               if(Gdx.input.justTouched())
+                        myGame.setScreen(new GameBoard(myGame));
         }
         
         @Override
 	    public void show(){
-        	float w = Gdx.graphics.getWidth();
-    		float h = Gdx.graphics.getHeight();	
+        	w = Gdx.graphics.getWidth();
+    		h = Gdx.graphics.getHeight();	
             spriteBatch = new SpriteBatch();
             splsh = new Texture(Gdx.files.internal("data/title.png"));
-    		TextureRegion region = new TextureRegion(splsh, 0, 0, w, h);
         }
 
 		@Override
