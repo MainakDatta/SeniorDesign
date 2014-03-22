@@ -1,8 +1,11 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
-public class TapCue {
+
+public class TapCue extends Image{
 	// x position of the center of a tap
 	private int xPosition;
 
