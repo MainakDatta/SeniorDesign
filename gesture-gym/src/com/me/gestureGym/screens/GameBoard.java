@@ -47,7 +47,9 @@ public class GameBoard implements Screen {
     	Array<TapCue> cues = new Array<TapCue>();
     	
     	for(int i = 0; i < 10; i++){
-    		TapCue tc = new TapCue(i*10, i*10, 2, 2);
+    		float x = (float) (Gdx.graphics.getWidth() * Math.random());
+    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
+    		TapCue tc = new TapCue(x, y, 2, 2);
         	
     		// hook up action listening
     		tc.setTouchable(Touchable.enabled);

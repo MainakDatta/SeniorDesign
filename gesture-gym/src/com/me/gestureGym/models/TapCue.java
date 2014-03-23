@@ -26,7 +26,7 @@ public class TapCue extends Actor{
 	// used)
 	private double timeBetweenCues;
 
-	public TapCue(int x, int y, double duration, double deltaT) {
+	public TapCue(float x, float y, double duration, double deltaT) {
 
 		cueX = x;
 		cueY = y;
