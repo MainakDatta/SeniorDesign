@@ -1,8 +1,9 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
-public class Sequence {
+public class Sequence extends Group{
 	// TODO: won't be only taps
 	private Array<TapCue> cues;
 

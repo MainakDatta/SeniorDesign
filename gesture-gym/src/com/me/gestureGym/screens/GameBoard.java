@@ -45,7 +45,7 @@ public class GameBoard implements Screen {
 	
     private Sequence getSequence(){
     	Array<TapCue> cues = new Array<TapCue>();
-    	
+    	Sequence s = new Sequence();
     	for(int i = 0; i < 10; i++){
     		float x = (float) (Gdx.graphics.getWidth() * Math.random());
     		float y = (float) (Gdx.graphics.getHeight() * Math.random());
