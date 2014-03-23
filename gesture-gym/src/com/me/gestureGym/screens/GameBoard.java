@@ -5,85 +5,78 @@
 */
 package com.me.gestureGym.screens;
 
-import java.util.Iterator;
-
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.models.Sequence;
 //import com.me.gestureGym.controllers.BoardRenderer;
+import com.me.gestureGym.models.TapCue;
 
 public class GameBoard implements Screen {
 	
 	final GestureGym myGame;
 	
-	Texture dropImage;
+	private Stage stage;
+	
 	OrthographicCamera camera;
-	Array<Ellipse> drops;
 	long lastCueTime;
-	private Sequence sequence;
-    private SpriteBatch spriteBatch;
-    private Texture splsh;
-    private TextureRegion region;
-    float w;
-    float h;
 
-  
     public GameBoard(GestureGym g){
         myGame = g;
-        
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
 
         // create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
-		drops = new Array<Ellipse>();
+		
+        stage = new Stage(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+        Gdx.input.setInputProcessor(stage);
+        
+        Sequence s = getSequence();
+
     }	
 	
-    private void getSequence(){
-    	//Will call our beautiful algorithm later    		
-    	//Returns hardcoded sequence  for now
+    private Sequence getSequence(){
+    	Array<TapCue> cues = new Array<TapCue>();
     	
-    	Ellipse e = new Ellipse(400, 400, 64, 64);
-    	drops.add(e);
-    	lastCueTime = TimeUtils.nanoTime();
+    	for(int i = 0; i < 10; i++){
+    		TapCue tc = new TapCue(i*10, i*10, 2, 2);
+        	
+    		// hook up action listening
+    		tc.setTouchable(Touchable.enabled);
+        	stage.addActor(tc);
+        	cues.add(tc);
+    	}
     	
+    	return new Sequence(cues, 5, 2);
     }
     
+    private final Vector2 stageCoords = new Vector2();
     
     @Override
 	public void render(float delta) {
-		 //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    	//		renderer.startSequence();
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
- 
-		// tell the camera to update its matrices.
-		camera.update();
- 
-		// tell the SpriteBatch to render in the
-		// coordinate system specified by the camera.
-		myGame.batch.setProjectionMatrix(camera.combined);
- 
-		// begin a new batch and draw the bucket and
-		// all drops
-		myGame.batch.begin();
-
     	
+    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+    	if (Gdx.input.isTouched()) {
+    		stage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			Actor actor = stage.hit(stageCoords.x, stageCoords.y, true);
+			if (actor != null && actor instanceof TapCue){
+				TapCue tc = (TapCue) actor;
+				stage.getRoot().removeActor(tc);
+			}
+		}
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
 	}
 
 	@Override
@@ -93,14 +86,7 @@ public class GameBoard implements Screen {
 
 	@Override
 	public void show() {
-		
-//		sequence = getSequence();
-//		renderer = new BoardRenderer(sequence);
-		
-    	w = Gdx.graphics.getWidth();
-		h = Gdx.graphics.getHeight();	
-        spriteBatch = new SpriteBatch();
-        splsh = new Texture(Gdx.files.internal("data/libgdx.png"));		
+				
 	}
 
 	@Override

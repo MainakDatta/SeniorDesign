@@ -1,8 +1,10 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.utils.Array;
+
 public class Sequence {
 	// TODO: won't be only taps
-	private TapCue[] cues;
+	private Array<TapCue> cues;
 
 	// start times of each cue (probably in ms)
 	private double[] startTimes;
@@ -11,14 +13,13 @@ public class Sequence {
 	private double[] endTimes;
 
 	// TODO: add more parameters
-	public Sequence(TapCue[] cues, double duration, double timeBetweenCues) {
-		this.cues = new TapCue[cues.length];
-		startTimes = new double[cues.length];
-		endTimes = new double[cues.length];
+	public Sequence(Array<TapCue> cues, double duration, double timeBetweenCues) {
+		this.cues = cues;
+		startTimes = new double[cues.size];
+		endTimes = new double[cues.size];
 
-		for (int i = 0; i < cues.length; i++) {
-			this.cues[i] = cues[i];
-
+		for (int i = 0; i < cues.size; i++) {
+			
 			// set up times
 			if (i == 0)	startTimes[i] = 0;
 			else        startTimes[i] = startTimes[i - 1] + timeBetweenCues;
@@ -28,11 +29,11 @@ public class Sequence {
 	}
 
 	public int length() {
-		return cues.length;
+		return cues.size;
 	}
 
 	public TapCue getCue(int index) {
-		return cues[index];
+		return cues.get(index);
 	}
 
 	// Given a time, returns the index of the last cue that should have

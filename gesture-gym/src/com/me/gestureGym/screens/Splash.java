@@ -57,8 +57,7 @@ public class Splash implements Screen {
 		myGame.batch.setProjectionMatrix(camera.combined);
 		
 		myGame.batch.begin();
-		myGame.font.draw(myGame.batch, "Welcome to Drop!!! ", 100, 150);
-		myGame.font.draw(myGame.batch, "Tap anywhere to begin!", 100, 100);
+		myGame.font.draw(myGame.batch, "Tap anywhere to begin!", 200, 200);
 		myGame.batch.end();
 		
 		if (Gdx.input.justTouched())

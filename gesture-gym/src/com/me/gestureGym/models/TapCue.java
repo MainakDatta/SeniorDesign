@@ -1,16 +1,22 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
 
-public class TapCue extends Image{
-	// x position of the center of a tap
-	private int xPosition;
-
-	// y position of the center of a tap
-	private int yPosition;
+public class TapCue extends Actor{
+	
+    Texture texture = new Texture(Gdx.files.internal("data/droplet.png"));
+	
+    float cueX;
+    float cueY;
+    public boolean started = false;
 
 	// duration of the cue (may not be used from this class, but we
 	// may want to just associate it with each cue)
@@ -20,20 +26,41 @@ public class TapCue extends Image{
 	// used)
 	private double timeBetweenCues;
 
-	public TapCue(int xPosition, int yPosition, double duration, 
-			      double timeBetweenCues) {
-		this.xPosition = xPosition;
-		this.yPosition = yPosition;
+	public TapCue(int x, int y, double duration, double deltaT) {
+
+		cueX = x;
+		cueY = y;
 		this.duration = duration;
-		this.timeBetweenCues = timeBetweenCues;
+		this.timeBetweenCues = deltaT;
+		
+        setBounds(x, y,texture.getWidth(),texture.getHeight());
+        addListener(new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                ((TapCue)event.getTarget()).started = true;
+                return true;
+            }
+        });
+        
+        
 	}
 
-	public int getXPosition() {
-		return xPosition;
+    @Override	
+    public void draw(SpriteBatch batch, float alpha){
+        batch.draw(texture,cueX,cueY);
+    }
+    
+    @Override
+    public void act(float delta){
+    	    	
+    }
+	
+	
+	public float getX() {
+		return cueX;
 	}
 
-	public int getYPosition() {
-		return yPosition;
+	public float getYPosition() {
+		return cueY;
 	}
 
 	public double getDuration() {
