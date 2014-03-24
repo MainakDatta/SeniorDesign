@@ -1,6 +1,8 @@
 package com.me.gestureGym.models;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
 public class Sequence extends Group{
@@ -26,7 +28,17 @@ public class Sequence extends Group{
 			else        startTimes[i] = startTimes[i - 1] + timeBetweenCues;
 
 			endTimes[i] = startTimes[i] + duration;
+			
+			// add TapCue Actor to Sequence Group
+			this.addActor(cues.get(i));
 		}
+		
+        addListener(new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                ((TapCue)event.getTarget()).started = true;
+                return true;
+            }
+        });
 	}
 
 	public int length() {

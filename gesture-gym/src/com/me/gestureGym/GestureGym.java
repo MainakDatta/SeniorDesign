@@ -2,7 +2,7 @@ package com.me.gestureGym;
 
 import almonds.Parse;
 
-import com.me.gestureGym.screens.Splash;
+import com.me.gestureGym.screens.SplashScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,7 +21,7 @@ public class GestureGym extends Game {
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
         
-		this.setScreen(new Splash(this));
+		this.setScreen(new SplashScreen(this));
 	}
 	
 	public void render(){
