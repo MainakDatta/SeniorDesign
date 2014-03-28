@@ -9,30 +9,66 @@ import com.me.gestureGym.models.*;
 
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
+	private static final int CUES_PER_SEQUENCE = 60;
 	
-	public static Sequence generateSequence(ZoneResponseInfo[] zones, boolean connected) {
-		HashSet<Integer> seqZones = new HashSet<Integer>();
-		seqZones.add((int) (N_ZONES * Math.random()));
-		seqZones.add(getRandomAdjacentZone(seqZones));
+	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
+			boolean connected) {
+		ZoneResponseInfo[] seqZones = getSequenceZones(zoneResponses, connected);
 		
-		if (connected) {
-			seqZones.add(getRandomAdjacentZone(seqZones));
-			seqZones.add(getRandomAdjacentZone(seqZones));
-		} else {
-			int far = getRandomNonAdjacentZone(seqZones);
-			seqZones.add(far);
-			seqZones.add(getRandomAdjacentZone(far));
-		}
+		int[] zoneCounts = {
+			CUES_PER_SEQUENCE / 4,
+			CUES_PER_SEQUENCE / 4,
+			CUES_PER_SEQUENCE / 4,
+			CUES_PER_SEQUENCE / 4
+		};
+		
+		float duration = durationFromZones(seqZones);
+		float timeBetweenCues = duration;
 		
 		Array<TapCue> cues = new Array<TapCue>();
+		float startTime = 0;
+		while (zoneCounts[0] > 0 && zoneCounts[1] > 0 &&
+			   zoneCounts[2] > 0 && zoneCounts[3] > 0) {
+			int which = (int) (Math.random() * 4);
+			if (zoneCounts[which] > 0) {
+				float x = getRandomXFromZone(zones[seqZones[which].getZoneNumber()]);
+				float y = getRandomYFromZone(zones[seqZones[which].getZoneNumber()]);
+				cues.add(new TapCue(x, y, startTime, startTime + duration));
+				startTime += timeBetweenCues;
+			}
+		}
 		
-		double duration = 0;
-		
-		double timeBetweenCues = 0;
-		
-		return new Sequence(cues, duration, timeBetweenCues);
+		return new Sequence(cues);
 	}
 	
+	private static float getRandomXFromZone(Zone zone) {
+		return zone.getX() + ((float) Math.random()) * zone.getWidth();
+	}
+	
+	private static float getRandomYFromZone(Zone zone) {
+		return zone.getY() + ((float) Math.random()) * zone.getHeight();
+	}
+
+	private static float durationFromZones(ZoneResponseInfo[] seqZones) {
+		float minDuration = Float.MAX_VALUE;
+		for (int i = 0; i < seqZones.length; i++) {
+			if (seqZones[i].getSuccessDuration() < minDuration) {
+				minDuration = seqZones[i].getSuccessDuration();
+			}
+		}
+		return minDuration - deltaDuration(minDuration);
+	}
+	
+	private static float deltaDuration(float duration) {
+		// this was a shitty made up regression
+		// we can change it
+		// like please change it
+		return -0.1142461098f * duration * duration * duration
+			  + 0.407304256f  * duration * duration
+			  - 0.2611833644f * duration
+			  + 0.05440708281f;
+	}
+
 	private static ZoneResponseInfo[] getSequenceZones(ZoneResponseInfo[] zones, boolean connected) {
 		HashSet<Integer> seqZones = new HashSet<Integer>();
 		seqZones.add((int) (N_ZONES * Math.random()));
