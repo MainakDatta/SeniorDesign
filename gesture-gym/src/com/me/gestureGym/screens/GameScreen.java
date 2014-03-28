@@ -27,8 +27,15 @@ public class GameScreen implements Screen {
 	private Sequence seq;
 	OrthographicCamera camera;
 	long lastCueTime;
-
+	
+	// this variable will be updated somehow in the constructor or something ... 
+	private float duration;
+	private float time; 
+	private int timePointer = 0;
+	
     public GameScreen(GestureGym g){
+    	time = 0f;
+    	
         myGame = g;
 
         // create the camera and the SpriteBatch
@@ -48,15 +55,25 @@ public class GameScreen implements Screen {
 	
     private Sequence getSequence(){
     	Array<TapCue> cues = new Array<TapCue>();
+    	
+    	duration = 2f;
+    	float start = 5f;
+    	float end = start + duration;
+    	
     	for(int i = 0; i < 10; i++){
     		float x = (float) (Gdx.graphics.getWidth() * Math.random());
     		float y = (float) (Gdx.graphics.getHeight() * Math.random());
-    		TapCue tc = new TapCue(x, y, 2, 2);
-        	
+    		
+    		
+    		TapCue tc = new TapCue(x, y, start, end);
+      		tc.setTouchable(Touchable.enabled);
+            tc.setVisible(false); 	
     		// hook up action listening
-    		tc.setTouchable(Touchable.enabled);
-    		tc.setVisible(true);
+    		
         	cues.add(tc);
+        	
+        	start += duration;
+        	end += duration;
     	}
     	
     	// TapCue Actors are added to Sequence Group in the Sequence class constructor
@@ -68,6 +85,20 @@ public class GameScreen implements Screen {
     @Override
 	public void render(float delta) {
     	
+    	//System.out.println("" + time);
+    	if(timePointer < seq.length()){
+    		
+    		TapCue currentCue = seq.getCue(timePointer); 
+    		
+    		if(currentCue.getStartTime() <= time){
+    			System.out.println("START " + time + " timepointer: " + timePointer);
+        		currentCue.setVisible(true);
+        		timePointer++;
+        	}
+    	}
+    	
+    	
+    		
     	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
     	if (Gdx.input.isTouched()) {
@@ -87,7 +118,8 @@ public class GameScreen implements Screen {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
+        
+        time += delta;
 	}
 
 	@Override
