@@ -17,15 +17,15 @@ public class ParseTest extends TestCase {
 		ParseWrapper w = new ParseWrapper();
 		w.clean(2000);
 		for (int i = 0; i < 16; i++) {
-			ZoneInfo info = w.getZoneInfo(i);
+			ZoneResponseInfo info = w.getZoneInfo(i);
 			assertEquals(i, info.getZoneNumber());
 			assertEquals((int) 2000.0, (int) info.getSuccessDuration());
 			assertEquals((int) 1.0, (int) info.getHitRate());
 		}
 		
-		ZoneInfo testIn = new ZoneInfo(0, 1000, .96);
+		ZoneResponseInfo testIn = new ZoneResponseInfo(0, 1000, .96);
 		w.putZoneInfo(testIn);
-		ZoneInfo testOut = w.getZoneInfo(0);
+		ZoneResponseInfo testOut = w.getZoneInfo(0);
 		assertEquals(testIn.getZoneNumber(), testOut.getZoneNumber());
 		assertEquals((int) testIn.getSuccessDuration(), (int) testOut.getSuccessDuration());
 		assertEquals((int) testIn.getHitRate(), (int) testOut.getHitRate());

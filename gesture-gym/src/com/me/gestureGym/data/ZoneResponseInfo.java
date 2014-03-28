@@ -1,11 +1,11 @@
 package com.me.gestureGym.data;
 
-public class ZoneInfo {
+public class ZoneResponseInfo {
 	private int _zoneNumber;
 	private float _successDuration;
 	private double _hitRate;
 	
-	public ZoneInfo(int zoneNumber, float successDuration, double hitRate) {
+	public ZoneResponseInfo(int zoneNumber, float successDuration, double hitRate) {
 		_zoneNumber = zoneNumber;
 		_successDuration = successDuration;
 		_hitRate = hitRate;

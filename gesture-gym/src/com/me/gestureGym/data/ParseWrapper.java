@@ -22,7 +22,7 @@ public class ParseWrapper {
 	/*
 	 * Put a ZoneInfo object into the DB.
 	 */
-	public void putZoneInfo(ZoneInfo info) throws ParseException {
+	public void putZoneInfo(ZoneResponseInfo info) throws ParseException {
 		ParseObject o = getZone(info.getZoneNumber());
 		o.delete();
 		
@@ -36,27 +36,27 @@ public class ParseWrapper {
 	/*
 	 * Get a single ZoneInfo from the DB.
 	 */
-	public ZoneInfo getZoneInfo(int zoneNumber) throws ParseException {
+	public ZoneResponseInfo getZoneInfo(int zoneNumber) throws ParseException {
 		ParseObject o = getZone(zoneNumber);
 		float successDuration = Float.parseFloat(o.getString("successDuration"));
 		double hitRate = Double.parseDouble(o.getString("hitRate"));
 		
-		return new ZoneInfo(zoneNumber, successDuration, hitRate);
+		return new ZoneResponseInfo(zoneNumber, successDuration, hitRate);
 	}
 	
 	/*
 	 * Get all ZoneInfos from the DB (because there's probably no reason to wait, you
 	 * can just get them all at the start of a session so you have them in memory).
 	 */
-	public ZoneInfo[] getAllZoneInfos() throws ParseException {
-		ZoneInfo[] out = new ZoneInfo[N_ZONES];
+	public ZoneResponseInfo[] getAllZoneInfos() throws ParseException {
+		ZoneResponseInfo[] out = new ZoneResponseInfo[N_ZONES];
 		
 		for (int i = 0; i < N_ZONES; i++) {
 			ParseObject o = getZone(i);
 			float successDuration = Float.parseFloat(o.getString("successDuration"));
 			double hitRate = Double.parseDouble(o.getString("hitRate"));
 			
-			out[i] = new ZoneInfo(i, successDuration, hitRate);
+			out[i] = new ZoneResponseInfo(i, successDuration, hitRate);
 		}
 		
 		return out;
