@@ -18,20 +18,23 @@ public class TapCue extends Actor{
     float cueY;
     public boolean started = false;
 
+    private float startT;
+    private float endT;
 	// duration of the cue (may not be used from this class, but we
 	// may want to just associate it with each cue)
-	private double duration;
+	// private double duration;
 
 	// time between cues in the sequence this cue was in (may not be
 	// used)
-	private double timeBetweenCues;
+	//private double timeBetweenCues;
 
-	public TapCue(float x, float y, double duration, double deltaT) {
+    
+	public TapCue(float x, float y, float start, float end) {
 
 		cueX = x;
 		cueY = y;
-		this.duration = duration;
-		this.timeBetweenCues = deltaT;
+		startT = start;
+		endT = end;
 		
         setBounds(x, y,texture.getWidth(),texture.getHeight());
         addListener(new InputListener(){
@@ -63,11 +66,11 @@ public class TapCue extends Actor{
 		return cueY;
 	}
 
-	public double getDuration() {
-		return duration;
+	public float getStartTime() {
+		return startT;
 	}
 
-	public double getTimeBetweenCues() {
-		return timeBetweenCues;
+	public float getEndTime() {
+		return endT;
 	}
 }
