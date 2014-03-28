@@ -39,8 +39,8 @@ public class GameScreen implements Screen {
         myGame = g;
 
         // create the camera and the SpriteBatch
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera = new OrthographicCamera(800, 480);
+		camera.position.set(800/2, 480/2, 0f); 
 		
         stage = new Stage(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         
@@ -56,28 +56,33 @@ public class GameScreen implements Screen {
     private Sequence getSequence(){
     	Array<TapCue> cues = new Array<TapCue>();
     	
-    	duration = 2f;
-    	float start = 5f;
-    	float end = start + duration;
+    	// this value would be assigned in the constructor or something
+    	duration = 5f;
     	
+    	float absoluteStart = 0f;
+    	
+    	float start = absoluteStart;
+    	float end = start + duration;
+		
     	for(int i = 0; i < 10; i++){
-    		float x = (float) (Gdx.graphics.getWidth() * Math.random());
-    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
     		
+        	float x = (float) (Gdx.graphics.getWidth() * Math.random());
+    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
+    		System.out.println("x: " + x + " y: " + y);
     		
     		TapCue tc = new TapCue(x, y, start, end);
       		tc.setTouchable(Touchable.enabled);
             tc.setVisible(false); 	
-    		// hook up action listening
-    		
+	
         	cues.add(tc);
         	
         	start += duration;
         	end += duration;
+        	
     	}
     	
     	// TapCue Actors are added to Sequence Group in the Sequence class constructor
-    	return new Sequence(cues, 5, 2);
+    	return new Sequence(cues, absoluteStart, end);
     }
     
     private final Vector2 stageCoords = new Vector2();
@@ -85,16 +90,32 @@ public class GameScreen implements Screen {
     @Override
 	public void render(float delta) {
     	
+    	if(timePointer > 0){
+			TapCue prevCue = seq.getCue(timePointer - 1);
+			if(prevCue.getEndTime() <= time){
+				seq.removeActor(prevCue);
+				
+			}
+		}
     	//System.out.println("" + time);
     	if(timePointer < seq.length()){
     		
     		TapCue currentCue = seq.getCue(timePointer); 
     		
     		if(currentCue.getStartTime() <= time){
-    			System.out.println("START " + time + " timepointer: " + timePointer);
         		currentCue.setVisible(true);
         		timePointer++;
         	}
+    		
+    		/*
+    		 *  currently, each cue is disjoint
+    		 *  when a new cue is drawn, the previous disappears
+    		 *  
+    		 *  TO-DO: cues should not be disjoint (there should be some overlap)
+    		 */
+
+    		
+    		
     	}
     	
     	
