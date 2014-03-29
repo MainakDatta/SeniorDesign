@@ -10,32 +10,50 @@ import com.me.gestureGym.models.*;
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
 	private static final int CUES_PER_SEQUENCE = 60;
+	private static float success_dur;
+	
+	
+	//Added this function because it seemed stupid that the caller 
+	//couldn't easily access the current success_dur
+	public static float getSuccessDuration(){
+		return success_dur;
+	}
+
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
+		//4 zones that this sequence will populate
 		ZoneResponseInfo[] seqZones = getSequenceZones(zoneResponses, connected);
-		
+		//Interesting technique used to ensure each of the 4 zones receives the same number of cues
 		int[] zoneCounts = {
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4
 		};
-		
-		float duration = durationFromZones(seqZones);
-		float timeBetweenCues = duration;
+		//OMG ADAPTIVE DIFFICULTY. MUCH WOW.
+		success_dur = durationFromZones(seqZones);
+		//Time between cues appearing. May want to be different from duration
+		float timeBetweenCues = success_dur;
 		
 		Array<TapCue> cues = new Array<TapCue>();
 		float startTime = 0;
+		//Populates the 4 zones of sequence with cues
 		while (zoneCounts[0] > 0 && zoneCounts[1] > 0 &&
 			   zoneCounts[2] > 0 && zoneCounts[3] > 0) {
+			//Which of the 4 zones we are fucking with
 			int which = (int) (Math.random() * 4);
+			int zoneNum = seqZones[which].getZoneNumber();
+			Zone theZone = zones[zoneNum];
 			if (zoneCounts[which] > 0) {
-				float x = getRandomXFromZone(zones[seqZones[which].getZoneNumber()]);
-				float y = getRandomYFromZone(zones[seqZones[which].getZoneNumber()]);
-				cues.add(new TapCue(x, y, startTime, startTime + duration));
+				float x = getRandomXFromZone(theZone);
+				float y = getRandomYFromZone(theZone);
+				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + success_dur));				
 				startTime += timeBetweenCues;
+				zoneCounts[which]--;
 			}
+			int numZones = theZone.getZoneNumber() + 1;
+			theZone.setNum(numZones);
 		}
 		
 		return new Sequence(cues);
@@ -48,7 +66,9 @@ public class SequenceGenerator {
 	private static float getRandomYFromZone(Zone zone) {
 		return zone.getY() + ((float) Math.random()) * zone.getHeight();
 	}
-
+	
+	
+	//VERY CRUCIAL FUNCTION
 	private static float durationFromZones(ZoneResponseInfo[] seqZones) {
 		float minDuration = Float.MAX_VALUE;
 		for (int i = 0; i < seqZones.length; i++) {
@@ -68,7 +88,8 @@ public class SequenceGenerator {
 			  - 0.2611833644f * duration
 			  + 0.05440708281f;
 	}
-
+	
+	//Returns 4 adjacent or separated zones
 	private static ZoneResponseInfo[] getSequenceZones(ZoneResponseInfo[] zones, boolean connected) {
 		HashSet<Integer> seqZones = new HashSet<Integer>();
 		seqZones.add((int) (N_ZONES * Math.random()));
