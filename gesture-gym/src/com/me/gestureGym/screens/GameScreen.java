@@ -129,10 +129,12 @@ public class GameScreen implements Screen {
     private final Vector2 stageCoords = new Vector2();
     
     @Override
-	public void render(float delta) {    	
+	public void render(float delta) {
+    	System.out.println("time is: " + time);
     	if(timePointer > 0){
 			TapCue prevCue = seq.getCue(timePointer - 1);
 			if(prevCue.getEndTime() <= time){
+				System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
 				seq.removeActor(prevCue);				
 			}
 		}
@@ -140,7 +142,9 @@ public class GameScreen implements Screen {
     	if(timePointer < seq.length()){    		
     		TapCue currentCue = seq.getCue(timePointer);     		
     		if(currentCue.getStartTime() <= time){
+    			System.out.println("setting the cue at (" + currentCue.getX() + ", " + currentCue.getY() + ") to visible, touchable");
         		currentCue.setVisible(true);
+        		currentCue.setTouchable(Touchable.enabled);
         		timePointer++;
         	}    	
     		/*

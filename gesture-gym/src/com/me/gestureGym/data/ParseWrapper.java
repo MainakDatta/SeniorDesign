@@ -6,7 +6,7 @@ import almonds.*;
 
 public class ParseWrapper {	
 	private static final int N_ZONES = 16;
-	private static final float DEFAULT_SUCCESS_DUR = 2000;
+	private static final float DEFAULT_SUCCESS_DUR = 2;
 	
 	public ParseWrapper() {}
 	
@@ -62,6 +62,13 @@ public class ParseWrapper {
 				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
 				o.put("hitRate", Double.toString(1.0));
 			}
+			
+			if (o == null) {
+				o = new ParseObject("ZoneInfo");
+				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+				o.put("hitRate", Double.toString(1.0));
+			}
+			
 			float successDuration = Float.parseFloat(o.getString("successDuration"));
 			double hitRate = Double.parseDouble(o.getString("hitRate"));
 			

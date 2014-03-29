@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
@@ -46,7 +47,9 @@ public class TapCue extends Actor{
                 return true;
             }
         });
-                
+        
+        this.setTouchable(Touchable.disabled);
+        this.setVisible(false);
 	}
 
     @Override	

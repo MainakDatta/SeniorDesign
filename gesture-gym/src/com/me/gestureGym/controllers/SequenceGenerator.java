@@ -70,6 +70,9 @@ public class SequenceGenerator {
 				minDuration = seqZones[i].getSuccessDuration();
 			}
 		}
+		
+		System.out.println("chose min duration of " + minDuration);
+		
 		return minDuration - deltaDuration(minDuration);
 	}
 	
@@ -77,10 +80,10 @@ public class SequenceGenerator {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
-		return 3.669069119f * (float) Math.pow(10, -8) * duration * duration * duration
-			  - 9.696005577f * (float) Math.pow(10, -5) * duration * duration
+		return 3.669069119f * (float) Math.pow(10, -2) * duration * duration * duration
+			  - 9.696005577f * (float) Math.pow(10, -2) * duration * duration
 			  + 0.1484657986f * duration
-			  - 26.83188376f;
+			  - 0.2683188376f;
 	}
 	
 	//Returns 4 adjacent or separated zones
