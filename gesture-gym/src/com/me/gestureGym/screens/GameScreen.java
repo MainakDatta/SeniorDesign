@@ -90,10 +90,13 @@ public class GameScreen implements Screen {
     	}    	
     	// TapCue Actors are added to Sequence Group in the Sequence class constructor
     	return new Sequence(cues);
+<<<<<<< HEAD
     }
    
     private ZoneResponseInfo updateZone(Zone in){		
     	return null;    	    	    	
+=======
+>>>>>>> b6e90fae0f35102ba7e5ba18e0bae96ea42086bb
     }
     
     private final Vector2 stageCoords = new Vector2();
