@@ -7,11 +7,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class Sequence extends Group{
 	// TODO: won't be only taps
-	private Array<TapCue> cues;
+	private Array<TapCue> _cues;
+	private float _duration;
 
 	// TODO: add more parameters
-	public Sequence(Array<TapCue> cues) {
-		this.cues = cues;
+	public Sequence(Array<TapCue> cues, float duration) {
+		_cues = cues;
         addListener(new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 ((TapCue)event.getTarget()).started = true;
@@ -21,11 +22,15 @@ public class Sequence extends Group{
 	}
 
 	public int length() {
-		return cues.size;
+		return _cues.size;
 	}
 
 	public TapCue getCue(int index) {
-		return cues.get(index);
+		return _cues.get(index);
+	}
+	
+	public float getDuration() {
+		return _duration;
 	}
 
 }

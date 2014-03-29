@@ -7,6 +7,8 @@ package com.me.gestureGym.screens;
 
 import java.util.HashMap;
 
+import almonds.Parse;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -47,6 +49,8 @@ public class GameScreen implements Screen {
 	private int timePointer = 0;
 	
     public GameScreen(GestureGym g){
+    	Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
+				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
     	
     	time = 0f;
     	duration = 2f;    	
@@ -56,15 +60,22 @@ public class GameScreen implements Screen {
     	float width = Gdx.graphics.getWidth();
     	float height = Gdx.graphics.getHeight();
     	
+    	System.out.println("Screen width is " + width + ", screen height is " + height);
+    	
     	//ZOne shenanigans
     	zoneHits = new HashMap<Zone, Integer>();
     	allZones = new Zone[16];
-    	for(int i = 0; i< 15; i++){
+    	for(int i = 0; i< 16; i++){
     		float z_width = (float) ((0.25)* width);
     		float z_height = (float) ((0.25)* height);
-    		float zone_x = (float) ((i%4*0.25)*width);
-    		float zone_y = (float) ((i%4*0.25)*height);
+    		float zone_x = (float) ((i % 4 * 0.25) * width);
+    		float zone_y = (float) ((i / 4 * 0.25) * height);
     		Zone zone = new Zone(i,zone_x, zone_y ,z_width, z_height);
+    		
+    		System.out.println("Zone " + i + ":");
+    		System.out.println("Zone width is " + z_width + ", zone height is " + z_height);
+    		System.out.println("Zone upper left is (" + zone_x + ", " + zone_y + ")");
+    		
     		allZones[i] = zone;
     		//All zones initialized to scores of 0
     		zoneHits.put(zone, 0);
@@ -90,7 +101,7 @@ public class GameScreen implements Screen {
     private Sequence getSequence(){    		
     	//TODO:Lots of stuff will happen here
     	Sequence generated = SequenceGenerator.generateSequence(allZones, information, false);
-    	duration = SequenceGenerator.getSuccessDuration();
+    	duration = generated.getDuration();
     	//	THIS CODE WILL BE GONE--------------------------------------------------------------------------	
 //    	Array<TapCue> cues = new Array<TapCue>();    	        	
 //    	float absoluteStart = 0f;    	

@@ -20,14 +20,10 @@ public class ZoneInfoWrapper {
 		//Should do this every time after first time
 		if(zoneInfo != null) return zoneInfo;
 		
-		try {
-			 ZoneResponseInfo[] info = parse.getAllZoneInfos();
-			 zoneInfo = info;
-			return info;
-		} catch (ParseException e) {
-			//Dunno about this...but we can't keep throwing up the stack
-			return null;
-		}		
+		ZoneResponseInfo[] info = parse.getAllZoneInfos();
+		zoneInfo = info;
+		return info;
+				
 	}
 	
 	//Updates the static zoneInfo array for future calls

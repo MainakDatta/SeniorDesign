@@ -6,6 +6,7 @@ import almonds.*;
 
 public class ParseWrapper {	
 	private static final int N_ZONES = 16;
+	private static final float DEFAULT_SUCCESS_DUR = 2000;
 	
 	public ParseWrapper() {}
 	
@@ -48,11 +49,19 @@ public class ParseWrapper {
 	 * Get all ZoneInfos from the DB (because there's probably no reason to wait, you
 	 * can just get them all at the start of a session so you have them in memory).
 	 */
-	public ZoneResponseInfo[] getAllZoneInfos() throws ParseException {
+	public ZoneResponseInfo[] getAllZoneInfos() {
 		ZoneResponseInfo[] out = new ZoneResponseInfo[N_ZONES];
 		
 		for (int i = 0; i < N_ZONES; i++) {
-			ParseObject o = getZone(i);
+			ParseObject o;
+			try {
+				o = getZone(i);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				o = new ParseObject("ZoneInfo");
+				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+				o.put("hitRate", Double.toString(1.0));
+			}
 			float successDuration = Float.parseFloat(o.getString("successDuration"));
 			double hitRate = Double.parseDouble(o.getString("hitRate"));
 			

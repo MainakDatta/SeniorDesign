@@ -10,15 +10,6 @@ import com.me.gestureGym.models.*;
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
 	private static final int CUES_PER_SEQUENCE = 60;
-	private static float success_dur;
-	
-	
-	//Added this function because it seemed stupid that the caller 
-	//couldn't easily access the current success_dur
-	public static float getSuccessDuration(){
-		return success_dur;
-	}
-
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
@@ -32,9 +23,9 @@ public class SequenceGenerator {
 			CUES_PER_SEQUENCE / 4
 		};
 		//OMG ADAPTIVE DIFFICULTY. MUCH WOW.
-		success_dur = durationFromZones(seqZones);
+		float duration = durationFromZones(seqZones);
 		//Time between cues appearing. May want to be different from duration
-		float timeBetweenCues = success_dur;
+		float timeBetweenCues = duration;
 		
 		Array<TapCue> cues = new Array<TapCue>();
 		float startTime = 0;
@@ -48,7 +39,10 @@ public class SequenceGenerator {
 			if (zoneCounts[which] > 0) {
 				float x = getRandomXFromZone(theZone);
 				float y = getRandomYFromZone(theZone);
-				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + success_dur));				
+				System.out.println("zone number is " + zoneNum);
+				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
+				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
+				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration));				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
 			}
@@ -56,7 +50,7 @@ public class SequenceGenerator {
 			theZone.setNum(numZones);
 		}
 		
-		return new Sequence(cues);
+		return new Sequence(cues, duration);
 	}
 	
 	private static float getRandomXFromZone(Zone zone) {
@@ -83,10 +77,10 @@ public class SequenceGenerator {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
-		return -0.1142461098f * duration * duration * duration
-			  + 0.407304256f  * duration * duration
-			  - 0.2611833644f * duration
-			  + 0.05440708281f;
+		return 3.669069119f * (float) Math.pow(10, -8) * duration * duration * duration
+			  - 9.696005577f * (float) Math.pow(10, -5) * duration * duration
+			  + 0.1484657986f * duration
+			  - 26.83188376f;
 	}
 	
 	//Returns 4 adjacent or separated zones
