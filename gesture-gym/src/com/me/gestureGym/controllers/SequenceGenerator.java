@@ -104,18 +104,25 @@ public class SequenceGenerator {
 	// returns a list of zone responses that will be included in the sequence being generated
 	private static ZoneResponseInfo[] getSequenceZones(ZoneResponseInfo[] zones, boolean connected) {
 		HashSet<Integer> seqZones = new HashSet<Integer>();
+		
+		// pick a zone at random
 		seqZones.add((int) (N_ZONES * Math.random()));
+		
+		// get a zone adjacent to it
 		seqZones.add(getRandomAdjacentZone(seqZones));
 		
 		if (connected) {
+			// get two more adjacent zones
 			seqZones.add(getRandomAdjacentZone(seqZones));
 			seqZones.add(getRandomAdjacentZone(seqZones));
 		} else {
+			// get a non-adjacent zone and then a zone adjacent to that zone
 			int far = getRandomNonAdjacentZone(seqZones);
 			seqZones.add(far);
 			seqZones.add(getRandomAdjacentZone(far));
 		}
 		
+		// hashset to array
 		ZoneResponseInfo[] out = new ZoneResponseInfo[4];
 		int count = 0;
 		for (int i : seqZones) {
@@ -126,12 +133,16 @@ public class SequenceGenerator {
 		return out;
 	}
 	
+	// takes in a set of zones and returns a random zone not adjacent to any zones in the set
 	private static int getRandomNonAdjacentZone(HashSet<Integer> zones) {
 		HashSet<Integer> choices = new HashSet<Integer>();
+		
+		// start with all options
 		for (int i = 0; i < N_ZONES; i++) {
 			choices.add(i);
 		}
 		
+		// remove all adjacent options
 		for (int i : zones) {
 			choices.remove(i);
 			choices.remove(i + 1);
@@ -140,6 +151,7 @@ public class SequenceGenerator {
 			choices.remove(i + (int) Math.sqrt(N_ZONES));
 		}
 		
+		// hashset to array
 		int[] choicesArr = new int[choices.size()];
 		int count = 0;
 		for (int i : choices) {
@@ -147,9 +159,11 @@ public class SequenceGenerator {
 			count++;
 		}
 		
+		// pick one randomly
 		return choicesArr[(int) (Math.random() * choicesArr.length)];
 	}
 	
+	// get a random zone adjacent a zone in the set of zones input
 	private static int getRandomAdjacentZone(HashSet<Integer> zones) {
 		int count = 0;
 		while (count < 10) {
@@ -173,44 +187,10 @@ public class SequenceGenerator {
 		boolean inRightColumn = zone % rowSize == rowSize - 1;
 		
 		ArrayList<Integer> opts = new ArrayList<Integer>();
-		if (inTopRow) {
-			if (inLeftColumn) {
-				opts.add(zone + 1);
-				opts.add(zone + rowSize);
-			} else if (inRightColumn) {
-				opts.add(zone - 1);
-				opts.add(zone + rowSize);
-			} else {
-				opts.add(zone - 1);
-				opts.add(zone + 1);
-				opts.add(zone + rowSize);
-			}
-		} else if (inBottomRow) {
-			if (inLeftColumn) {
-				opts.add(zone - rowSize);
-				opts.add(zone + 1);
-			} else if (inRightColumn) {
-				opts.add(zone - rowSize);
-				opts.add(zone - 1);
-			} else {
-				opts.add(zone - rowSize); 
-				opts.add(zone - 1); 
-				opts.add(zone + 1);
-			}
-		} else if (inLeftColumn) {
-			opts.add(zone - rowSize);
-			opts.add(zone + 1);
-			opts.add(zone + rowSize);
-		} else if (inRightColumn) {
-			opts.add(zone - rowSize);
-			opts.add(zone - 1);
-			opts.add(zone + rowSize);
-		} else {
-			opts.add(zone - rowSize);
-			opts.add(zone - 1);
-			opts.add(zone + 1);
-			opts.add(zone + rowSize);
-		}
+		if (!inTopRow)      opts.add(zone - rowSize);
+		if (!inLeftColumn)  opts.add(zone - 1);
+		if (!inRightColumn) opts.add(zone + 1);
+		if (!inBottomRow)   opts.add(zone + rowSize);
 		
 		return opts.get((int) (Math.random() * opts.size()));
 	}
