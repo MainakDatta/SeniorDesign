@@ -36,27 +36,25 @@ public class SequenceGenerator {
 		float startTime = 0;
 		
 		// get all the cues
-		while (zoneCounts[0] > 0 && zoneCounts[1] > 0 &&
-			   zoneCounts[2] > 0 && zoneCounts[3] > 0) {
+		while (zoneCounts[0] > 0 || zoneCounts[1] > 0 ||
+			   zoneCounts[2] > 0 || zoneCounts[3] > 0) {
 			// pick which zone the cue gets put in
 			int which = (int) (Math.random() * 4);
 			int zoneNum = seqZoneResponses[which].getZoneNumber();
-			Zone theZone = zones[zoneNum];
+			Zone zone = zones[zoneNum];
 			
 			// put a cue in that zone if that zone isn't full of cues
 			if (zoneCounts[which] > 0) {
-				float x = getRandomXFromZone(theZone);
-				float y = getRandomYFromZone(theZone);
+				float x = getRandomXFromZone(zone);
+				float y = getRandomYFromZone(zone);
 				System.out.println("zone number is " + zoneNum);
 				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
 				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
 				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration));				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
+				zone.setNumCues(zone.getNumCues() + 1);
 			}
-			
-			// update num cues per zone
-			theZone.setNumCues(theZone.getNumCues() + 1);
 		}
 		
 		return new Sequence(cues, duration);

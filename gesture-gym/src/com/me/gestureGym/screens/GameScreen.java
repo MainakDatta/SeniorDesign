@@ -114,7 +114,7 @@ public class GameScreen implements Screen {
     
     private void endAndSwitchScreens() {
     	System.out.println("no cues left");
-    	// updateStats();
+    	updateStats();
 		_game.setScreen(new GameEndScreen(_game));
 		dispose();
     }
@@ -168,8 +168,8 @@ public class GameScreen implements Screen {
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
 			Zone hit = _zones[zoneNum];
-			int hitTotal = _zoneHits.get(hit);
-			_zoneHits.put(_zones[tc.getZone()], hitTotal + 1);
+			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
+			
 			tc.setTouchable(Touchable.disabled);
 			tc.setVisible(false);
 			_currentSequence.removeActor(tc);
@@ -202,9 +202,10 @@ public class GameScreen implements Screen {
 	}
 
 	//Creates ZoneResponseInfo jawns
-	private void updateStats() {
+	private void updateStats() {		
 		//Only update if they pass threshold?
 		for (Zone z: _zoneHits.keySet()){
+			if (z.getNumCues() == 0) continue;
 			//Total number of hits
 			int totalHits = _zoneHits.get(z);
 			double hitRate = totalHits / z.getNumCues();
