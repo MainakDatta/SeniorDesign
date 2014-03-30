@@ -194,9 +194,10 @@ public class GameScreen implements Screen {
 			//Total mumber of hits
 			int totalHits = zoneHits.get(z);
 			double hitRate = totalHits/z.getNumCues();
-			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD
-			if(hitRate > SUCCESS){
-				ZoneResponseInfo zInfo = new ZoneResponseInfo(z.getZoneNumber(), duration, hitRate);
+			int zoneNum = z.getZoneNumber();
+			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD and is less than old duration
+			if(hitRate > SUCCESS && zoneNum < information[zoneNum].getSuccessDuration()){
+				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, duration, hitRate);
 				ZoneInfoWrapper.updateZone(zInfo);
 			}	
 		}				
