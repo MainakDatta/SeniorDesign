@@ -17,14 +17,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.Array;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.Sequence;
 import com.me.gestureGym.models.Zone;
-//import com.me.gestureGym.controllers.BoardRenderer;
 import com.me.gestureGym.models.TapCue;
 
 public class GameScreen implements Screen {
@@ -114,8 +112,7 @@ public class GameScreen implements Screen {
 //    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
 //    		System.out.println("x: " + x + " y: " + y);    		
 //    		TapCue tc = new TapCue(x, y, i, start, end);
-//      		tc.setTouchable(Touchable.enabled);
-//            tc.setVisible(false); 		
+//      		tc.setTouchable(Touchable.enabled);		
 //        	cues.add(tc);        	
 //        	start += duration;
 //        	end += duration;        	
@@ -128,25 +125,31 @@ public class GameScreen implements Screen {
 
     private final Vector2 stageCoords = new Vector2();
     
-    @Override
 	public void render(float delta) {
-    	System.out.println("time is: " + time);
+    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
     	if(timePointer > 0){
 			TapCue prevCue = seq.getCue(timePointer - 1);
 			if(prevCue.getEndTime() <= time){
-				System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
+				//System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
 				seq.removeActor(prevCue);				
 			}
 		}
+    	
     	//System.out.println("" + time);
-    	if(timePointer < seq.length()){    		
-    		TapCue currentCue = seq.getCue(timePointer);     		
+    	if(timePointer < seq.length()){  
+    		
+    		TapCue currentCue = seq.getCue(timePointer);
+
     		if(currentCue.getStartTime() <= time){
-    			System.out.println("setting the cue at (" + currentCue.getX() + ", " + currentCue.getY() + ") to visible, touchable");
-        		currentCue.setVisible(true);
+        		System.out.println("time: " + timePointer);
+        		System.out.println("x: " + currentCue.getX() + ", y: " + currentCue.getY());
+        		System.out.println("start: " + currentCue.getStartTime() + ", end: " + currentCue.getEndTime());
         		currentCue.setTouchable(Touchable.enabled);
+        		currentCue.setVisible(true);
         		timePointer++;
         	}    	
+    		
     		/*
     		 *  currently, each cue is disjoint
     		 *  when a new cue is drawn, the previous disappears
@@ -154,7 +157,7 @@ public class GameScreen implements Screen {
     		 *  TO-DO: cues should not be disjoint (there should be some overlap)
     		 */    		
     	}
-    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+    	
     	if (Gdx.input.isTouched()) {    		
     		// store input coordinates in stageCoords vector
     		stage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
@@ -179,13 +182,13 @@ public class GameScreen implements Screen {
 			}
 		}
 
-        stage.act(Gdx.graphics.getDeltaTime());
+        stage.act(delta);
         stage.draw();        
         time += delta;
 	}
 
 	//Creates ZoneResponseInfo jawns
-	private void updateStats() {		
+	private void updateStats() {
 		//Only update if they pass threshold?
 		for(Zone z: zoneHits.keySet()){
 			//Total mumber of hits
@@ -226,6 +229,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-
+		stage.dispose();
 	}
 }

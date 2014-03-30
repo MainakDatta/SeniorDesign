@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 public class TapCue extends Actor{
 	
     Texture texture = new Texture(Gdx.files.internal("data/droplet.png"));
+  
     //Texture hit_texture = new Texture(Gdx.files.internal("data/explosion.png"));
     
     float cueX;
@@ -48,8 +49,8 @@ public class TapCue extends Actor{
             }
         });
         
-        this.setTouchable(Touchable.disabled);
-        this.setVisible(false);
+        setTouchable(Touchable.enabled);
+        setVisible(false);
 	}
 
     @Override	

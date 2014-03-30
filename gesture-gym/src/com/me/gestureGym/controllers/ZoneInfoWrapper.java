@@ -7,7 +7,7 @@ import com.me.gestureGym.data.ZoneResponseInfo;
 
 /*
  * Wrapper class that will be used by game screens and such to access the
- * ZpneResponse stuff from Parse
+ * ZoneResponse stuff from Parse
  * 
  */
 public class ZoneInfoWrapper {

@@ -19,6 +19,10 @@ public class Sequence extends Group{
                 return true;
             }
         });
+        
+        for(TapCue tc: cues){
+        	addActor(tc);
+        }
 	}
 
 	public int length() {
