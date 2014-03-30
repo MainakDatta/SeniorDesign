@@ -10,15 +10,6 @@ import com.me.gestureGym.models.*;
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
 	private static final int CUES_PER_SEQUENCE = 60;
-	private static float success_dur;
-	
-	
-	//Added this function because it seemed stupid that the caller 
-	//couldn't easily access the current success_dur
-	public static float getSuccessDuration(){
-		return success_dur;
-	}
-
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
@@ -33,14 +24,13 @@ public class SequenceGenerator {
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4
 		};
-		
-		// get duration based on previous performance
+		//get duration based on previous performance
 		// duration: time that a single cue lasts
-		success_dur = durationFromZones(seqZoneResponses);
-		
-		// timeBetweenCues: time from one cue's appearance to the next
+		float duration = durationFromZones(seqZoneResponses);
+
+		//timeBetweenCues: time from one cue's appearance to the next
 		// could be different from duration (maybe like 4 / 5)
-		float timeBetweenCues = success_dur;
+		float timeBetweenCues = duration;
 		
 		Array<TapCue> cues = new Array<TapCue>();
 		float startTime = 0;
@@ -53,31 +43,37 @@ public class SequenceGenerator {
 			int zoneNum = seqZoneResponses[which].getZoneNumber();
 			Zone theZone = zones[zoneNum];
 			
+			// put a cue in that zone if that zone isn't full of cues
 			if (zoneCounts[which] > 0) {
 				float x = getRandomXFromZone(theZone);
 				float y = getRandomYFromZone(theZone);
-				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + success_dur));				
+				System.out.println("zone number is " + zoneNum);
+				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
+				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
+				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration));				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
 			}
 			
-			int numZones = theZone.getZoneNumber() + 1;
-			theZone.setNum(numZones);
+			// update num cues per zone
+			theZone.setNumCues(theZone.getNumCues() + 1);
 		}
 		
-		return new Sequence(cues);
+		return new Sequence(cues, duration);
 	}
 	
+	// takes in a zone and returns a random x coordinate in that zone
 	private static float getRandomXFromZone(Zone zone) {
 		return zone.getX() + ((float) Math.random()) * zone.getWidth();
 	}
 	
+	// takes in a zone and returns a random y coordinate in that zone	
 	private static float getRandomYFromZone(Zone zone) {
 		return zone.getY() + ((float) Math.random()) * zone.getHeight();
 	}
 	
-	
-	//VERY CRUCIAL FUNCTION
+	// takes in a list of zone responses and returns the duration of a cue that
+	// should be used for a sequence hitting these zones
 	private static float durationFromZones(ZoneResponseInfo[] seqZones) {
 		float minDuration = Float.MAX_VALUE;
 		for (int i = 0; i < seqZones.length; i++) {
@@ -85,20 +81,27 @@ public class SequenceGenerator {
 				minDuration = seqZones[i].getSuccessDuration();
 			}
 		}
+		
+		System.out.println("chose min duration of " + minDuration);
+		
 		return minDuration - deltaDuration(minDuration);
 	}
 	
+	// takes in a duration and returns the change in duration that should occur
 	private static float deltaDuration(float duration) {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
-		return -0.1142461098f * duration * duration * duration
-			  + 0.407304256f  * duration * duration
-			  - 0.2611833644f * duration
-			  + 0.05440708281f;
+		return 3.669069119f * (float) Math.pow(10, -2) * duration * duration * duration
+			  - 9.696005577f * (float) Math.pow(10, -2) * duration * duration
+			  + 0.1484657986f * duration
+			  - 0.2683188376f;
 	}
 	
-	//Returns 4 adjacent or separated zones
+	// takes in a list of zone responses and a parameter indicating whether or not the zones in the sequence
+	// should be all connected or not
+	//
+	// returns a list of zone responses that will be included in the sequence being generated
 	private static ZoneResponseInfo[] getSequenceZones(ZoneResponseInfo[] zones, boolean connected) {
 		HashSet<Integer> seqZones = new HashSet<Integer>();
 		seqZones.add((int) (N_ZONES * Math.random()));

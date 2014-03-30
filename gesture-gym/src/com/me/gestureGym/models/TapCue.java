@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 public class TapCue extends Actor{
 	
     Texture texture = new Texture(Gdx.files.internal("data/droplet.png"));
+  
     //Texture hit_texture = new Texture(Gdx.files.internal("data/explosion.png"));
     
     float cueX;
@@ -46,7 +48,9 @@ public class TapCue extends Actor{
                 return true;
             }
         });
-                
+        
+        setTouchable(Touchable.enabled);
+        setVisible(false);
 	}
 
     @Override	

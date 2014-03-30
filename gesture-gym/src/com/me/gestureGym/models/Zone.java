@@ -2,7 +2,7 @@ package com.me.gestureGym.models;
 
 public class Zone {
 	private int _zoneNumber;
-	private int numQueues;
+	private int numCues;
 	private float _x, _y;
 	private float _width, _height;
 	
@@ -13,7 +13,7 @@ public class Zone {
 		_y = y;
 		_width = width;
 		_height = height;
-		numQueues = 0;
+		numCues = 0;
 	}
 	
 	public int getZoneNumber() {
@@ -36,11 +36,11 @@ public class Zone {
 		return _height;
 	}
 	
-	public int getNum() {
-		return numQueues;
+	public int getNumCues() {
+		return numCues;
 	}
 	
-	public void setNum(int number) {
-		numQueues = number;
+	public void setNumCues(int number) {
+		numCues = number;
 	}
 }
