@@ -75,16 +75,16 @@ public class SequenceGenerator {
 	// takes in a list of zone responses and returns the duration of a cue that
 	// should be used for a sequence hitting these zones
 	private static float durationFromZones(ZoneResponseInfo[] seqZones) {
-		float minDuration = Float.MAX_VALUE;
+		float maxDuration = Float.MIN_VALUE;
 		for (int i = 0; i < seqZones.length; i++) {
-			if (seqZones[i].getSuccessDuration() < minDuration) {
-				minDuration = seqZones[i].getSuccessDuration();
+			if (seqZones[i].getSuccessDuration() > maxDuration) {
+				maxDuration = seqZones[i].getSuccessDuration();
 			}
 		}
 		
-		System.out.println("chose min duration of " + minDuration);
+		System.out.println("chose max duration of " + maxDuration);
 		
-		return minDuration - deltaDuration(minDuration);
+		return maxDuration - deltaDuration(maxDuration);
 	}
 	
 	// takes in a duration and returns the change in duration that should occur
