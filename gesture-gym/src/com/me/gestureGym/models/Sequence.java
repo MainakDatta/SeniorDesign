@@ -10,17 +10,18 @@ public class Sequence extends Group{
 	private Array<TapCue> _cues;
 	private float _duration;
 
-	// TODO: add more parameters
 	public Sequence(Array<TapCue> cues, float duration) {
 		_cues = cues;
+		_duration = duration;
+		
         addListener(new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                ((TapCue)event.getTarget()).started = true;
+                ((TapCue)event.getTarget()).start();
                 return true;
             }
         });
         
-        for(TapCue tc: cues){
+        for (TapCue tc: cues) {
         	addActor(tc);
         }
 	}
@@ -35,6 +36,13 @@ public class Sequence extends Group{
 	
 	public float getDuration() {
 		return _duration;
+	}
+	
+	public void offsetTimestamps(float delta) {
+		for (TapCue cue : _cues) {
+			cue.alterStartTime(delta);
+			cue.alterEndTime(delta);
+		}
 	}
 
 }
