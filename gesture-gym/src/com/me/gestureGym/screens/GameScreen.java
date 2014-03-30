@@ -176,11 +176,12 @@ public class GameScreen implements Screen {
     		if (actor != null && actor instanceof TapCue){
 				TapCue tc = (TapCue) actor;
 				//TODO: Display animation
-				
+				System.out.println("BOOM");
 				//Add to hit total for this zone
-//				int hitTotal = zoneHits.get(tc.getZone());
-//				zoneHits.put(allZones[tc.getZone()], hitTotal + 1);
-				
+				int zoneNum = tc.getZone();
+				Zone hit = allZones[zoneNum];
+				int hitTotal = zoneHits.get(hit);
+				zoneHits.put(allZones[tc.getZone()], hitTotal + 1);
 				seq.removeActor(tc);
 				
 				//Check if sequence is done
