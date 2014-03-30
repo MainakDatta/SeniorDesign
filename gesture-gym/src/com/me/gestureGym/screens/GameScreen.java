@@ -73,6 +73,7 @@ public class GameScreen implements Screen {
         _stage.addActor(_currentSequence);
     }
     
+    // create zones, zone hits hashmap
     private void setupZones() {
     	_zones = new Zone[N_ZONES];
     	_zoneHits = new HashMap<Zone, Integer>();
@@ -91,9 +92,9 @@ public class GameScreen implements Screen {
     		float zY = (float) (i / 4) * zHeight;
     		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
     		
-    		System.out.println("Zone " + i + ":");
-    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
-    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");
+//    		System.out.println("Zone " + i + ":");
+//    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
+//    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");
     		
     		_zones[i] = zone;
     		
@@ -113,11 +114,12 @@ public class GameScreen implements Screen {
     
     private void endAndSwitchScreens() {
     	System.out.println("no cues left");
-    	//updateStats();
+    	// updateStats();
 		_game.setScreen(new GameEndScreen(_game));
 		dispose();
     }
     
+    // un-display all cues whose end times are before the current time
     private void unshowEndedCues() {
     	int currIndex;
     	TapCue cue = null;
@@ -134,6 +136,7 @@ public class GameScreen implements Screen {
 		}
     }
     
+    // display all cues whose start times are after the current time
     private void showStartedCues() {
     	TapCue cue = null;
     	boolean shouldShow = _sequenceIndex < _currentSequence.length() &&
