@@ -18,9 +18,13 @@ public class ZoneInfoWrapper {
 	public static ZoneResponseInfo[] getZoneInfo(){		
 		ParseWrapper parse = new ParseWrapper();
 		//Should do this every time after first time
-		if(zoneInfo != null) return zoneInfo;
+		if (zoneInfo != null) {
+			System.out.println("retrieved zone response infos without hitting db");
+			return zoneInfo;
+		}
 		
 		ZoneResponseInfo[] info = parse.getAllZoneInfos();
+		System.out.println("retrieved zone response infos, had to hit db");
 		zoneInfo = info;
 		return info;
 				
