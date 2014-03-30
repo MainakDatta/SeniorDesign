@@ -22,29 +22,37 @@ public class SequenceGenerator {
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
-		//4 zones that this sequence will populate
-		ZoneResponseInfo[] seqZones = getSequenceZones(zoneResponses, connected);
-		//Interesting technique used to ensure each of the 4 zones receives the same number of cues
+		// choose zones that this sequence will put cues in
+		ZoneResponseInfo[] seqZoneResponses = getSequenceZones(zoneResponses, connected);
+		
+		// counter list to make sure all zones get the same number of cues (may be a more
+		// efficient way to do this)
 		int[] zoneCounts = {
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4,
 			CUES_PER_SEQUENCE / 4
 		};
-		//OMG ADAPTIVE DIFFICULTY. MUCH WOW.
-		success_dur = durationFromZones(seqZones);
-		//Time between cues appearing. May want to be different from duration
+		
+		// get duration based on previous performance
+		// duration: time that a single cue lasts
+		success_dur = durationFromZones(seqZoneResponses);
+		
+		// timeBetweenCues: time from one cue's appearance to the next
+		// could be different from duration (maybe like 4 / 5)
 		float timeBetweenCues = success_dur;
 		
 		Array<TapCue> cues = new Array<TapCue>();
 		float startTime = 0;
-		//Populates the 4 zones of sequence with cues
+		
+		// get all the cues
 		while (zoneCounts[0] > 0 && zoneCounts[1] > 0 &&
 			   zoneCounts[2] > 0 && zoneCounts[3] > 0) {
-			//Which of the 4 zones we are fucking with
+			// pick which zone the cue gets put in
 			int which = (int) (Math.random() * 4);
-			int zoneNum = seqZones[which].getZoneNumber();
+			int zoneNum = seqZoneResponses[which].getZoneNumber();
 			Zone theZone = zones[zoneNum];
+			
 			if (zoneCounts[which] > 0) {
 				float x = getRandomXFromZone(theZone);
 				float y = getRandomYFromZone(theZone);
@@ -52,6 +60,7 @@ public class SequenceGenerator {
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
 			}
+			
 			int numZones = theZone.getZoneNumber() + 1;
 			theZone.setNum(numZones);
 		}
