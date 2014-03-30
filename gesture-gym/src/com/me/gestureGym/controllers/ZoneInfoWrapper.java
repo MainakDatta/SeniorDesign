@@ -33,16 +33,17 @@ public class ZoneInfoWrapper {
 	}
 	
 	//Pushes current data to DB
-	public static void push(){	
+	public static boolean push(){	
 		try {
 			for(int i = 0; i < zoneInfo.length; i++){
 				ParseWrapper parse = new ParseWrapper();	
-				parse.putZoneInfo(zoneInfo[i]);
+				parse.putZoneInfo(zoneInfo[i]);				
 			}
+			return true;
 		}
 		 catch (ParseException e) {
 				//Dunno about this...but we have to handle it cleanly
-				return;
+				return false;
 		}	
 	}
 	
