@@ -127,11 +127,19 @@ public class GameScreen implements Screen {
     
 	public void render(float delta) {
     	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+    	
+    	
+    	if (seq.length()== 0){					
+//			updateStats();
+			System.out.println("no cues left");
+			myGame.setScreen(new GameEndScreen(myGame));
+			dispose();
+		}
 
     	if(timePointer > 0){
 			TapCue prevCue = seq.getCue(timePointer - 1);
 			if(prevCue.getEndTime() <= time){
-				//System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
+				System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
 				seq.removeActor(prevCue);				
 			}
 		}
@@ -170,14 +178,17 @@ public class GameScreen implements Screen {
 				//TODO: Display animation
 				
 				//Add to hit total for this zone
-				int hitTotal = zoneHits.get(tc.getZone());
-				zoneHits.put(allZones[tc.getZone()], hitTotal + 1);
+//				int hitTotal = zoneHits.get(tc.getZone());
+//				zoneHits.put(allZones[tc.getZone()], hitTotal + 1);
 				
 				seq.removeActor(tc);
 				
 				//Check if sequence is done
 				if (seq.length()== 0){					
-					updateStats();
+//					updateStats();
+					System.out.println("no cues left");
+					myGame.setScreen(new GameEndScreen(myGame));
+					dispose();
 				}
 			}
 		}
