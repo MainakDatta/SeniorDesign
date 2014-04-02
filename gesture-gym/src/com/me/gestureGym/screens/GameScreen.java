@@ -96,33 +96,35 @@ public class GameScreen implements Screen {
         seq = getSequence();
         
         stage.addActor(seq);
+        
+        System.out.println("done initializing");
     }	
 	
     private Sequence getSequence(){    		
     	//TODO:Lots of stuff will happen here
-    	Sequence generated = SequenceGenerator.generateSequence(allZones, information, false);
-    	duration = generated.getDuration();
+//    	Sequence generated = SequenceGenerator.generateSequence(allZones, information, false);
+//    	duration = generated.getDuration();
     	//	THIS CODE WILL BE GONE--------------------------------------------------------------------------	
-//    	Array<TapCue> cues = new Array<TapCue>();    	        	
-//    	float absoluteStart = 0f;    	
-//    	float start = absoluteStart;
-//    	//duration is potential SUCESS_DUR
-//    	float end = start + duration;
-//		
-//    	for(int i = 0; i < 10; i++){	
-//        	float x = (float) (Gdx.graphics.getWidth() * Math.random());
-//    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
-//    		System.out.println("x: " + x + " y: " + y);    		
-//    		TapCue tc = new TapCue(x, y, i, start, end);
-//      		tc.setTouchable(Touchable.enabled);
-//            tc.setVisible(false); 		
-//        	cues.add(tc);        	
-//        	start += duration;
-//        	end += duration;        	
-//    	}    	
+    	Array<TapCue> cues = new Array<TapCue>();    	        	
+    	float absoluteStart = 0f;    	
+    	float start = absoluteStart;
+    	//duration is potential SUCESS_DUR
+    	float end = start + duration;
+		
+    	for(int i = 0; i < 10; i++){	
+        	float x = (float) (Gdx.graphics.getWidth() * Math.random());
+    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
+    		System.out.println("x: " + x + " y: " + y);    		
+    		TapCue tc = new TapCue(x, y, i, start, end);
+      		tc.setTouchable(Touchable.enabled);
+            tc.setVisible(false); 		
+        	cues.add(tc);        	
+        	start += duration;
+        	end += duration;        	
+    	}    	
     	//THIS CODE WILL BE GONE-----------------------------------------------------------------------------
     	// TapCue Actors are added to Sequence Group in the Sequence class constructor
-    	return generated;
+    	return new Sequence(cues, duration);
     }
    
 
