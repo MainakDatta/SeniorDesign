@@ -11,6 +11,7 @@ import almonds.Parse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -48,11 +49,18 @@ public class GameScreen implements Screen {
 	private int _sequenceIndex = 0;
 	private boolean _first = true;
 	
+	private Sound _backgroundMusic;
+	private long _backgroundMusicId;
+	
     public GameScreen(GestureGym g){
     	Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
 				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
     	 	
         _game = g;
+        
+        _backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("data/broken_reality.mp3"));
+        _backgroundMusicId = _backgroundMusic.play(1.0f);
+        _backgroundMusic.setLooping(_backgroundMusicId, true);
     	
     	// set up information about zones
     	setupZones();
@@ -115,6 +123,7 @@ public class GameScreen implements Screen {
     private void endAndSwitchScreens() {
     	System.out.println("no cues left");
     	updateStats();
+    	_backgroundMusic.stop(_backgroundMusicId);
 		_game.setScreen(new GameEndScreen(_game));
 		dispose();
     }
@@ -170,6 +179,7 @@ public class GameScreen implements Screen {
 			Zone hit = _zones[zoneNum];
 			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
 			
+			tc.getSound().play(1.0f);
 			tc.setTouchable(Touchable.disabled);
 			tc.setVisible(false);
 			_currentSequence.removeActor(tc);

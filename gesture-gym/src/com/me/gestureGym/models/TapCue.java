@@ -1,6 +1,7 @@
 package com.me.gestureGym.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class TapCue extends Actor{
 	
+	private static Sound _hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.wav"));
     Texture _texture = new Texture(Gdx.files.internal("data/droplet.png"));
   
     //Texture hit_texture = new Texture(Gdx.files.internal("data/explosion.png"));
@@ -99,5 +101,9 @@ public class TapCue extends Actor{
 	
 	void alterEndTime(float delta) {
 		_endTime += delta;
+	}
+	
+	public Sound getSound() {
+		return _hitSound;
 	}
 }
