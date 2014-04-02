@@ -22,20 +22,27 @@ import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
+import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.Sequence;
 import com.me.gestureGym.models.Zone;
 import com.me.gestureGym.models.TapCue;
 
 public class GameScreen implements Screen {
-	
 	final GestureGym _game;
 	
 	// TODO: Decide on final value for this
 	private static final double SUCCESS = 0.8;
 	private static final int N_ZONES = 16;
+	private static final int PAUSE_BUTTON_SIZE = 128;
+	
+	private static final int GAME_RUNNING = 0;
+	private static final int GAME_PAUSED = 1;
+	
+	private int _gameStatus = 0;
 	
 	private Stage _stage;
 	private Sequence _currentSequence;
+	private PauseButton _pauseButton;
 	private OrthographicCamera _camera;
 	private final Vector2 _stageCoords = new Vector2();
 	
@@ -79,6 +86,9 @@ public class GameScreen implements Screen {
         _currentSequence = getSequence();
         
         _stage.addActor(_currentSequence);
+        
+        _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
+        _stage.addActor(_pauseButton);
     }
     
     // create zones, zone hits hashmap
@@ -163,14 +173,33 @@ public class GameScreen implements Screen {
     	}
     }
     
+    private void setCuesUntouchable() {
+    	for (int i = 0; i < _currentSequence.length(); i++) {
+    		_currentSequence.getCue(i).setTouchable(Touchable.disabled);
+    	}
+    }
+    
+    private void displayPauseMenu() {
+    	
+    }
+    
     private void handleTouch() {
     	// store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
-		Actor actor = _currentSequence.hit(_stageCoords.x, _stageCoords.y, true);
+		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
+		
+		if (actor != null && actor instanceof PauseButton) {
+			System.out.println("PAUSED");
+			setCuesUntouchable();
+			_pauseButton.setTouchable(Touchable.disabled);
+			displayPauseMenu();
+			_gameStatus = GAME_PAUSED;
+		}
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
-		if (actor != null && actor instanceof TapCue){
+		else if (actor != null && actor instanceof TapCue){
+			System.out.println("TAPPED");
 			TapCue tc = (TapCue) actor;
 			//TODO: Display animation
 			System.out.println("BOOM");
@@ -187,27 +216,29 @@ public class GameScreen implements Screen {
     }
     
 	public void render(float delta) {
-		_time += delta;
-		
-		if (_first) {
-			_first = false;
-			_currentSequence.offsetTimestamps(delta);
+		if (_gameStatus == GAME_RUNNING) {
+			_time += delta;
+			
+			if (_first) {
+				_first = false;
+				_currentSequence.offsetTimestamps(delta);
+			}
+			
+	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	    	
+	    	if (sequenceOver()) {
+	    		endAndSwitchScreens();
+	    	}
+	    	
+	    	unshowEndedCues();
+	    	showStartedCues();
 		}
 		
-    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-    	
-    	if (sequenceOver()) {
-    		endAndSwitchScreens();
-    	}
-    	
-    	unshowEndedCues();
-    	showStartedCues();
-    	
-    	if (Gdx.input.isTouched()) {    		
+		if (Gdx.input.isTouched()) {    		
     		handleTouch();
 		}
-
-        _stage.act(delta);
+		
+		_stage.act(delta);
         _stage.draw();
 	}
 
