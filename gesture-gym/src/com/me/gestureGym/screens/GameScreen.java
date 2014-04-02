@@ -17,185 +17,202 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.Array;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.Sequence;
 import com.me.gestureGym.models.Zone;
-//import com.me.gestureGym.controllers.BoardRenderer;
 import com.me.gestureGym.models.TapCue;
 
 public class GameScreen implements Screen {
 	
-	final GestureGym myGame;
-	//TENTATIVE VALUE
+	final GestureGym _game;
+	
+	// TODO: Decide on final value for this
 	private static final double SUCCESS = 0.8;
+	private static final int N_ZONES = 16;
 	
-	private Stage stage;
-	private Sequence seq;
-	OrthographicCamera camera;
-	long lastCueTime;
-	Zone[] allZones;
-	ZoneResponseInfo[] information;
+	private Stage _stage;
+	private Sequence _currentSequence;
+	private OrthographicCamera _camera;
+	private final Vector2 _stageCoords = new Vector2();
+	
+	private Zone[] _zones;
+	private ZoneResponseInfo[] _zoneInfos;
+	
 	//Zone Hits map will help us calculate the hit rate
-	HashMap<Zone, Integer> zoneHits;
+	private HashMap<Zone, Integer> _zoneHits;
 	
-	//CRUCIAL SUCCESS_DUR variable
-	private float duration;
-	
-	private float time; 
-	private int timePointer = 0;
+	private float _time; 
+	private int _sequenceIndex = 0;
+	private boolean _first = true;
 	
     public GameScreen(GestureGym g){
     	Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
 				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
+    	 	
+        _game = g;
     	
-    	time = 0f;
-    	duration = 2f;    	
-        myGame = g;
+    	// set up information about zones
+    	setupZones();
+    	_zoneInfos = ZoneInfoWrapper.getZoneInfo();
     	
-    	//Make 16 zones
+        // create the camera and the SpriteBatch
+		_camera = new OrthographicCamera(800, 480);
+		_camera.position.set(800 / 2, 480 / 2, 0f); 
+		
+        _stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        
+        // Essentially the Controller/BoardRenderer thing that you mentioned
+        Gdx.input.setInputProcessor(_stage);
+        
+        // Sequence s is a Group of TapCue Actors
+        _currentSequence = getSequence();
+        
+        _stage.addActor(_currentSequence);
+    }
+    
+    // create zones, zone hits hashmap
+    private void setupZones() {
+    	_zones = new Zone[N_ZONES];
+    	_zoneHits = new HashMap<Zone, Integer>();
+    	
     	float width = Gdx.graphics.getWidth();
     	float height = Gdx.graphics.getHeight();
     	
     	System.out.println("Screen width is " + width + ", screen height is " + height);
     	
-    	//ZOne shenanigans
-    	zoneHits = new HashMap<Zone, Integer>();
-    	allZones = new Zone[16];
-    	for(int i = 0; i< 16; i++){
-    		float z_width = (float) ((0.25)* width);
-    		float z_height = (float) ((0.25)* height);
-    		float zone_x = (float) ((i % 4 * 0.25) * width);
-    		float zone_y = (float) ((i / 4 * 0.25) * height);
-    		Zone zone = new Zone(i,zone_x, zone_y ,z_width, z_height);
-    		
-    		System.out.println("Zone " + i + ":");
-    		System.out.println("Zone width is " + z_width + ", zone height is " + z_height);
-    		System.out.println("Zone upper left is (" + zone_x + ", " + zone_y + ")");
-    		
-    		allZones[i] = zone;
-    		//All zones initialized to scores of 0
-    		zoneHits.put(zone, 0);
-    	}    	
-    	//Get cuttent zoneresponseinfo shit
-    	information = ZoneInfoWrapper.getZoneInfo();
+    	int rowSize = (int) Math.sqrt(N_ZONES);
     	
-        // create the camera and the SpriteBatch
-		camera = new OrthographicCamera(800, 480);
-		camera.position.set(800/2, 480/2, 0f); 
-		
-        stage = new Stage(width, height, true);
-        
-        // Essentially the Controller/BoardRenderer thing that you mentioned
-        Gdx.input.setInputProcessor(stage);
-        
-        // Sequence s is a Group of TapCue Actors
-        seq = getSequence();
-        
-        stage.addActor(seq);
-        
-        System.out.println("done initializing");
-    }	
-	
-    private Sequence getSequence(){    		
-    	//TODO:Lots of stuff will happen here
-//    	Sequence generated = SequenceGenerator.generateSequence(allZones, information, false);
-//    	duration = generated.getDuration();
-    	//	THIS CODE WILL BE GONE--------------------------------------------------------------------------	
-    	Array<TapCue> cues = new Array<TapCue>();    	        	
-    	float absoluteStart = 0f;    	
-    	float start = absoluteStart;
-    	//duration is potential SUCESS_DUR
-    	float end = start + duration;
-		
-    	for(int i = 0; i < 10; i++){	
-        	float x = (float) (Gdx.graphics.getWidth() * Math.random());
-    		float y = (float) (Gdx.graphics.getHeight() * Math.random());
-    		System.out.println("x: " + x + " y: " + y);    		
-    		TapCue tc = new TapCue(x, y, i, start, end);
-      		tc.setTouchable(Touchable.enabled);
-            tc.setVisible(false); 		
-        	cues.add(tc);        	
-        	start += duration;
-        	end += duration;        	
-    	}    	
-    	//THIS CODE WILL BE GONE-----------------------------------------------------------------------------
-    	// TapCue Actors are added to Sequence Group in the Sequence class constructor
-    	return new Sequence(cues, duration);
-    }
-   
-
-    private final Vector2 stageCoords = new Vector2();
-    
-    @Override
-	public void render(float delta) {
-    	System.out.println("time is: " + time);
-    	if(timePointer > 0){
-			TapCue prevCue = seq.getCue(timePointer - 1);
-			if(prevCue.getEndTime() <= time){
-				System.out.println("removing actor at (" + prevCue.getX() + ", " + prevCue.getY() + ")");
-				seq.removeActor(prevCue);				
-			}
-		}
-    	//System.out.println("" + time);
-    	if(timePointer < seq.length()){    		
-    		TapCue currentCue = seq.getCue(timePointer);     		
-    		if(currentCue.getStartTime() <= time){
-    			System.out.println("setting the cue at (" + currentCue.getX() + ", " + currentCue.getY() + ") to visible, touchable");
-        		currentCue.setVisible(true);
-        		currentCue.setTouchable(Touchable.enabled);
-        		timePointer++;
-        	}    	
-    		/*
-    		 *  currently, each cue is disjoint
-    		 *  when a new cue is drawn, the previous disappears
-    		 *  
-    		 *  TO-DO: cues should not be disjoint (there should be some overlap)
-    		 */    		
+    	for (int i = 0; i < N_ZONES; i++){
+    		float zWidth = (float) width / rowSize;
+    		float zHeight = (float) height / rowSize;
+    		float zX = (float) (i % 4) * zWidth;
+    		float zY = (float) (i / 4) * zHeight;
+    		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
+    		
+//    		System.out.println("Zone " + i + ":");
+//    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
+//    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");
+    		
+    		_zones[i] = zone;
+    		
+    		//All zones initialized to scores of 0
+    		_zoneHits.put(zone, 0);
     	}
-    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-    	if (Gdx.input.isTouched()) {    		
-    		// store input coordinates in stageCoords vector
-    		stage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
-    		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
-    		Actor actor = seq.hit(stageCoords.x, stageCoords.y, true);
+    }
+	
+    private Sequence getSequence() {
+    	Sequence generated = SequenceGenerator.generateSequence(_zones, _zoneInfos, false);
+    	return generated;
+    }
+    
+    private boolean sequenceOver() {
+    	return _sequenceIndex == _currentSequence.length();
+    }
+    
+    private void endAndSwitchScreens() {
+    	System.out.println("no cues left");
+    	updateStats();
+		_game.setScreen(new GameEndScreen(_game));
+		dispose();
+    }
+    
+    // un-display all cues whose end times are before the current time
+    private void unshowEndedCues() {
+    	int currIndex;
+    	TapCue cue = null;
+		boolean shouldRemove = (currIndex = _sequenceIndex - 1) >= 0 && 
+				               (cue = _currentSequence.getCue(currIndex)).getEndTime() <= _time;
+		
+		while (shouldRemove) {
+			cue.setTouchable(Touchable.disabled);
+			cue.setVisible(false);
+			if (!_currentSequence.removeActor(cue)) break;
+			System.out.println("removed actor at (" + cue.getX() + ", " + cue.getY() + ")");
+			shouldRemove = (currIndex = currIndex - 1) >= 0 && 
+		                   (cue = _currentSequence.getCue(currIndex)).getEndTime() <= _time;
+		}
+    }
+    
+    // display all cues whose start times are after the current time
+    private void showStartedCues() {
+    	TapCue cue = null;
+    	boolean shouldShow = _sequenceIndex < _currentSequence.length() &&
+    			             (cue = _currentSequence.getCue(_sequenceIndex)).getStartTime() <= _time &&
+    			             cue.getEndTime() > _time;
+    	while (shouldShow) {
+    		System.out.println("showing actor at (" + cue.getX() + ", " + cue.getY() + ")");
+    		cue.setTouchable(Touchable.enabled);
+    		cue.setVisible(true);
+    		
+    		_sequenceIndex++;
+    		shouldShow = _sequenceIndex < _currentSequence.length() &&
+		                  (cue = _currentSequence.getCue(_sequenceIndex)).getStartTime() <= _time &&
+		                  cue.getEndTime() > _time;
+    	}
+    }
+    
+    private void handleTouch() {
+    	// store input coordinates in stageCoords vector
+		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
+		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
+		Actor actor = _currentSequence.hit(_stageCoords.x, _stageCoords.y, true);
+		
+		// checks if the tapped location is at a TapCue Actor in the Sequence Group
+		if (actor != null && actor instanceof TapCue){
+			TapCue tc = (TapCue) actor;
+			//TODO: Display animation
+			System.out.println("BOOM");
+			//Add to hit total for this zone
+			int zoneNum = tc.getZone();
+			Zone hit = _zones[zoneNum];
+			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
 			
-    		// checks if the tapped location is at a TapCue Actor in the Sequence Group
-    		if (actor != null && actor instanceof TapCue){
-				TapCue tc = (TapCue) actor;
-				//TODO: Display animation
-				
-				//Add to hit total for this zone
-				int hitTotal = zoneHits.get(tc.getZone());
-				zoneHits.put(allZones[tc.getZone()], hitTotal + 1);
-				
-				seq.removeActor(tc);
-				
-				//Check if sequence is done
-				if (seq.length()== 0){					
-					updateStats();
-				}
-			}
+			tc.setTouchable(Touchable.disabled);
+			tc.setVisible(false);
+			_currentSequence.removeActor(tc);
+		}
+    }
+    
+	public void render(float delta) {
+		_time += delta;
+		
+		if (_first) {
+			_first = false;
+			_currentSequence.offsetTimestamps(delta);
+		}
+		
+    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+    	
+    	if (sequenceOver()) {
+    		endAndSwitchScreens();
+    	}
+    	
+    	unshowEndedCues();
+    	showStartedCues();
+    	
+    	if (Gdx.input.isTouched()) {    		
+    		handleTouch();
 		}
 
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();        
-        time += delta;
+        _stage.act(delta);
+        _stage.draw();
 	}
 
 	//Creates ZoneResponseInfo jawns
 	private void updateStats() {		
 		//Only update if they pass threshold?
-		for(Zone z: zoneHits.keySet()){
-			//Total mumber of hits
-			int totalHits = zoneHits.get(z);
-			double hitRate = totalHits/z.getNum();
-			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD
-			if(hitRate > SUCCESS){
-				ZoneResponseInfo zInfo = new ZoneResponseInfo(z.getZoneNumber(), duration, hitRate);
+		for (Zone z: _zoneHits.keySet()){
+			if (z.getNumCues() == 0) continue;
+			//Total number of hits
+			int totalHits = _zoneHits.get(z);
+			double hitRate = totalHits / z.getNumCues();
+			int zoneNum = z.getZoneNumber();
+			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD and is less than old duration
+			if(hitRate > SUCCESS && zoneNum < _zoneInfos[zoneNum].getSuccessDuration()){
+				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, _currentSequence.getDuration(), hitRate);
 				ZoneInfoWrapper.updateZone(zInfo);
 			}	
 		}				
@@ -228,6 +245,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-
+		_stage.dispose();
 	}
 }

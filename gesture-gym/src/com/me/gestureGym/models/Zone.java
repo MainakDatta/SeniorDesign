@@ -36,11 +36,11 @@ public class Zone {
 		return _height;
 	}
 	
-	public int getNum() {
+	public int getNumCues() {
 		return numCues;
 	}
 	
-	public void setNum(int number) {
+	public void setNumCues(int number) {
 		numCues = number;
 	}
 }

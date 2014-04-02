@@ -7,7 +7,7 @@ import com.me.gestureGym.data.ZoneResponseInfo;
 
 /*
  * Wrapper class that will be used by game screens and such to access the
- * ZpneResponse stuff from Parse
+ * ZoneResponse stuff from Parse
  * 
  */
 public class ZoneInfoWrapper {
@@ -18,9 +18,13 @@ public class ZoneInfoWrapper {
 	public static ZoneResponseInfo[] getZoneInfo(){		
 		ParseWrapper parse = new ParseWrapper();
 		//Should do this every time after first time
-		if(zoneInfo != null) return zoneInfo;
+		if (zoneInfo != null) {
+			System.out.println("retrieved zone response infos without hitting db");
+			return zoneInfo;
+		}
 		
 		ZoneResponseInfo[] info = parse.getAllZoneInfos();
+		System.out.println("retrieved zone response infos, had to hit db");
 		zoneInfo = info;
 		return info;
 				
@@ -33,16 +37,17 @@ public class ZoneInfoWrapper {
 	}
 	
 	//Pushes current data to DB
-	public static void push(){	
+	public static boolean push(){	
 		try {
 			for(int i = 0; i < zoneInfo.length; i++){
 				ParseWrapper parse = new ParseWrapper();	
-				parse.putZoneInfo(zoneInfo[i]);
+				parse.putZoneInfo(zoneInfo[i]);				
 			}
+			return true;
 		}
 		 catch (ParseException e) {
 				//Dunno about this...but we have to handle it cleanly
-				return;
+				return false;
 		}	
 	}
 	

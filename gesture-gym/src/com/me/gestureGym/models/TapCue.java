@@ -13,16 +13,17 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class TapCue extends Actor{
 	
-    Texture texture = new Texture(Gdx.files.internal("data/droplet.png"));
+    Texture _texture = new Texture(Gdx.files.internal("data/droplet.png"));
+  
     //Texture hit_texture = new Texture(Gdx.files.internal("data/explosion.png"));
     
-    float cueX;
-    float cueY;
-    private int cueZone;
-    public boolean started = false;
+    float _x;
+    float _y;
+    private int _zone;
+    private boolean _started = false;
 
-    private float startT;
-    private float endT;
+    private float _startTime;
+    private float _endTime;
 
 	// duration of the cue (may not be used from this class, but we
 	// may want to just associate it with each cue)
@@ -34,27 +35,27 @@ public class TapCue extends Actor{
 
     
 	public TapCue(float x, float y, int zone, float start, float end) {
-		cueX = x;
-		cueY = y;
-		startT = start;
-		endT = end;
-		cueZone = zone;
+		_x = x;
+		_y = y;
+		_startTime = start;
+		_endTime = end;
+		_zone = zone;
 		
-        setBounds(x, y,texture.getWidth(),texture.getHeight());
+        setBounds(x, y, _texture.getWidth(),_texture.getHeight());
         addListener(new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                ((TapCue)event.getTarget()).started = true;
+                ((TapCue)event.getTarget())._started = true;
                 return true;
             }
         });
         
-        this.setTouchable(Touchable.disabled);
-        this.setVisible(false);
+        setTouchable(Touchable.disabled);
+        setVisible(false);
 	}
 
     @Override	
     public void draw(SpriteBatch batch, float alpha){
-        batch.draw(texture,cueX,cueY);
+        batch.draw(_texture, _x, _y);
     }
     
     public void end(SpriteBatch batch, float alpha){
@@ -69,22 +70,34 @@ public class TapCue extends Actor{
 	
 	
 	public float getX() {
-		return cueX;
+		return _x;
 	}
 
 	public float getYPosition() {
-		return cueY;
+		return _y;
 	}
 
 	public float getStartTime() {
-		return startT;
+		return _startTime;
 	}
 
 	public float getEndTime() {
-		return endT;
+		return _endTime;
 	}
 	
 	public int getZone() {
-		return cueZone;
+		return _zone;
+	}
+	
+	public void start() {
+		_started = true;
+	}
+	
+	void alterStartTime(float delta) {
+		_startTime += delta;
+	}
+	
+	void alterEndTime(float delta) {
+		_endTime += delta;
 	}
 }
