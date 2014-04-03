@@ -19,7 +19,7 @@ public class ZoneInfoWrapper {
 		ParseWrapper parse = new ParseWrapper();
 		//Should do this every time after first time
 		if (zoneInfo != null) {
-			System.out.println("retrieved zone response infos without hitting db");
+			//System.out.println("retrieved zone response infos without hitting db");
 			return zoneInfo;
 		}
 		
@@ -27,6 +27,10 @@ public class ZoneInfoWrapper {
 		System.out.println("retrieved zone response infos, had to hit db");
 		zoneInfo = info;
 		return info;				
+	}
+	
+	public static boolean isZoneReady(){
+		return (zoneInfo != null);
 	}
 	
 	//Updates the static zoneInfo array for future calls

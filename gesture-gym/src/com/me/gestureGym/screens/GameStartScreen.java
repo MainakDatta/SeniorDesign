@@ -10,9 +10,9 @@ import com.me.gestureGym.GestureGym;
 
 // main menu
 
-public class SplashScreen implements Screen {
+public class GameStartScreen implements Screen {
 
-	final GestureGym myGame;
+	private GestureGym myGame;
 
 	private OrthographicCamera camera;
 	
@@ -28,7 +28,7 @@ public class SplashScreen implements Screen {
 	 * @param g
 	 *            Game which called this splash screen.
 	 */
-	public SplashScreen(final GestureGym g) {
+	public GameStartScreen(GestureGym g) {
 		myGame = g;
 		
 		camera = new OrthographicCamera();
@@ -58,7 +58,7 @@ public class SplashScreen implements Screen {
 		myGame.batch.end();
 		
 		if (Gdx.input.justTouched()){
-			myGame.setScreen(new GameScreen(myGame));
+			myGame.setScreen(new LoadingScreen(myGame));
 			dispose();
 		}
 	}

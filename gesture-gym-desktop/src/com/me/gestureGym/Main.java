@@ -8,7 +8,7 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "gesture-gym";
 		cfg.useGL20 = false;
-		cfg.width = 1024;
+		cfg.width = 1280;
 		cfg.height = 768;
 		
 		new LwjglApplication(new GestureGym(), cfg);
