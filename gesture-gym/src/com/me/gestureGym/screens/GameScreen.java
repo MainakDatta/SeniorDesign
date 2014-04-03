@@ -106,11 +106,14 @@ public class GameScreen implements Screen {
     	
     	System.out.println("Screen width is " + width + ", screen height is " + height);
     	
+    	float cueAreaWidth = width - 256;
+    	float cueAreaHeight = height - 256;
+    	
     	int rowSize = (int) Math.sqrt(N_ZONES);
     	
     	for (int i = 0; i < N_ZONES; i++){
-    		float zWidth = (float) width / rowSize;
-    		float zHeight = (float) height / rowSize;
+    		float zWidth = (float) cueAreaWidth / rowSize;
+    		float zHeight = (float) cueAreaHeight / rowSize;
     		float zX = (float) (i % 4) * zWidth;
     		float zY = (float) (i / 4) * zHeight;
     		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
