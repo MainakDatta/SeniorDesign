@@ -16,6 +16,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+//import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,7 +35,9 @@ public class GameScreen implements Screen {
 	final GestureGym _game;
 	
 	// TODO: Decide on final value for this
-	private static final double SUCCESS = 0.8;
+	private static final double SUCCESS = 0.6;
+	
+	
 	private static final int N_ZONES = 16;
 	private static final int PAUSE_BUTTON_SIZE = 128;
 	
@@ -69,7 +72,7 @@ public class GameScreen implements Screen {
     	 	
         _game = g;
         
-        _backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("data/broken_reality.mp3"));
+        _backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("data/invaders_must_die.mp3"));
         _backgroundMusicId = _backgroundMusic.play(1.0f);
         _backgroundMusic.setLooping(_backgroundMusicId, true);
     	
@@ -110,9 +113,10 @@ public class GameScreen implements Screen {
     	
     	float cueAreaWidth = width - 256;
     	float cueAreaHeight = height - 256;
-    	
+
     	int rowSize = (int) Math.sqrt(N_ZONES);
     	
+
     	for (int i = 0; i < N_ZONES; i++){
     		float zWidth = (float) cueAreaWidth / rowSize;
     		float zHeight = (float) cueAreaHeight / rowSize;
@@ -123,12 +127,11 @@ public class GameScreen implements Screen {
     		System.out.println("Zone " + i + ":");
     		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
     		System.out.println("Zone lower left is (" + zX + ", " + zY + ")");
-    		
     		_zones[i] = zone;
-    		
     		//All zones initialized to scores of 0
     		_zoneHits.put(zone, 0);
     	}
+
     }
 	
     private Sequence getSequence() {
@@ -224,24 +227,26 @@ public class GameScreen implements Screen {
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
 		else if (actor != null && actor instanceof TapCue){
-			System.out.println("TAPPED");
+			//System.out.println("TAPPED");
 			TapCue tc = (TapCue) actor;
 			//TODO: Display animation
 //			System.out.println("BOOM");
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
+//			System.out.println("Hit in zone " + zoneNum + "!");
 			Zone hit = _zones[zoneNum];
 			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
-			
+//			System.out.println("Zone: " + zoneNum + " " + _zoneHits.get(hit) + " hits!");
 			tc.getSound().play(1.0f);
 			tc.setTouchable(Touchable.disabled);
 			tc.setVisible(false);
-			_currentSequence.removeActor(tc);
+			//_currentSequence.removeActor(tc);
 		}
     }
     
-	public void render(float delta) {
+	public void render(float delta) {		
 		if (_gameStatus == GAME_RUNNING) {
+						
 			_time += delta;
 			
 			if (_first) {
@@ -251,6 +256,19 @@ public class GameScreen implements Screen {
 			
 	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	    	
+	    	//Debugging cue nums
+//	    	_game.batch.begin();
+//	    	for (int i = 0; i < N_ZONES; i++){	    		
+//	    		Zone z  = _zones[i];
+//	    		//String text = "Zone " + z.getZoneNumber();
+//	    		//System.out.println(text);
+//	    		BitmapFont font = new BitmapFont();
+//	    		font.setColor(0.0f, 0.0f, 1.0f, 1.0f); // tint font blue	    		
+//	    		///font.draw(_game.batch, text, z.getX(), z.getY());
+//
+//	    	}
+	    	_game.batch.end();
+
 	    	if (sequenceOver()) {
 	    		endAndSwitchScreens();
 	    	}
@@ -290,7 +308,7 @@ public class GameScreen implements Screen {
 				System.out.println("Updating zone " + zoneNum + " to duration " + _currentSequence.getDuration());
 				ZoneInfoWrapper.updateZone(zInfo); 
 			} else {
-				System.out.println("Keeping zone " + zoneNum + " at duration " + _currentSequence.getDuration());				
+				System.out.println("Keeping zone " + zoneNum + " at duration " + _zoneInfos[zoneNum].getSuccessDuration());
 			}
 		}
 		
