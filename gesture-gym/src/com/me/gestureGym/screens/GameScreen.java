@@ -67,7 +67,6 @@ public class GameScreen implements Screen {
 	private long _backgroundMusicId;
 	
     public GameScreen(GestureGym g){
-    	 	
         _game = g;
         
         // get loaded audio file
@@ -95,7 +94,6 @@ public class GameScreen implements Screen {
         
         // Sequence s is a Group of TapCue Actors
         _currentSequence = getSequence();
-        
         _stage.addActor(_currentSequence);
         
         _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
@@ -120,7 +118,6 @@ public class GameScreen implements Screen {
 
     	int rowSize = (int) Math.sqrt(N_ZONES);
     	
-
     	for (int i = 0; i < N_ZONES; i++){
     		float zWidth = (float) cueAreaWidth / rowSize;
     		float zHeight = (float) cueAreaHeight / rowSize;
@@ -146,13 +143,16 @@ public class GameScreen implements Screen {
     
     private boolean sequenceOver() {
     	return _sequenceIndex == _currentSequence.length() &&
-    		   !_currentSequence.getCue(_sequenceIndex - 1).isVisible();
+    		   _currentSequence.getCue(_sequenceIndex - 1).getTouchable() == Touchable.disabled;
     }
     
     private void getNewSequence() {
+    	System.out.println("Updating stats");
     	updateStats();
+    	System.out.println("Getting new sequence");
+    	_currentSequence.getCue(_sequenceIndex - 1).setVisible(false);
     	_currentSequence = getSequence();
-    	_currentSequence.offsetTimestamps(_time);
+    	_time = 0;
     	_sequenceIndex = 0;
     	_stage.addActor(_currentSequence);
     }
@@ -260,9 +260,9 @@ public class GameScreen implements Screen {
 			_time += delta;
 			
 			if (_first) {
-				_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
-		        _backgroundMusic.play();
-		        _backgroundMusic.setLooping(true);
+//				_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
+//		        _backgroundMusic.play();
+//		        _backgroundMusic.setLooping(true);
 				_first = false;
 				_currentSequence.offsetTimestamps(delta);
 			} else {
