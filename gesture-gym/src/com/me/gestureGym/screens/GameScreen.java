@@ -232,7 +232,6 @@ public class GameScreen implements Screen {
 		else if (actor != null && actor instanceof TapCue){
 			//System.out.println("TAPPED");
 			TapCue tc = (TapCue) actor;
-			//TODO: Display animation
 //			System.out.println("BOOM");
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
@@ -267,19 +266,6 @@ public class GameScreen implements Screen {
 			}
 			
 	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-	    	
-	    	//Debugging cue nums
-//	    	_game.batch.begin();
-//	    	for (int i = 0; i < N_ZONES; i++){	    		
-//	    		Zone z  = _zones[i];
-//	    		//String text = "Zone " + z.getZoneNumber();
-//	    		//System.out.println(text);
-//	    		BitmapFont font = new BitmapFont();
-//	    		font.setColor(0.0f, 0.0f, 1.0f, 1.0f); // tint font blue	    		
-//	    		///font.draw(_game.batch, text, z.getX(), z.getY());
-//
-//	    	}
-	    	//_game.batch.end();
 
 	    	if (sequenceOver()) {
 	    		getNewSequence();
