@@ -74,8 +74,8 @@ public class GameScreen implements Screen {
     	_zoneInfos = ZoneInfoWrapper.getZoneInfo();
     	
         // create the camera and the SpriteBatch
-		_camera = new OrthographicCamera(800, 480);
-		_camera.position.set(800 / 2, 480 / 2, 0f); 
+		_camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		_camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 		
         _stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         
