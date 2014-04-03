@@ -53,20 +53,30 @@ public class ParseWrapper {
 		ZoneResponseInfo[] out = new ZoneResponseInfo[N_ZONES];
 		
 		for (int i = 0; i < N_ZONES; i++) {
-			ParseObject o;
+			ParseObject o;			
 			try {
+
 				o = getZone(i);
+				
 			} catch (ParseException e) {
+				//Get Zone failed
+				System.out.println("Get zone failed");
 				e.printStackTrace();
 				o = new ParseObject("ZoneInfo");
+				o.put("zoneNumber", Integer.toString(i));
 				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
 				o.put("hitRate", Double.toString(1.0));
+				o.saveInBackground();
 			}
 			
 			if (o == null) {
+				//Get Zone returned null
+				System.out.println("Get zone returned null");
 				o = new ParseObject("ZoneInfo");
+				o.put("zoneNumber", Integer.toString(i));
 				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
 				o.put("hitRate", Double.toString(1.0));
+				o.saveInBackground();
 			}
 			
 			float successDuration = Float.parseFloat(o.getString("successDuration"));
