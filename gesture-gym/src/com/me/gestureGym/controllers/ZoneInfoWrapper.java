@@ -13,7 +13,11 @@ import com.me.gestureGym.data.ZoneResponseInfo;
 public class ZoneInfoWrapper {
 	
 	private static ZoneResponseInfo[] zoneInfo; 
-	private static boolean ready = false;
+	private static final int N_ZONES = 16;
+	
+	public static void init(){
+		
+	}
 	
 	//Gives the caller the current status of db
 	public static ZoneResponseInfo[] getZoneInfo(){		
@@ -23,26 +27,33 @@ public class ZoneInfoWrapper {
 			//System.out.println("retrieved zone response infos without hitting db");
 			return zoneInfo;
 		}
+		//This needs to happen in background
+		zoneInfo = new ZoneResponseInfo[N_ZONES];		
+		for(int i = 0; i< zoneInfo.length; i++){
+			parse.getZoneAsync(i);
+			
+		}				
+		System.out.println("Had to hit db");
+		return zoneInfo;				
+	}
 		
-		ZoneResponseInfo[] info = parse.getAllZoneInfos();
-		System.out.println("retrieved zone response infos, had to hit db");
-		zoneInfo = info;
-		return info;				
-	}
-	
-	public static void prepareZone(){
-		if(ready == false){
-			getZoneInfo();
-			ready = true;
-		}
-	}
-	
 	public static boolean isReady(){
-		return ready;
+		//Returns true if array is fully loaded
+		if(zoneInfo != null){
+			for(int i = 0; i< zoneInfo.length; i++){
+				if(zoneInfo[i] == null)return false;
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	//Updates the static zoneInfo array for future calls
-	public static void updateZone(ZoneResponseInfo updated_zone){		
+	public static void updateZone(ZoneResponseInfo updated_zone){
+		//Creates zoneInfo if needed
+		if(zoneInfo == null){
+			zoneInfo = new ZoneResponseInfo[N_ZONES];
+		}
 		int index = updated_zone.getZoneNumber();
 		zoneInfo[index] = updated_zone;
 	}

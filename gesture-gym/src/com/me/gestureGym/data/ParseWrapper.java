@@ -2,6 +2,8 @@ package com.me.gestureGym.data;
 
 import java.util.List;
 
+import com.me.gestureGym.controllers.ZoneInfoWrapper;
+
 import almonds.*;
 
 public class ParseWrapper {	
@@ -20,6 +22,47 @@ public class ParseWrapper {
 		return list.size() >= 1 ? list.get(0) : null;
 	}
 	
+	public void getZoneAsync(int zoneNumber){
+		//Stupid thing required by nested class
+		final int zoneNum  = zoneNumber;
+		ParseQuery q = new ParseQuery("ZoneInfo");
+		q.whereEqualTo("zoneNumber", Integer.toString(zoneNumber));
+		try{
+			q.findInBackground(new FindCallback() {
+			     public void done(List<ParseObject> objects, ParseException e) {
+			         if (e == null) {
+			        	 if(objects.size() >= 1){
+			        		 ParseObject response = objects.get(0);
+			        		 int zoneNum = Integer.parseInt(response.getString("zoneNumber"));
+			     			 float successDuration = Float.parseFloat(response.getString("successDuration"));
+			    			 double hitRate = Double.parseDouble(response.getString("hitRate"));
+			    			 ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, successDuration, hitRate);
+			    			 ZoneInfoWrapper.updateZone(zres);
+			        	 }
+			         } else {
+			        	//Make default
+			     		ParseObject o = new ParseObject("ZoneInfo");
+			     		o.put("zoneNumber", Integer.toString(zoneNum));
+			     		o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+			     		o.put("hitRate", Double.toString(1.0));
+			     		o.saveInBackground();
+			     		ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, DEFAULT_SUCCESS_DUR, 1.0);
+			     		ZoneInfoWrapper.updateZone(zres);
+			         }
+			     }
+			 });
+		}catch (RuntimeException e) {
+			//Make default
+			ParseObject o = new ParseObject("ZoneInfo");
+			o.put("zoneNumber", Integer.toString(zoneNumber));
+			o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+			o.put("hitRate", Double.toString(1.0));
+			o.saveInBackground();
+			ZoneResponseInfo zres = new ZoneResponseInfo(zoneNumber, DEFAULT_SUCCESS_DUR, 1.0);
+			ZoneInfoWrapper.updateZone(zres);
+		}
+		
+	}
 	/*
 	 * Put a ZoneInfo object into the DB.
 	 */
@@ -45,19 +88,18 @@ public class ParseWrapper {
 		return new ZoneResponseInfo(zoneNumber, successDuration, hitRate);
 	}
 	
+	
 	/*
 	 * Get all ZoneInfos from the DB (because there's probably no reason to wait, you
 	 * can just get them all at the start of a session so you have them in memory).
 	 */
+
 	public ZoneResponseInfo[] getAllZoneInfos() {
 		ZoneResponseInfo[] out = new ZoneResponseInfo[N_ZONES];
-		
 		for (int i = 0; i < N_ZONES; i++) {
 			ParseObject o;			
 			try {
-
-				o = getZone(i);
-				
+				o = getZone(i);				
 			} catch (ParseException e) {
 				//Get Zone failed
 				System.out.println("Get zone failed");

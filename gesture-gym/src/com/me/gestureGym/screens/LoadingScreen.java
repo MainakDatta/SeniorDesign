@@ -35,6 +35,8 @@ public class LoadingScreen implements Screen {
     private Actor loadingBar;
     
     public LoadingScreen(GestureGym game) {
+        Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
+				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
         this.game = game;
     }
     
@@ -69,12 +71,7 @@ public class LoadingScreen implements Screen {
         stage.addActor(loadingBg);
         stage.addActor(loadingBarHidden);
         stage.addActor(loadingFrame);
-        stage.addActor(logo);
-        
-        
-        Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
-				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
-        
+        stage.addActor(logo);                       
         
     }
 
@@ -115,22 +112,10 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Clear the screen
-    	ZoneInfoWrapper.prepareZone();
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        if (Assets.getManager().update()) { // Load some, will return true if done loading
-        	if(ZoneInfoWrapper.isReady()){
-        		//START BUTTON HERE???
-        		game.batch.begin();
-        		game.font.draw(game.batch, "Tap anywhere to begin!", Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/5.0f);
-        		game.batch.end();
-        		
-        		if (Gdx.input.isTouched()) { // If the screen is touched after the game is done loading, go to the main menu screen
-        			game.setScreen(new GameScreen(game));
-        		}
-        	}
-        }
+       
+        // Clear the screen
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         // Interpolate the percentage to make it more smooth
         percent = Interpolation.linear.apply(percent, Assets.getManager().getProgress(), 0.1f);
@@ -144,6 +129,16 @@ public class LoadingScreen implements Screen {
         // Show the loading screen
         stage.act();
         stage.draw();
+
+        if (Assets.getManager().update()) { // Load some, will return true if done loading
+        	//Another check here to see if array is loaded
+        	System.out.println("Waiting on parse");
+        	if(ZoneInfoWrapper.isReady()){        		
+        		game.setScreen(new GameScreen(game));
+        	}
+        }
+    	ZoneInfoWrapper.getZoneInfo();
+
     }
 
     @Override
