@@ -98,12 +98,10 @@ public class GameScreen implements Screen {
     		float zHeight = (float) height / rowSize;
     		float zX = (float) (i % 4) * zWidth;
     		float zY = (float) (i / 4) * zHeight;
-    		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
-    		
+    		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);    		
 //    		System.out.println("Zone " + i + ":");
 //    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
-//    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");
-    		
+//    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");    		
     		_zones[i] = zone;
     		
     		//All zones initialized to scores of 0
@@ -139,7 +137,7 @@ public class GameScreen implements Screen {
 			cue.setTouchable(Touchable.disabled);
 			cue.setVisible(false);
 			if (!_currentSequence.removeActor(cue)) break;
-			System.out.println("removed actor at (" + cue.getX() + ", " + cue.getY() + ")");
+			//System.out.println("removed actor at (" + cue.getX() + ", " + cue.getY() + ")");
 			shouldRemove = (currIndex = currIndex - 1) >= 0 && 
 		                   (cue = _currentSequence.getCue(currIndex)).getEndTime() <= _time;
 		}
@@ -152,7 +150,7 @@ public class GameScreen implements Screen {
     			             (cue = _currentSequence.getCue(_sequenceIndex)).getStartTime() <= _time &&
     			             cue.getEndTime() > _time;
     	while (shouldShow) {
-    		System.out.println("showing actor at (" + cue.getX() + ", " + cue.getY() + ")");
+    		//System.out.println("showing actor at (" + cue.getX() + ", " + cue.getY() + ")");
     		cue.setTouchable(Touchable.enabled);
     		cue.setVisible(true);
     		
@@ -173,7 +171,7 @@ public class GameScreen implements Screen {
 		if (actor != null && actor instanceof TapCue){
 			TapCue tc = (TapCue) actor;
 			//TODO: Display animation
-			System.out.println("BOOM");
+//			System.out.println("BOOM");
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
 			Zone hit = _zones[zoneNum];
@@ -220,11 +218,15 @@ public class GameScreen implements Screen {
 			int totalHits = _zoneHits.get(z);
 			double hitRate = totalHits / z.getNumCues();
 			int zoneNum = z.getZoneNumber();
+			System.out.println("Hit rate at zone " + zoneNum + " : " + hitRate);			
 			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD and is less than old duration
-			if(hitRate > SUCCESS && zoneNum < _zoneInfos[zoneNum].getSuccessDuration()){
+			if(hitRate > SUCCESS && _currentSequence.getDuration() < _zoneInfos[zoneNum].getSuccessDuration()){
 				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, _currentSequence.getDuration(), hitRate);
-				ZoneInfoWrapper.updateZone(zInfo);
-			}	
+				System.out.println("Updating zone " + zoneNum + " to duration " + _currentSequence.getDuration());
+				ZoneInfoWrapper.updateZone(zInfo); 
+			}else{
+				System.out.println("Keeping zone " + zoneNum + " at duration " + _currentSequence.getDuration());				
+			}
 		}				
 	}
 

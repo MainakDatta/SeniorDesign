@@ -15,6 +15,9 @@ public class SequenceGenerator {
 			boolean connected) {
 		// choose zones that this sequence will put cues in
 		ZoneResponseInfo[] seqZoneResponses = getSequenceZones(zoneResponses, connected);
+		for(ZoneResponseInfo z: seqZoneResponses){			
+			System.out.println("Picked zone " + z.getZoneNumber() + " with dur: " + z.getSuccessDuration());
+		}
 		
 		// counter list to make sure all zones get the same number of cues (may be a more
 		// efficient way to do this)
@@ -27,7 +30,7 @@ public class SequenceGenerator {
 		//get duration based on previous performance
 		// duration: time that a single cue lasts
 		float duration = durationFromZones(seqZoneResponses);
-
+		System.out.println("Duration for this round: " + duration);
 		//timeBetweenCues: time from one cue's appearance to the next
 		// could be different from duration (maybe like 4 / 5)
 		float timeBetweenCues = duration;
@@ -47,9 +50,9 @@ public class SequenceGenerator {
 			if (zoneCounts[which] > 0) {
 				float x = getRandomXFromZone(zone);
 				float y = getRandomYFromZone(zone);
-				System.out.println("zone number is " + zoneNum);
-				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
-				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
+//				System.out.println("zone number is " + zoneNum);
+//				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
+//				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
 				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration));				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
@@ -80,18 +83,19 @@ public class SequenceGenerator {
 			}
 		}
 		
-		System.out.println("chose max duration of " + maxDuration);
-		
-		return maxDuration - deltaDuration(maxDuration);
+		System.out.println("chose max duration of " + maxDuration);		
+		System.out.println("Delta duration is " + deltaDuration(maxDuration));
+		return maxDuration + deltaDuration(maxDuration);
 	}
-	
+
+	//MOST IMPORTANT PART OF SENIOR DESIGN. NEED TO MOVE TO ANOTHER FILE
 	// takes in a duration and returns the change in duration that should occur
 	private static float deltaDuration(float duration) {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
-		return 3.669069119f * (float) Math.pow(10, -2) * duration * duration * duration
-			  - 9.696005577f * (float) Math.pow(10, -2) * duration * duration
+		return 3.669069119f * (float) (Math.pow(10, -2) * duration * duration * duration)
+			  - 9.696005577f * (float) (Math.pow(10, -2) * duration * duration)
 			  + 0.1484657986f * duration
 			  - 0.2683188376f;
 	}

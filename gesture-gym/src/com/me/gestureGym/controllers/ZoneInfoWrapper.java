@@ -26,8 +26,7 @@ public class ZoneInfoWrapper {
 		ZoneResponseInfo[] info = parse.getAllZoneInfos();
 		System.out.println("retrieved zone response infos, had to hit db");
 		zoneInfo = info;
-		return info;
-				
+		return info;				
 	}
 	
 	//Updates the static zoneInfo array for future calls
