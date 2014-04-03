@@ -14,6 +14,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -88,14 +89,14 @@ public class GameScreen implements Screen {
         // Essentially the Controller/BoardRenderer thing that you mentioned
         Gdx.input.setInputProcessor(_stage);
         
+        Image img = new Image(Assets.getManager().get("data/background.png", Texture.class));
+        img.setFillParent(true);
+        _stage.addActor(img);
+        
         // Sequence s is a Group of TapCue Actors
         _currentSequence = getSequence();
         
         _stage.addActor(_currentSequence);
-        
-/*        Image img = new Image(new TextureRegion(Assets.getManager().get("data/background", TextureRegion.class)));
-        img.setFillParent(true);
-        _stage.addActor(img); */
         
         _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_pauseButton);

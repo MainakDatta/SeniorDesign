@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Assets implements Disposable, AssetErrorListener {
@@ -20,19 +21,24 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public static void load() {
 		assets = new AssetManager();
+		Texture.setEnforcePotImages(false);
 		// set asset manager error handler
 		//assets.setErrorListener(this);
 		// load texture atlas
 		
     	// Tell the manager to load assets for the loading screen
 		assets.load("data/loading.pack", TextureAtlas.class);
-        
+		
+		assets.load("data/background.png", Texture.class);
+		
+		
         // Load all sound assets
 		assets.load("data/audio/broken_reality.mp3", Music.class);
 		assets.load("data/audio/invaders_must_die.mp3", Music.class);
 		assets.load("data/audio/hit.wav", Sound.class);
         
         // Load all button assets
+		assets.load("data/buttons/start_button.jpg", Texture.class);
 		assets.load("data/buttons/pause.png", Texture.class);
 		assets.load("data/buttons/play.png", Texture.class);
         assets.load("data/buttons/tapCue.png", Texture.class);
