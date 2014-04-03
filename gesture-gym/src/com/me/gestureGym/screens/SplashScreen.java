@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.controllers.SoundWrapper;
 
 // main menu
 
@@ -40,7 +41,7 @@ public class SplashScreen implements Screen {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(float delta) {		
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -56,6 +57,8 @@ public class SplashScreen implements Screen {
 		myGame.batch.begin();
 		myGame.font.draw(myGame.batch, "Tap anywhere to begin!", 200, 200);
 		myGame.batch.end();
+		
+		SoundWrapper.init();
 		
 		if (Gdx.input.justTouched()){
 			myGame.setScreen(new GameScreen(myGame));

@@ -8,13 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.me.gestureGym.controllers.SoundWrapper;
 
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
 
 public class TapCue extends Actor{
 	
-	private static Sound _hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.wav"));
+	private static Sound _hitSound = SoundWrapper.getHitNoise();
 	
 	private static Texture _cueTexture = new Texture(Gdx.files.internal("data/tapCue.png"));
 	private static Texture _hitTexture = new Texture(Gdx.files.internal("data/explosion.png"));

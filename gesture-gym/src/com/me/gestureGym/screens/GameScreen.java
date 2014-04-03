@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.SequenceGenerator;
+import com.me.gestureGym.controllers.SoundWrapper;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.PauseButton;
@@ -59,6 +60,7 @@ public class GameScreen implements Screen {
 	//Zone Hits map will help us calculate the hit rate
 	private HashMap<Zone, Integer> _zoneHits;
 	
+	private float _timeLeft = 180;
 	private float _time; 
 	private int _sequenceIndex = 0;
 	private boolean _first = true;
@@ -72,7 +74,7 @@ public class GameScreen implements Screen {
     	 	
         _game = g;
         
-        _backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("data/invaders_must_die.mp3"));
+        _backgroundMusic = SoundWrapper.getBackgroundMusic();
         _backgroundMusicId = _backgroundMusic.play(1.0f);
         _backgroundMusic.setLooping(_backgroundMusicId, true);
     	
@@ -135,7 +137,8 @@ public class GameScreen implements Screen {
     }
 	
     private Sequence getSequence() {
-    	Sequence generated = SequenceGenerator.generateSequence(_zones, _zoneInfos, false);
+    	boolean far = Math.random() < 0.5;
+    	Sequence generated = SequenceGenerator.generateSequence(_zones, _zoneInfos, far);
     	return generated;
     }
     
@@ -144,9 +147,15 @@ public class GameScreen implements Screen {
     		   !_currentSequence.getCue(_sequenceIndex - 1).isVisible();
     }
     
-    private void endAndSwitchScreens() {
-    	System.out.println("no cues left");
+    private void getNewSequence() {
     	updateStats();
+    	_currentSequence = getSequence();
+    	_currentSequence.offsetTimestamps(_time);
+    	_sequenceIndex = 0;
+    	_stage.addActor(_currentSequence);
+    }
+    
+    private void endAndSwitchScreens() {
     	_backgroundMusic.stop(_backgroundMusicId);
 		_game.setScreen(new GameEndScreen(_game));
 		dispose();
@@ -252,6 +261,12 @@ public class GameScreen implements Screen {
 			if (_first) {
 				_first = false;
 				_currentSequence.offsetTimestamps(delta);
+			} else {
+				_timeLeft -= delta;
+			}
+			
+			if (_timeLeft <= 0) {
+				endAndSwitchScreens();
 			}
 			
 	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -270,7 +285,7 @@ public class GameScreen implements Screen {
 	    	//_game.batch.end();
 
 	    	if (sequenceOver()) {
-	    		endAndSwitchScreens();
+	    		getNewSequence();
 	    	}
 	    	
 	    	unshowEndedCues();
