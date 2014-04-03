@@ -9,7 +9,8 @@ import com.me.gestureGym.models.*;
 
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
-	private static final int CUES_PER_SEQUENCE = 60;
+	//private static final int CUES_PER_SEQUENCE = 60;
+	private static final int CUES_PER_SEQUENCE = 20;
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
