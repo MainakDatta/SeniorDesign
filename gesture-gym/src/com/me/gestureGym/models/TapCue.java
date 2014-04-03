@@ -15,9 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 public class TapCue extends Actor{
 	
 	private static Sound _hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.wav"));
-    Texture _texture = new Texture(Gdx.files.internal("data/tapCue.png"));
+	
+	private static Texture _cueTexture = new Texture(Gdx.files.internal("data/tapCue.png"));
+	private static Texture _hitTexture = new Texture(Gdx.files.internal("data/explosion.png"));
+    private Texture _texture;
   
-    //Texture hit_texture = new Texture(Gdx.files.internal("data/explosion.png"));
+    //
     
     float _x;
     float _y;
@@ -26,6 +29,9 @@ public class TapCue extends Actor{
 
     private float _startTime;
     private float _endTime;
+    
+    private boolean hit;
+    private float _hitTime;
 
 	// duration of the cue (may not be used from this class, but we
 	// may want to just associate it with each cue)
@@ -42,6 +48,8 @@ public class TapCue extends Actor{
 		_startTime = start;
 		_endTime = end;
 		_zone = zone;
+		
+		_texture = _cueTexture;
 		
         setBounds(x, y, _texture.getWidth(),_texture.getHeight());
         addListener(new InputListener(){
@@ -67,7 +75,14 @@ public class TapCue extends Actor{
     
     @Override
     public void act(float delta){
-    	    	
+    	if(hit){
+    		if(_hitTime >= 5.0f){
+	    		setVisible(false);
+	    		hit = true;
+	    	
+    		}
+    		_hitTime += delta;
+    	}
     }
 	
 	
@@ -75,7 +90,7 @@ public class TapCue extends Actor{
 		return _x;
 	}
 
-	public float getYPosition() {
+	public float getY() {
 		return _y;
 	}
 
@@ -105,5 +120,12 @@ public class TapCue extends Actor{
 	
 	public Sound getSound() {
 		return _hitSound;
+	}
+	
+	public void hit(){
+		getSound().play(1.0f);
+		setTouchable(Touchable.disabled);
+		hit = true;
+		_texture = _hitTexture;
 	}
 }

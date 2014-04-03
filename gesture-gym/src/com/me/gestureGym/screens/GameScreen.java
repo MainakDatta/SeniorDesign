@@ -226,9 +226,9 @@ public class GameScreen implements Screen {
 			Zone hit = _zones[zoneNum];
 			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
 //			System.out.println("Zone: " + zoneNum + " " + _zoneHits.get(hit) + " hits!");
-			tc.getSound().play(1.0f);
-			tc.setTouchable(Touchable.disabled);
-			tc.setVisible(false);
+			
+			// when hit, it plays the sound and changes image
+			tc.hit();
 			//_currentSequence.removeActor(tc);
 		}
     }
@@ -256,7 +256,7 @@ public class GameScreen implements Screen {
 //	    		///font.draw(_game.batch, text, z.getX(), z.getY());
 //
 //	    	}
-	    	_game.batch.end();
+	    	//_game.batch.end();
 
 	    	if (sequenceOver()) {
 	    		endAndSwitchScreens();
