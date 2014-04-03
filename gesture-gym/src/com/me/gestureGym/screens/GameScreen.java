@@ -267,7 +267,7 @@ public class GameScreen implements Screen {
 //	    		///font.draw(_game.batch, text, z.getX(), z.getY());
 //
 //	    	}
-	    	_game.batch.end();
+	    	//_game.batch.end();
 
 	    	if (sequenceOver()) {
 	    		endAndSwitchScreens();

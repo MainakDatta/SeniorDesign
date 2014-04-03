@@ -94,6 +94,18 @@ public class SequenceGenerator {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
+		
+		/*
+		 * 2.0 -0.2
+         * 1.8 -0.15
+         * 1.6 -0.125
+         * 1.4 -0.1
+         * 1.2 -0.08
+         * 1.0 -0.0625
+         * 0.8 -0.04
+         * 0.6 -0.03
+         * 0.4 -0.02
+		 */
 		return -0.04701028139f * duration * duration
 			  + 0.005533008658f * duration
 			  - 0.01613095238f;
