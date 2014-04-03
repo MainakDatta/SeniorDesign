@@ -3,6 +3,7 @@ package com.me.gestureGym.controllers;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -27,8 +28,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		assets.load("data/loading.pack", TextureAtlas.class);
         
         // Load all sound assets
-		assets.load("data/audio/broken_reality.mp3", Sound.class);
-		assets.load("data/audio/invaders_must_die.mp3", Sound.class);
+		assets.load("data/audio/broken_reality.mp3", Music.class);
+		assets.load("data/audio/invaders_must_die.mp3", Music.class);
 		assets.load("data/audio/hit.wav", Sound.class);
         
         // Load all button assets

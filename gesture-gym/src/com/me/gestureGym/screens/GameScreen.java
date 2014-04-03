@@ -10,13 +10,16 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.SequenceGenerator;
@@ -59,7 +62,7 @@ public class GameScreen implements Screen {
 	private int _sequenceIndex = 0;
 	private boolean _first = true;
 	
-	private Sound _backgroundMusic;
+	private Music _backgroundMusic;
 	private long _backgroundMusicId;
 	
     public GameScreen(GestureGym g){
@@ -67,10 +70,10 @@ public class GameScreen implements Screen {
         _game = g;
         
         // get loaded audio file
-        _backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Sound.class);
+        _backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
         
-        _backgroundMusicId = _backgroundMusic.play(1.0f);
-        _backgroundMusic.setLooping(_backgroundMusicId, true);
+        _backgroundMusic.play();
+        _backgroundMusic.setLooping(true);
     	
     	// set up information about zones
     	setupZones();
@@ -89,6 +92,10 @@ public class GameScreen implements Screen {
         _currentSequence = getSequence();
         
         _stage.addActor(_currentSequence);
+        
+/*        Image img = new Image(new TextureRegion(Assets.getManager().get("data/background", TextureRegion.class)));
+        img.setFillParent(true);
+        _stage.addActor(img); */
         
         _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_pauseButton);
@@ -150,7 +157,7 @@ public class GameScreen implements Screen {
     }
     
     private void endAndSwitchScreens() {
-    	_backgroundMusic.stop(_backgroundMusicId);
+    	_backgroundMusic.stop();
 		_game.setScreen(new GameEndScreen(_game));
 		dispose();
     }
@@ -253,9 +260,9 @@ public class GameScreen implements Screen {
 			_time += delta;
 			
 			if (_first) {
-				_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Sound.class);
-		        _backgroundMusicId = _backgroundMusic.play(1.0f);
-		        _backgroundMusic.setLooping(_backgroundMusicId, true);
+				_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
+		        _backgroundMusic.play();
+		        _backgroundMusic.setLooping(true);
 				_first = false;
 				_currentSequence.offsetTimestamps(delta);
 			} else {
