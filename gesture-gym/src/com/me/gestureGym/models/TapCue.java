@@ -1,6 +1,5 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,18 +7,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.me.gestureGym.controllers.SoundWrapper;
+import com.me.gestureGym.controllers.Assets;
 
 // TODO: need an abstract class or interface to link up TapCue and the 
 // unwritten SwipeCue and PinchCue
 
 public class TapCue extends Actor{
 	
-	private static Sound _hitSound = SoundWrapper.getHitNoise();
-	
-	private static Texture _cueTexture = new Texture(Gdx.files.internal("data/tapCue.png"));
-	private static Texture _hitTexture = new Texture(Gdx.files.internal("data/explosion.png"));
-    private Texture _texture;
+	private Sound _hitSound;
+	private Texture _texture;
   
     //
     
@@ -44,13 +40,15 @@ public class TapCue extends Actor{
 
     
 	public TapCue(float x, float y, int zone, float start, float end) {
+		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
+		
 		_x = x;
 		_y = y;
 		_startTime = start;
 		_endTime = end;
 		_zone = zone;
 		
-		_texture = _cueTexture;
+		_texture = Assets.getManager().get("data/buttons/tapCue.png", Texture.class);
 		
         setBounds(x, y, _texture.getWidth(),_texture.getHeight());
         addListener(new InputListener(){
@@ -124,9 +122,9 @@ public class TapCue extends Actor{
 	}
 	
 	public void hit(){
-		getSound().play(1.0f);
+		_hitSound.play(1.0f);
 		setTouchable(Touchable.disabled);
 		hit = true;
-		_texture = _hitTexture;
+		_texture = Assets.getManager().get("data/buttons/tapCueBoom.png", Texture.class);
 	}
 }

@@ -7,13 +7,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.me.gestureGym.GestureGym;
-import com.me.gestureGym.controllers.SoundWrapper;
 
 // main menu
 
 public class GameStartScreen implements Screen {
 
-	private GestureGym myGame;
+	private GestureGym game;
 
 	private OrthographicCamera camera;
 	
@@ -30,12 +29,15 @@ public class GameStartScreen implements Screen {
 	 *            Game which called this splash screen.
 	 */
 	public GameStartScreen(GestureGym g) {
-		myGame = g;
+		game = g;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
 		spriteBatch = new SpriteBatch();
+		
+		// GameStartScreen comes before LoadingScreen
+		// Therefore some file have to be handled here
 		splash = new Texture(Gdx.files.internal("data/title.png"));
 
 	}
@@ -52,16 +54,14 @@ public class GameStartScreen implements Screen {
 		spriteBatch.end();
 
 		camera.update();
-		myGame.batch.setProjectionMatrix(camera.combined);
+		game.batch.setProjectionMatrix(camera.combined);
 		
-		myGame.batch.begin();
-		myGame.font.draw(myGame.batch, "Tap anywhere to begin!", 200, 200);
-		myGame.batch.end();
-		
-		SoundWrapper.init();
+		game.batch.begin();
+		game.font.draw(game.batch, "Tap anywhere to begin!", Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/5);
+		game.batch.end();
 		
 		if (Gdx.input.justTouched()){
-			myGame.setScreen(new LoadingScreen(myGame));
+			game.setScreen(new LoadingScreen(game));
 			dispose();
 		}
 	}

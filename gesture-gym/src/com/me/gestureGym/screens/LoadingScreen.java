@@ -1,5 +1,7 @@
 package com.me.gestureGym.screens;
 
+import almonds.Parse;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.models.LoadingBar;
 
@@ -38,17 +41,12 @@ public class LoadingScreen implements Screen {
     @Override
     public void show() {
         
-    	// Tell the manager to load assets for the loading screen
-        game.assets.load("data/loading.pack", TextureAtlas.class);
-        
-        // Wait until they are finished loading
-        game.assets.finishLoading();
-
         // Initialize the stage where we will place everything
         stage = new Stage();
 
-        // Get our textureatlas from the manager
-        TextureAtlas atlas = game.assets.get("data/loading.pack", TextureAtlas.class);
+        Assets.load();
+        // Get our texture atlas from the manager
+        TextureAtlas atlas = Assets.getManager().get("data/loading.pack", TextureAtlas.class);
 
         // Grab the regions from the atlas and create some images
         logo = new Image(atlas.findRegion("libgdx-logo"));
@@ -72,12 +70,12 @@ public class LoadingScreen implements Screen {
         stage.addActor(loadingBarHidden);
         stage.addActor(loadingFrame);
         stage.addActor(logo);
-
-        ZoneInfoWrapper.getZoneInfo();
-        // Add everything to be loaded, for instance:
-        // game.manager.load("data/assets1.pack", TextureAtlas.class);
-        // game.manager.load("data/assets2.pack", TextureAtlas.class);
-        // game.manager.load("data/assets3.pack", TextureAtlas.class);
+        
+        
+        Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
+				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
+        
+        
     }
 
     @Override
@@ -118,21 +116,24 @@ public class LoadingScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear the screen
+    	ZoneInfoWrapper.prepareZone();
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        if (game.assets.update() && ZoneInfoWrapper.isZoneReady()) { // Load some, will return true if done loading
-        	//START BUTTON HERE???
-        	game.batch.begin();
-    		game.font.draw(game.batch, "Tap anywhere to begin!", Gdx.graphics.getWidth()/2.0f, Gdx.graphics.getHeight()/5.0f);
-    		game.batch.end();
-    		
-            if (Gdx.input.isTouched()) { // If the screen is touched after the game is done loading, go to the main menu screen
-               	game.setScreen(new GameScreen(game));
-           	}
+        if (Assets.getManager().update()) { // Load some, will return true if done loading
+        	if(ZoneInfoWrapper.isReady()){
+        		//START BUTTON HERE???
+        		game.batch.begin();
+        		game.font.draw(game.batch, "Tap anywhere to begin!", Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/5.0f);
+        		game.batch.end();
+        		
+        		if (Gdx.input.isTouched()) { // If the screen is touched after the game is done loading, go to the main menu screen
+        			game.setScreen(new GameScreen(game));
+        		}
+        	}
         }
 
         // Interpolate the percentage to make it more smooth
-        percent = Interpolation.linear.apply(percent, game.assets.getProgress(), 0.1f);
+        percent = Interpolation.linear.apply(percent, Assets.getManager().getProgress(), 0.1f);
 
         // Update positions (and size) to match the percentage
         loadingBarHidden.setX(startX + endX * percent);
@@ -148,7 +149,7 @@ public class LoadingScreen implements Screen {
     @Override
     public void hide() {
         // Dispose the loading assets as we no longer need them
-        game.assets.unload("data/loading.pack");
+    	Assets.getManager().unload("data/loading.pack");
     }
 
 	@Override

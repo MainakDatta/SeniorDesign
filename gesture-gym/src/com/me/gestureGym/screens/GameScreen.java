@@ -7,25 +7,19 @@ package com.me.gestureGym.screens;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-
-import almonds.Parse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-//import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.SequenceGenerator;
-import com.me.gestureGym.controllers.SoundWrapper;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.PauseButton;
@@ -68,15 +62,13 @@ public class GameScreen implements Screen {
 	private Sound _backgroundMusic;
 	private long _backgroundMusicId;
 	
-	private AssetManager manager = new AssetManager();
-	
     public GameScreen(GestureGym g){
-    	Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
-				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
     	 	
         _game = g;
-       
-        _backgroundMusic = SoundWrapper.getBackgroundMusic();
+        
+        // get loaded audio file
+        _backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Sound.class);
+        
         _backgroundMusicId = _backgroundMusic.play(1.0f);
         _backgroundMusic.setLooping(_backgroundMusicId, true);
     	
@@ -261,7 +253,7 @@ public class GameScreen implements Screen {
 			_time += delta;
 			
 			if (_first) {
-				_backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("data/invaders_must_die.mp3"));
+				_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Sound.class);
 		        _backgroundMusicId = _backgroundMusic.play(1.0f);
 		        _backgroundMusic.setLooping(_backgroundMusicId, true);
 				_first = false;

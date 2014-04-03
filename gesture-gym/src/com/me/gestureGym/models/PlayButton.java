@@ -1,18 +1,19 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.me.gestureGym.controllers.Assets;
 
 public class PlayButton extends Actor {
-	private Texture _texture = new Texture(Gdx.files.internal("data/play.png"));
+	private Texture _texture;
 	private float _x, _y;
 	
 	public PlayButton(float x, float y) {
+		_texture = Assets.getManager().get("data/buttons/play.png", Texture.class);
 		_x = x;
 		_y = y;
 		

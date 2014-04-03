@@ -13,6 +13,7 @@ import com.me.gestureGym.data.ZoneResponseInfo;
 public class ZoneInfoWrapper {
 	
 	private static ZoneResponseInfo[] zoneInfo; 
+	private static boolean ready = false;
 	
 	//Gives the caller the current status of db
 	public static ZoneResponseInfo[] getZoneInfo(){		
@@ -29,8 +30,15 @@ public class ZoneInfoWrapper {
 		return info;				
 	}
 	
-	public static boolean isZoneReady(){
-		return (zoneInfo != null);
+	public static void prepareZone(){
+		if(ready == false){
+			getZoneInfo();
+			ready = true;
+		}
+	}
+	
+	public static boolean isReady(){
+		return ready;
 	}
 	
 	//Updates the static zoneInfo array for future calls
