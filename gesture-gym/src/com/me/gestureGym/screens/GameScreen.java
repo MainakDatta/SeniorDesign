@@ -23,6 +23,7 @@ import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.PauseButton;
+import com.me.gestureGym.models.PlayButton;
 import com.me.gestureGym.models.Sequence;
 import com.me.gestureGym.models.Zone;
 import com.me.gestureGym.models.TapCue;
@@ -43,6 +44,7 @@ public class GameScreen implements Screen {
 	private Stage _stage;
 	private Sequence _currentSequence;
 	private PauseButton _pauseButton;
+	private PlayButton _playButton;
 	private OrthographicCamera _camera;
 	private final Vector2 _stageCoords = new Vector2();
 	
@@ -74,8 +76,8 @@ public class GameScreen implements Screen {
     	_zoneInfos = ZoneInfoWrapper.getZoneInfo();
     	
         // create the camera and the SpriteBatch
-		_camera = new OrthographicCamera(800, 480);
-		_camera.position.set(800 / 2, 480 / 2, 0f); 
+		_camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		_camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 		
         _stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         
@@ -89,6 +91,9 @@ public class GameScreen implements Screen {
         
         _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_pauseButton);
+        
+        _playButton = new PlayButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
+        _stage.addActor(_playButton);
     }
     
     // create zones, zone hits hashmap
@@ -149,7 +154,7 @@ public class GameScreen implements Screen {
 			cue.setTouchable(Touchable.disabled);
 			cue.setVisible(false);
 			if (!_currentSequence.removeActor(cue)) break;
-			System.out.println("removed actor at (" + cue.getX() + ", " + cue.getY() + ")");
+			//System.out.println("removed actor at (" + cue.getX() + ", " + cue.getY() + ")");
 			shouldRemove = (currIndex = currIndex - 1) >= 0 && 
 		                   (cue = _currentSequence.getCue(currIndex)).getEndTime() <= _time;
 		}
@@ -162,7 +167,7 @@ public class GameScreen implements Screen {
     			             (cue = _currentSequence.getCue(_sequenceIndex)).getStartTime() <= _time &&
     			             cue.getEndTime() > _time;
     	while (shouldShow) {
-    		System.out.println("showing actor at (" + cue.getX() + ", " + cue.getY() + ")");
+    		//System.out.println("showing actor at (" + cue.getX() + ", " + cue.getY() + ")");
     		cue.setTouchable(Touchable.enabled);
     		cue.setVisible(true);
     		
@@ -186,13 +191,21 @@ public class GameScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof PauseButton) {
-			if (_gameStatus == GAME_RUNNING) {
-				setCuesUntouchable();
-				_gameStatus = GAME_PAUSED;
-			} else if (_gameStatus == GAME_PAUSED) {
-				showStartedCues();
-				_gameStatus = GAME_RUNNING;
-			}
+			setCuesUntouchable();
+			_gameStatus = GAME_PAUSED;
+			_pauseButton.setTouchable(Touchable.disabled);
+			_pauseButton.setVisible(false);
+			_playButton.setTouchable(Touchable.enabled);
+			_playButton.setVisible(true);
+		}
+		
+		else if (actor != null && actor instanceof PlayButton) {
+			showStartedCues();
+			_gameStatus = GAME_RUNNING;
+			_playButton.setTouchable(Touchable.disabled);
+			_playButton.setVisible(false);
+			_pauseButton.setTouchable(Touchable.enabled);
+			_pauseButton.setVisible(true);
 		}
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
@@ -200,7 +213,7 @@ public class GameScreen implements Screen {
 			System.out.println("TAPPED");
 			TapCue tc = (TapCue) actor;
 			//TODO: Display animation
-			System.out.println("BOOM");
+//			System.out.println("BOOM");
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
 			Zone hit = _zones[zoneNum];
@@ -249,11 +262,15 @@ public class GameScreen implements Screen {
 			int totalHits = _zoneHits.get(z);
 			double hitRate = totalHits / z.getNumCues();
 			int zoneNum = z.getZoneNumber();
+			System.out.println("Hit rate at zone " + zoneNum + " : " + hitRate);			
 			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD and is less than old duration
-			if(hitRate > SUCCESS && zoneNum < _zoneInfos[zoneNum].getSuccessDuration()){
+			if(hitRate > SUCCESS && _currentSequence.getDuration() < _zoneInfos[zoneNum].getSuccessDuration()){
 				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, _currentSequence.getDuration(), hitRate);
-				ZoneInfoWrapper.updateZone(zInfo);
-			}	
+				System.out.println("Updating zone " + zoneNum + " to duration " + _currentSequence.getDuration());
+				ZoneInfoWrapper.updateZone(zInfo); 
+			}else{
+				System.out.println("Keeping zone " + zoneNum + " at duration " + _currentSequence.getDuration());				
+			}
 		}				
 	}
 

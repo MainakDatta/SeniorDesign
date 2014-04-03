@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-public class PauseButton extends Actor {
-	private Texture _texture = new Texture(Gdx.files.internal("data/pause.png"));
+public class PlayButton extends Actor {
+	private Texture _texture = new Texture(Gdx.files.internal("data/play.png"));
 	private float _x, _y;
 	
-	public PauseButton(float x, float y) {
+	public PlayButton(float x, float y) {
 		_x = x;
 		_y = y;
 		
@@ -23,12 +23,12 @@ public class PauseButton extends Actor {
             }
         });
         
-        setTouchable(Touchable.enabled);
-        setVisible(true);
+        setTouchable(Touchable.disabled);
+        setVisible(false);
 	}
 	
 	@Override	
-    public void draw(SpriteBatch batch, float alpha) {
+    public void draw(SpriteBatch batch, float alpha){
 		if (this.isVisible()) batch.draw(_texture, _x, _y);
     }
 	
