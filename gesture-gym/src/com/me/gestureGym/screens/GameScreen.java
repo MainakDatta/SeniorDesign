@@ -110,9 +110,9 @@ public class GameScreen implements Screen {
     		float zY = (float) (i / 4) * zHeight;
     		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
     		
-//    		System.out.println("Zone " + i + ":");
-//    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
-//    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");
+    		System.out.println("Zone " + i + ":");
+    		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
+    		System.out.println("Zone lower left is (" + zX + ", " + zY + ")");
     		
     		_zones[i] = zone;
     		
@@ -179,10 +179,6 @@ public class GameScreen implements Screen {
     	}
     }
     
-    private void displayPauseMenu() {
-    	
-    }
-    
     private void handleTouch() {
     	// store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
@@ -190,11 +186,13 @@ public class GameScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof PauseButton) {
-			System.out.println("PAUSED");
-			setCuesUntouchable();
-			_pauseButton.setTouchable(Touchable.disabled);
-			displayPauseMenu();
-			_gameStatus = GAME_PAUSED;
+			if (_gameStatus == GAME_RUNNING) {
+				setCuesUntouchable();
+				_gameStatus = GAME_PAUSED;
+			} else if (_gameStatus == GAME_PAUSED) {
+				showStartedCues();
+				_gameStatus = GAME_RUNNING;
+			}
 		}
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
@@ -234,7 +232,7 @@ public class GameScreen implements Screen {
 	    	showStartedCues();
 		}
 		
-		if (Gdx.input.isTouched()) {    		
+		if (Gdx.input.justTouched()) {    		
     		handleTouch();
 		}
 		

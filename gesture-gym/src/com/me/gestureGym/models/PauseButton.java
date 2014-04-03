@@ -9,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class PauseButton extends Actor {
-	private Texture _texture = new Texture(Gdx.files.internal("data/pause.png"));
+	private Texture _unpaused = new Texture(Gdx.files.internal("data/pause.png"));
+	private Texture _paused   = new Texture(Gdx.files.internal("data/play.png"));
+	private boolean _isPaused;
 	private float _x, _y;
 	
 	public PauseButton(float x, float y) {
@@ -18,9 +20,10 @@ public class PauseButton extends Actor {
 		
 		System.out.println("created pause button at (" + x + ", " + y + ")");
 		
-		setBounds(_x, _y, _texture.getWidth(),_texture.getHeight());
+		setBounds(_x, _y, _unpaused.getWidth(), _unpaused.getHeight());
         addListener(new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            	((PauseButton)event.getTarget()).flipPause();
                 return true;
             }
         });
@@ -31,7 +34,11 @@ public class PauseButton extends Actor {
 	
 	@Override	
     public void draw(SpriteBatch batch, float alpha){
-        batch.draw(_texture, _x, _y);
+		if (_isPaused) {
+			batch.draw(_paused, _x, _y);
+		} else {
+			batch.draw(_unpaused, _x, _y);
+		}
     }
 	
 	public float getX() {
@@ -40,5 +47,9 @@ public class PauseButton extends Actor {
 	
 	public float getY() {
 		return _y;
+	}
+	
+	public void flipPause() {
+		_isPaused = !_isPaused;
 	}
 }
