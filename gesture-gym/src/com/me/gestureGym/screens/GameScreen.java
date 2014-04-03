@@ -14,6 +14,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+//import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -228,7 +229,7 @@ public class GameScreen implements Screen {
 			tc.getSound().play(1.0f);
 			tc.setTouchable(Touchable.disabled);
 			tc.setVisible(false);
-			_currentSequence.removeActor(tc);
+			//_currentSequence.removeActor(tc);
 		}
     }
     
@@ -245,12 +246,18 @@ public class GameScreen implements Screen {
 	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	    	
 	    	//Debugging cue nums
-	    	for (int i = 0; i < N_ZONES; i++){	    		
-	    		Zone z  = _zones[i];
-	    		String text = "X" + z.getX() + " Y = " + z.getY();
-	    		//System.out.println(text);
+//	    	_game.batch.begin();
+//	    	for (int i = 0; i < N_ZONES; i++){	    		
+//	    		Zone z  = _zones[i];
+//	    		//String text = "Zone " + z.getZoneNumber();
+//	    		//System.out.println(text);
+//	    		BitmapFont font = new BitmapFont();
+//	    		font.setColor(0.0f, 0.0f, 1.0f, 1.0f); // tint font blue	    		
+//	    		///font.draw(_game.batch, text, z.getX(), z.getY());
+//
+//	    	}
+	    	_game.batch.end();
 
-	    	}
 	    	if (sequenceOver()) {
 	    		endAndSwitchScreens();
 	    	}

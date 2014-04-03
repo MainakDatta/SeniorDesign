@@ -57,9 +57,10 @@ public class SplashScreen implements Screen {
 		myGame.font.draw(myGame.batch, "Tap anywhere to begin!", 200, 200);
 		myGame.batch.end();
 		
-		if (Gdx.input.justTouched())
+		if (Gdx.input.justTouched()){
 			myGame.setScreen(new GameScreen(myGame));
 			dispose();
+		}
 	}
 
 	@Override
