@@ -23,6 +23,7 @@ import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.PauseButton;
+import com.me.gestureGym.models.PlayButton;
 import com.me.gestureGym.models.Sequence;
 import com.me.gestureGym.models.Zone;
 import com.me.gestureGym.models.TapCue;
@@ -45,6 +46,7 @@ public class GameScreen implements Screen {
 	private Stage _stage;
 	private Sequence _currentSequence;
 	private PauseButton _pauseButton;
+	private PlayButton _playButton;
 	private OrthographicCamera _camera;
 	private final Vector2 _stageCoords = new Vector2();
 	
@@ -76,8 +78,8 @@ public class GameScreen implements Screen {
     	_zoneInfos = ZoneInfoWrapper.getZoneInfo();
     	
         // create the camera and the SpriteBatch
-		_camera = new OrthographicCamera(800, 480);
-		_camera.position.set(800 / 2, 480 / 2, 0f); 
+		_camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		_camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 		
         _stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         
@@ -91,6 +93,9 @@ public class GameScreen implements Screen {
         
         _pauseButton = new PauseButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_pauseButton);
+        
+        _playButton = new PlayButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
+        _stage.addActor(_playButton);
     }
     
     // create zones, zone hits hashmap
@@ -103,19 +108,22 @@ public class GameScreen implements Screen {
     	
     	System.out.println("Screen width is " + width + ", screen height is " + height);
     	
-    	//Not sure about this one
+    	float cueAreaWidth = width - 256;
+    	float cueAreaHeight = height - 256;
+
     	int rowSize = (int) Math.sqrt(N_ZONES);
     	
 
     	for (int i = 0; i < N_ZONES; i++){
-    		float zWidth = (float) width / rowSize;
-    		float zHeight = (float) height / rowSize;
-    		float zX = (float) (i % rowSize) * zWidth;
-    		float zY = (float) (i / rowSize) * zHeight;
-    		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);    		
+    		float zWidth = (float) cueAreaWidth / rowSize;
+    		float zHeight = (float) cueAreaHeight / rowSize;
+    		float zX = (float) (i % 4) * zWidth;
+    		float zY = (float) (i / 4) * zHeight;
+    		Zone zone = new Zone(i, zX, zY, zWidth, zHeight);
+    		
     		System.out.println("Zone " + i + ":");
     		System.out.println("Zone width is " + zWidth + ", zone height is " + zHeight);
-    		System.out.println("Zone upper left is (" + zX + ", " + zY + ")");    		
+    		System.out.println("Zone lower left is (" + zX + ", " + zY + ")");
     		_zones[i] = zone;
     		//All zones initialized to scores of 0
     		_zoneHits.put(zone, 0);
@@ -181,10 +189,6 @@ public class GameScreen implements Screen {
     	}
     }
     
-    private void displayPauseMenu() {
-    	
-    }
-    
     private void handleTouch() {
     	// store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
@@ -192,11 +196,21 @@ public class GameScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof PauseButton) {
-			System.out.println("PAUSED");
 			setCuesUntouchable();
-			_pauseButton.setTouchable(Touchable.disabled);
-			displayPauseMenu();
 			_gameStatus = GAME_PAUSED;
+			_pauseButton.setTouchable(Touchable.disabled);
+			_pauseButton.setVisible(false);
+			_playButton.setTouchable(Touchable.enabled);
+			_playButton.setVisible(true);
+		}
+		
+		else if (actor != null && actor instanceof PlayButton) {
+			showStartedCues();
+			_gameStatus = GAME_RUNNING;
+			_playButton.setTouchable(Touchable.disabled);
+			_playButton.setVisible(false);
+			_pauseButton.setTouchable(Touchable.enabled);
+			_pauseButton.setVisible(true);
 		}
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
@@ -245,7 +259,7 @@ public class GameScreen implements Screen {
 	    	showStartedCues();
 		}
 		
-		if (Gdx.input.isTouched()) {    		
+		if (Gdx.input.justTouched()) {    		
     		handleTouch();
 		}
 		
