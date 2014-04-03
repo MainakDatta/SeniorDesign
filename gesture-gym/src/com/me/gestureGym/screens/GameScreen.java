@@ -6,6 +6,8 @@
 package com.me.gestureGym.screens;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import almonds.Parse;
 
@@ -135,7 +137,8 @@ public class GameScreen implements Screen {
     }
     
     private boolean sequenceOver() {
-    	return _sequenceIndex == _currentSequence.length();
+    	return _sequenceIndex == _currentSequence.length() &&
+    		   !_currentSequence.getCue(_sequenceIndex - 1).isVisible();
     }
     
     private void endAndSwitchScreens() {
@@ -187,6 +190,24 @@ public class GameScreen implements Screen {
     	}
     }
     
+    private void pauseGame() {
+    	setCuesUntouchable();
+		_gameStatus = GAME_PAUSED;
+		_pauseButton.setTouchable(Touchable.disabled);
+		_pauseButton.setVisible(false);
+		_playButton.setTouchable(Touchable.enabled);
+		_playButton.setVisible(true);
+    }
+    
+    private void unpauseGame() {
+    	showStartedCues();
+		_gameStatus = GAME_RUNNING;
+		_playButton.setTouchable(Touchable.disabled);
+		_playButton.setVisible(false);
+		_pauseButton.setTouchable(Touchable.enabled);
+		_pauseButton.setVisible(true);
+    }
+    
     private void handleTouch() {
     	// store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
@@ -194,21 +215,11 @@ public class GameScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof PauseButton) {
-			setCuesUntouchable();
-			_gameStatus = GAME_PAUSED;
-			_pauseButton.setTouchable(Touchable.disabled);
-			_pauseButton.setVisible(false);
-			_playButton.setTouchable(Touchable.enabled);
-			_playButton.setVisible(true);
+			pauseGame();
 		}
 		
 		else if (actor != null && actor instanceof PlayButton) {
-			showStartedCues();
-			_gameStatus = GAME_RUNNING;
-			_playButton.setTouchable(Touchable.disabled);
-			_playButton.setVisible(false);
-			_pauseButton.setTouchable(Touchable.enabled);
-			_pauseButton.setVisible(true);
+			unpauseGame();
 		}
 		
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
@@ -257,24 +268,76 @@ public class GameScreen implements Screen {
 	}
 
 	//Creates ZoneResponseInfo jawns
-	private void updateStats() {		
-		//Only update if they pass threshold?
-		for (Zone z: _zoneHits.keySet()){
+	private void updateStats() {
+		HashSet<Zone> zonesHit = new HashSet<Zone>();
+		int numerator = 0;
+		int denominator = 0;
+		for (Zone z : _zoneHits.keySet()) {
 			if (z.getNumCues() == 0) continue;
-			//Total number of hits
-			int totalHits = _zoneHits.get(z);
-			double hitRate = totalHits / z.getNumCues();
+			numerator += _zoneHits.get(z);
+			denominator += z.getNumCues();
+			zonesHit.add(z);
+		}
+		
+		for (Zone z: zonesHit) {
 			int zoneNum = z.getZoneNumber();
+			int totalHits = _zoneHits.get(z);
+			double hitRate = (double) totalHits / z.getNumCues();
 			System.out.println("Hit rate at zone " + zoneNum + " : " + hitRate);			
 			//ONLY UPDATE IF IT BEAT OUR SUCESS THRESHOLD and is less than old duration
 			if(hitRate > SUCCESS && _currentSequence.getDuration() < _zoneInfos[zoneNum].getSuccessDuration()){
 				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, _currentSequence.getDuration(), hitRate);
 				System.out.println("Updating zone " + zoneNum + " to duration " + _currentSequence.getDuration());
 				ZoneInfoWrapper.updateZone(zInfo); 
-			}else{
+			} else {
 				System.out.println("Keeping zone " + zoneNum + " at duration " + _currentSequence.getDuration());				
 			}
-		}				
+		}
+		
+		if (((double) numerator / denominator) > 0.95 && _currentSequence.getDuration() > 1.0) {
+			HashSet<Zone> adjacents = getAdjacentZones(zonesHit);
+			float newDuration = (float) (_currentSequence.getDuration() - .25 * _currentSequence.getDeltaDuration());
+			for (Zone z : adjacents) {
+				int zoneNum = z.getZoneNumber();
+				if (newDuration < _zoneInfos[zoneNum].getSuccessDuration()) {
+					ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, newDuration, 0.95);
+					System.out.println("Updating zone " + zoneNum + " to duration " + newDuration + 
+							" because they did well in an adjacent zone.");
+					ZoneInfoWrapper.updateZone(zInfo);
+				}
+			}
+		}
+	}
+	
+	private static HashSet<Integer> getAdjacentZones(int zone) {
+		int rowSize = (int) Math.sqrt(16);
+		
+		boolean inTopRow = zone / rowSize == 0;
+		boolean inBottomRow = zone / rowSize == rowSize - 1;
+		boolean inLeftColumn = zone % rowSize == 0;
+		boolean inRightColumn = zone % rowSize == rowSize - 1;
+		
+		HashSet<Integer> opts = new HashSet<Integer>();
+		if (!inTopRow)      opts.add(zone - rowSize);
+		if (!inLeftColumn)  opts.add(zone - 1);
+		if (!inRightColumn) opts.add(zone + 1);
+		if (!inBottomRow)   opts.add(zone + rowSize);
+		
+		return opts;
+	}
+	
+	private HashSet<Zone> getAdjacentZones(HashSet<Zone> zones) {
+		HashSet<Zone> out = new HashSet<Zone>();
+		for (Zone z : zones) {
+			for (int i : getAdjacentZones(z.getZoneNumber())) {
+				Zone toAdd = _zones[i];
+				if (!zones.contains(toAdd)) {
+					out.add(toAdd);
+				}
+			}
+		}
+		
+		return out;
 	}
 
 	@Override
@@ -294,7 +357,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		pauseGame();
 	}
 
 	@Override

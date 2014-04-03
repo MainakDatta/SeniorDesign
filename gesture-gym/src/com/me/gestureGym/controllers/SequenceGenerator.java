@@ -9,7 +9,7 @@ import com.me.gestureGym.models.*;
 
 public class SequenceGenerator {
 	private static final int N_ZONES = 16;
-	private static final int CUES_PER_SEQUENCE = 60;
+	private static final int CUES_PER_SEQUENCE = 28;
 	
 	public static Sequence generateSequence(Zone[] zones, ZoneResponseInfo[] zoneResponses, 
 			boolean connected) {
@@ -60,7 +60,7 @@ public class SequenceGenerator {
 			}
 		}
 		
-		return new Sequence(cues, duration);
+		return new Sequence(cues, duration, deltaDuration(duration));
 	}
 	
 	// takes in a zone and returns a random x coordinate in that zone
@@ -94,10 +94,9 @@ public class SequenceGenerator {
 		// this was a shitty made up regression
 		// we can change it
 		// like please change it
-		return 3.669069119f * (float) (Math.pow(10, -2) * duration * duration * duration)
-			  - 9.696005577f * (float) (Math.pow(10, -2) * duration * duration)
-			  + 0.1484657986f * duration
-			  - 0.2683188376f;
+		return -0.04701028139f * duration * duration
+			  + 0.005533008658f * duration
+			  - 0.01613095238f;
 	}
 	
 	// takes in a list of zone responses and a parameter indicating whether or not the zones in the sequence
