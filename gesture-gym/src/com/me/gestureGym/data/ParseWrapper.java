@@ -77,59 +77,7 @@ public class ParseWrapper {
 		toPut.save();
 	}
 	
-	/*
-	 * Get a single ZoneInfo from the DB.
-	 */
-	public ZoneResponseInfo getZoneInfo(int zoneNumber) throws ParseException {
-		ParseObject o = getZone(zoneNumber);
-		float successDuration = Float.parseFloat(o.getString("successDuration"));
-		double hitRate = Double.parseDouble(o.getString("hitRate"));
 		
-		return new ZoneResponseInfo(zoneNumber, successDuration, hitRate);
-	}
-	
-	
-	/*
-	 * Get all ZoneInfos from the DB (because there's probably no reason to wait, you
-	 * can just get them all at the start of a session so you have them in memory).
-	 */
-
-	public ZoneResponseInfo[] getAllZoneInfos() {
-		ZoneResponseInfo[] out = new ZoneResponseInfo[N_ZONES];
-		for (int i = 0; i < N_ZONES; i++) {
-			ParseObject o;			
-			try {
-				o = getZone(i);				
-			} catch (ParseException e) {
-				//Get Zone failed
-				System.out.println("Get zone failed");
-				e.printStackTrace();
-				o = new ParseObject("ZoneInfo");
-				o.put("zoneNumber", Integer.toString(i));
-				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
-				o.put("hitRate", Double.toString(1.0));
-				o.saveInBackground();
-			}
-			
-			if (o == null) {
-				//Get Zone returned null
-				System.out.println("Get zone returned null");
-				o = new ParseObject("ZoneInfo");
-				o.put("zoneNumber", Integer.toString(i));
-				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
-				o.put("hitRate", Double.toString(1.0));
-				o.saveInBackground();
-			}
-			
-			float successDuration = Float.parseFloat(o.getString("successDuration"));
-			double hitRate = Double.parseDouble(o.getString("hitRate"));
-			
-			out[i] = new ZoneResponseInfo(i, successDuration, hitRate);
-		}
-		
-		return out;
-	}
-	
 	/*
 	 * Set all ZoneInfo entries in the database to have the default success duration. 
 	 */

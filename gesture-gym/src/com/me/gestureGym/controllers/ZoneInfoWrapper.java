@@ -15,10 +15,6 @@ public class ZoneInfoWrapper {
 	private static ZoneResponseInfo[] zoneInfo; 
 	private static final int N_ZONES = 16;
 	
-	public static void init(){
-		
-	}
-	
 	//Gives the caller the current status of db
 	public static ZoneResponseInfo[] getZoneInfo(){		
 		ParseWrapper parse = new ParseWrapper();
