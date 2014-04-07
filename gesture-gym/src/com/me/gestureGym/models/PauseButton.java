@@ -13,7 +13,7 @@ public class PauseButton extends Actor {
 	private float _x, _y;
 	
 	public PauseButton(float x, float y) {
-		_texture = Assets.getManager().get("data/buttons/pause.png", Texture.class);
+		_texture = Assets.getManager().get("data/ui_elements/pause.png", Texture.class);
 		_x = x;
 		_y = y;
 		

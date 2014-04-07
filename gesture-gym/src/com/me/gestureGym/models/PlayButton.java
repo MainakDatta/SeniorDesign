@@ -13,7 +13,7 @@ public class PlayButton extends Actor {
 	private float _x, _y;
 	
 	public PlayButton(float x, float y) {
-		_texture = Assets.getManager().get("data/buttons/play.png", Texture.class);
+		_texture = Assets.getManager().get("data/ui_elements/play.png", Texture.class);
 		_x = x;
 		_y = y;
 		

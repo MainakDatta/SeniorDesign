@@ -48,7 +48,7 @@ public class TapCue extends Actor{
 		_endTime = end;
 		_zone = zone;
 		
-		_texture = Assets.getManager().get("data/buttons/tapCue.png", Texture.class);
+		_texture = Assets.getManager().get("data/ui_elements/tapCue.png", Texture.class);
 		
         setBounds(x, y, _texture.getWidth(),_texture.getHeight());
         addListener(new InputListener(){
@@ -125,6 +125,6 @@ public class TapCue extends Actor{
 		_hitSound.play(1.0f);
 		setTouchable(Touchable.disabled);
 		hit = true;
-		_texture = Assets.getManager().get("data/buttons/tapCueBoom.png", Texture.class);
+		_texture = Assets.getManager().get("data/ui_elements/tapCueBoom.png", Texture.class);
 	}
 }

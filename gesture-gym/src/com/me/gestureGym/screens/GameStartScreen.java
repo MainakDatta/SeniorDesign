@@ -47,7 +47,7 @@ public class GameStartScreen implements Screen {
 		
 		spriteBatch = new SpriteBatch();
 		
-		//Scenegraph
+		// Scene-graph
 		_stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		
 		// GameStartScreen comes before LoadingScreen
@@ -61,9 +61,9 @@ public class GameStartScreen implements Screen {
 
 	@Override
 	public void render(float delta) {		
+		
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		spriteBatch.begin();
 		spriteBatch.draw(splash, 0, 0);
@@ -126,7 +126,8 @@ public class GameStartScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		splash.dispose();
+		spriteBatch.dispose();
+		_stage.dispose();
 	}
 }

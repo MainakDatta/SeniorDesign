@@ -46,7 +46,9 @@ public class LoadingScreen implements Screen {
         // Initialize the stage where we will place everything
         stage = new Stage();
 
+        // PREPARE ALL MEDIA FILES FOR USE
         Assets.load();
+
         // Get our texture atlas from the manager
         TextureAtlas atlas = Assets.getManager().get("data/loading.pack", TextureAtlas.class);
 

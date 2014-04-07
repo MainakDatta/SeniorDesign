@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class StartButton extends Actor {
 	
-	private Texture _texture = new Texture(Gdx.files.internal("data/buttons/start_button.jpg"));
+	private Texture _texture = new Texture(Gdx.files.internal("data/ui_elements/start_button.jpg"));
 	private float _x, _y;
 	
 	public StartButton(float x, float y) {

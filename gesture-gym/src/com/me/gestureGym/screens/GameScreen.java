@@ -12,15 +12,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.SequenceGenerator;
@@ -66,6 +73,14 @@ public class GameScreen implements Screen {
 	private Music _backgroundMusic;
 	private long _backgroundMusicId;
 	
+	private Table score_display;
+	private TextField points;
+	private int score_points;
+	
+	private Table time_display;
+	private TextField seconds;
+	private float time_seconds;
+	
     public GameScreen(GestureGym g){
         _game = g;
         
@@ -87,10 +102,42 @@ public class GameScreen implements Screen {
         
         // Essentially the Controller/BoardRenderer thing that you mentioned
         Gdx.input.setInputProcessor(_stage);
-        
+
         Image img = new Image(Assets.getManager().get("data/background.png", Texture.class));
         img.setFillParent(true);
         _stage.addActor(img);
+        
+        
+        // used for score and time display
+        Image score = new Image(Assets.getManager().get("data/ui_elements/ui_score.png", Texture.class));
+        TextFieldStyle tfs = new TextFieldStyle();
+        tfs.fontColor = Color.BLACK;
+        
+        BitmapFont bmf = new BitmapFont();
+        bmf.scale(5);
+        
+        tfs.font = bmf;
+        
+        score_points = 0;
+        points = new TextField("" + score_points, tfs);
+        
+        score_display = new Table();
+        score_display.add(score);
+        score_display.add(points);
+        score_display.validate();
+        
+        _stage.addActor(score_display);
+        
+        Image time = new Image(Assets.getManager().get("data/ui_elements/ui_time.png", Texture.class));
+        time_seconds = 180.0f;
+        seconds = new TextField("" + time_seconds, tfs);
+        
+        time_display = new Table();
+        time_display.add(time);
+        time_display.add(seconds);
+        time_display.validate();
+        
+        _stage.addActor(time_display);
         
         // Sequence s is a Group of TapCue Actors
         _currentSequence = getSequence();
@@ -250,13 +297,19 @@ public class GameScreen implements Screen {
 			
 			// when hit, it plays the sound and changes image
 			tc.hit();
+			
+			score_points += 10;
+			
 			//_currentSequence.removeActor(tc);
 		}
     }
     
 	public void render(float delta) {		
 		if (_gameStatus == GAME_RUNNING) {
-						
+			
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			
 			_time += delta;
 			
 			if (_first) {
@@ -273,11 +326,12 @@ public class GameScreen implements Screen {
 				endAndSwitchScreens();
 			}
 			
-	    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
+			
 	    	if (sequenceOver()) {
 	    		getNewSequence();
 	    	}
+	    	
+	    	
 	    	
 	    	unshowEndedCues();
 	    	showStartedCues();
@@ -286,6 +340,11 @@ public class GameScreen implements Screen {
 		if (Gdx.input.justTouched()) {    		
     		handleTouch();
 		}
+		
+		points.setText("" + score_points);
+		
+        time_seconds -= delta;
+		seconds.setText("" + ((int)time_seconds));
 		
 		_stage.act(delta);
         _stage.draw();
@@ -366,7 +425,14 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-
+		_stage.setViewport(width, height, true);
+		
+		// temporary hardcode values
+		score_display.setSize(128*4, 128);
+	    score_display.setPosition(0, height-128);
+	    
+	    time_display.setSize(128*3, 128);
+	    time_display.setPosition(width - 128*3, height - 128);
 	}
 
 	@Override
