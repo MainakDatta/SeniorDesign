@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
+import com.me.gestureGym.controllers.MTSequenceGenerator;
 import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
@@ -41,6 +42,7 @@ import com.me.gestureGym.models.Zone;
 
 public class GameScreen implements Screen {
 	final GestureGym _game;
+	private boolean _isMultiTouchGame;
 	
 	// TODO: Decide on final value for this
 	private static final double SUCCESS = 0.6;
@@ -81,8 +83,10 @@ public class GameScreen implements Screen {
 	private TextField seconds;
 	private float time_seconds;
 	
-    public GameScreen(GestureGym g){
-        _game = g;
+    public GameScreen(GestureGym g, boolean isMultiTouchGame){
+
+    	_game = g;
+        _isMultiTouchGame = isMultiTouchGame;
         
         // get loaded audio file
         _backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
@@ -92,7 +96,7 @@ public class GameScreen implements Screen {
     	
     	// set up information about zones
     	setupZones();
-    	_zoneInfos = ZoneInfoWrapper.getZoneInfo();
+    	_zoneInfos = ZoneInfoWrapper.getZoneInfo(_isMultiTouchGame);
     	
         // create the camera and the SpriteBatch
 		_camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -183,9 +187,12 @@ public class GameScreen implements Screen {
     }
 	
     private Sequence getSequence() {
-    	boolean far = Math.random() < 0.5;
-    	Sequence generated = SequenceGenerator.generateSequence(_zones, _zoneInfos, far);
-    	return generated;
+    	if (_isMultiTouchGame) {
+    		return MTSequenceGenerator.generateSequence(_zones, _zoneInfos);
+    	} else {
+    		boolean far = Math.random() < 0.5;
+    		return SequenceGenerator.generateSequence(_zones, _zoneInfos, far);
+    	}
     }
     
     private boolean sequenceOver() {
@@ -197,6 +204,7 @@ public class GameScreen implements Screen {
     	System.out.println("Updating stats");
     	updateStats();
     	System.out.println("Getting new sequence");
+    	_currentSequence.getCue(_sequenceIndex - 2).setVisible(false);
     	_currentSequence.getCue(_sequenceIndex - 1).setVisible(false);
     	_currentSequence = getSequence();
     	_time = 0;
@@ -371,7 +379,7 @@ public class GameScreen implements Screen {
 			if(hitRate > SUCCESS && _currentSequence.getDuration() < _zoneInfos[zoneNum].getSuccessDuration()){
 				ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, _currentSequence.getDuration(), hitRate);
 				System.out.println("Updating zone " + zoneNum + " to duration " + _currentSequence.getDuration());
-				ZoneInfoWrapper.updateZone(zInfo); 
+				ZoneInfoWrapper.updateZone(zInfo, _isMultiTouchGame); 
 			} else {
 				System.out.println("Keeping zone " + zoneNum + " at duration " + _zoneInfos[zoneNum].getSuccessDuration());
 			}
@@ -386,7 +394,7 @@ public class GameScreen implements Screen {
 					ZoneResponseInfo zInfo = new ZoneResponseInfo(zoneNum, newDuration, 0.95);
 					System.out.println("Updating zone " + zoneNum + " to duration " + newDuration + 
 							" because they did well in an adjacent zone.");
-					ZoneInfoWrapper.updateZone(zInfo);
+					ZoneInfoWrapper.updateZone(zInfo, _isMultiTouchGame);
 				}
 			}
 		}

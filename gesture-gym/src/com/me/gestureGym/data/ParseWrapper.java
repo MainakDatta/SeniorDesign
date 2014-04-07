@@ -22,46 +22,96 @@ public class ParseWrapper {
 		return list.size() >= 1 ? list.get(0) : null;
 	}
 	
-	public void getZoneAsync(int zoneNumber){
+	public void getZoneAsync(int zoneNumber, boolean isMT){
 		//Stupid thing required by nested class
 		final int zoneNum  = zoneNumber;
 		ParseQuery q = new ParseQuery("ZoneInfo");
+		if (isMT) {
+			q = new ParseQuery("MTZoneInfo");
+		}
+		
 		q.whereEqualTo("zoneNumber", Integer.toString(zoneNumber));
-		try{
-			q.findInBackground(new FindCallback() {
-			     public void done(List<ParseObject> objects, ParseException e) {
-			         if (e == null) {
-			        	 if(objects.size() >= 1){
-			        		 ParseObject response = objects.get(0);
-			        		 int zoneNum = Integer.parseInt(response.getString("zoneNumber"));
-			     			 float successDuration = Float.parseFloat(response.getString("successDuration"));
-			    			 double hitRate = Double.parseDouble(response.getString("hitRate"));
-			    			 ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, successDuration, hitRate);
-			    			 ZoneInfoWrapper.updateZone(zres);
-			        	 }
-			         } else {
-			        	//Make default
+		if (isMT) {
+			try{
+				q.findInBackground(new FindCallback() {
+					 private void makeDefaultMTZone() {
+						 ParseObject o = new ParseObject("MTZoneInfo");
+			     		 o.put("zoneNumber", Integer.toString(zoneNum));
+			     		 o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+			     		 o.put("hitRate", Double.toString(1.0));
+			     		 o.saveInBackground();
+			     		 ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, DEFAULT_SUCCESS_DUR, 1.0);
+			     		 ZoneInfoWrapper.updateZone(zres, true);
+					 }
+					
+				     public void done(List<ParseObject> objects, ParseException e) {
+				         if (e == null) {
+				        	 if(objects.size() >= 1){
+				        		 ParseObject response = objects.get(0);
+				        		 int zoneNum = Integer.parseInt(response.getString("zoneNumber"));
+				     			 float successDuration = Float.parseFloat(response.getString("successDuration"));
+				    			 double hitRate = Double.parseDouble(response.getString("hitRate"));
+				    			 ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, successDuration, hitRate);
+				    			 ZoneInfoWrapper.updateZone(zres, true);
+				        	 } else {
+				        		 makeDefaultMTZone();
+				        	 }
+				         } else {
+				        	 makeDefaultMTZone();
+				         }
+				     }
+				 });
+			} catch (RuntimeException e) {
+				ParseObject o = new ParseObject("MTZoneInfo");
+				o.put("zoneNumber", Integer.toString(zoneNum));
+				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+				o.put("hitRate", Double.toString(1.0));
+				o.saveInBackground();
+				ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, DEFAULT_SUCCESS_DUR, 1.0);
+				ZoneInfoWrapper.updateZone(zres, true);
+			}
+		} else {
+			try{
+				q.findInBackground(new FindCallback() {
+					private void makeDefaultZone() {
+						//Make default
 			     		ParseObject o = new ParseObject("ZoneInfo");
 			     		o.put("zoneNumber", Integer.toString(zoneNum));
 			     		o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
 			     		o.put("hitRate", Double.toString(1.0));
 			     		o.saveInBackground();
 			     		ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, DEFAULT_SUCCESS_DUR, 1.0);
-			     		ZoneInfoWrapper.updateZone(zres);
-			         }
-			     }
-			 });
-		}catch (RuntimeException e) {
-			//Make default
-			ParseObject o = new ParseObject("ZoneInfo");
-			o.put("zoneNumber", Integer.toString(zoneNumber));
-			o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
-			o.put("hitRate", Double.toString(1.0));
-			o.saveInBackground();
-			ZoneResponseInfo zres = new ZoneResponseInfo(zoneNumber, DEFAULT_SUCCESS_DUR, 1.0);
-			ZoneInfoWrapper.updateZone(zres);
+			     		ZoneInfoWrapper.updateZone(zres, false);
+					}
+					
+				     public void done(List<ParseObject> objects, ParseException e) {
+				         if (e == null) {
+				        	 if(objects.size() >= 1){
+				        		 ParseObject response = objects.get(0);
+				        		 int zoneNum = Integer.parseInt(response.getString("zoneNumber"));
+				     			 float successDuration = Float.parseFloat(response.getString("successDuration"));
+				    			 double hitRate = Double.parseDouble(response.getString("hitRate"));
+				    			 ZoneResponseInfo zres = new ZoneResponseInfo(zoneNum, successDuration, hitRate);
+				    			 ZoneInfoWrapper.updateZone(zres, false);
+				        	 } else {
+				        		 makeDefaultZone();
+				        	 }
+				         } else {
+				        	 makeDefaultZone();
+				         }
+				     }
+				 });
+			} catch (RuntimeException e) {
+				//Make default
+				ParseObject o = new ParseObject("ZoneInfo");
+				o.put("zoneNumber", Integer.toString(zoneNumber));
+				o.put("successDuration", Float.toString(DEFAULT_SUCCESS_DUR));
+				o.put("hitRate", Double.toString(1.0));
+				o.saveInBackground();
+				ZoneResponseInfo zres = new ZoneResponseInfo(zoneNumber, DEFAULT_SUCCESS_DUR, 1.0);
+				ZoneInfoWrapper.updateZone(zres, false);
+			}
 		}
-		
 	}
 	/*
 	 * Put a ZoneInfo object into the DB.
