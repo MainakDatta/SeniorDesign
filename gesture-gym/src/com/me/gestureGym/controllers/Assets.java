@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -46,7 +47,9 @@ public class Assets implements Disposable, AssetErrorListener {
         assets.load("data/ui_elements/tapCueBoom.png", Texture.class);
         assets.load("data/ui_elements/ui_score.png", Texture.class);
         assets.load("data/ui_elements/ui_time.png", Texture.class);
-             
+        
+        assets.load("data/cocktail.fnt", BitmapFont.class);
+        
         // Wait until they are finished loading
         assets.finishLoading();
 

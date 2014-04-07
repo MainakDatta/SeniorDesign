@@ -11,15 +11,11 @@ import java.util.HashSet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -73,7 +69,6 @@ public class GameScreen implements Screen {
 	private boolean _first = true;
 	
 	private Music _backgroundMusic;
-	private long _backgroundMusicId;
 	
 	private Table score_display;
 	private TextField points;
@@ -117,8 +112,7 @@ public class GameScreen implements Screen {
         TextFieldStyle tfs = new TextFieldStyle();
         tfs.fontColor = Color.BLACK;
         
-        BitmapFont bmf = new BitmapFont();
-        bmf.scale(5);
+        BitmapFont bmf = Assets.getManager().get("data/cocktail.fnt", BitmapFont.class);
         
         tfs.font = bmf;
         
