@@ -134,11 +134,12 @@ public class LoadingScreen implements Screen {
         	//Another check here to see if array is loaded
         	System.out.println("Waiting on parse");
         	if(ZoneInfoWrapper.isReady()){        		
-        		game.setScreen(new GameScreen(game));
+        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
         	}
         }
-    	ZoneInfoWrapper.getZoneInfo();
-
+        
+        ZoneInfoWrapper.getZoneInfo(true);
+        ZoneInfoWrapper.getZoneInfo(false);
     }
 
     @Override

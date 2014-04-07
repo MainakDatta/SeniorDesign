@@ -29,7 +29,7 @@ public class GameEndScreen implements Screen {
 		_myGame.batch.end();
 		
 		if (Gdx.input.justTouched())
-			_myGame.setScreen(new GameScreen(_myGame));
+			_myGame.setScreen(new GameScreen(_myGame, false)); // CURRENTLY STARTS SINGLE TOUCH GAME ALWAYS
 			dispose();
 	}
 
