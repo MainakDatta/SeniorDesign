@@ -33,40 +33,35 @@ public class LoadingScreen implements Screen {
     private float percent;
 
     private Actor loadingBar;
+    private boolean multiTouch;
     
-    public LoadingScreen(GestureGym game) {
+    public LoadingScreen(GestureGym g, boolean isMultiTouchGame) {
         Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
 				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
         this.game = game;
+        multiTouch = isMultiTouchGame;
     }
     
     @Override
-    public void show() {
-        
+    public void show() {        
         // Initialize the stage where we will place everything
         stage = new Stage();
-
         // PREPARE ALL MEDIA FILES FOR USE
         Assets.load();
-
         // Get our texture atlas from the manager
         TextureAtlas atlas = Assets.getManager().get("data/loading.pack", TextureAtlas.class);
-
         // Grab the regions from the atlas and create some images
         logo = new Image(atlas.findRegion("libgdx-logo"));
         loadingFrame = new Image(atlas.findRegion("loading-frame"));
         loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
         screenBg = new Image(atlas.findRegion("screen-bg"));
         loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
-
         // Add the loading bar animation
         Animation anim = new Animation(0.05f, atlas.findRegions("loading-bar-anim") );
         anim.setPlayMode(Animation.LOOP_REVERSED);
         loadingBar = new LoadingBar(anim);
-
         // Or if you only need a static bar, you can do
         // loadingBar = new Image(atlas.findRegion("loading-bar1"));
-
         // Add all the actors to the stage
         stage.addActor(screenBg);
         stage.addActor(loadingBar);
@@ -74,7 +69,6 @@ public class LoadingScreen implements Screen {
         stage.addActor(loadingBarHidden);
         stage.addActor(loadingFrame);
         stage.addActor(logo);                       
-        
     }
 
     @Override
@@ -135,8 +129,15 @@ public class LoadingScreen implements Screen {
         if (Assets.getManager().update()) { // Load some, will return true if done loading
         	//Another check here to see if array is loaded
         	System.out.println("Waiting on parse");
-        	if(ZoneInfoWrapper.isReady()){        		
-        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+        	if(multiTouch){
+        		if(ZoneInfoWrapper.multiTouchIsReady()){
+        			game.setScreen(new GameScreen(game, true));
+        		}
+        	}
+        	else{
+	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
+	        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+	        	}
         	}
         }
         

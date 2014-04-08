@@ -272,10 +272,36 @@ public class GameScreen implements Screen {
     }
     
     private void handleTouch() {
+    	
+    	boolean firstFingerTouching = Gdx.input.isTouched(0);
+		boolean secondFingerTouching = Gdx.input.isTouched(1);
+		
+		//Set all coordinates to -1 by default
+		int firstX = -1;
+		int firstY = -1;
+		
+		int secondX = -1;
+		int secondY = -1;
+		
+		if(firstFingerTouching){
+			System.out.println("Touched at ( " + Gdx.input.getX(0) + 
+					", " +  Gdx.input.getY(0)+ ")");
+			firstX = Gdx.input.getX(0);
+			firstY = Gdx.input.getY(0);
+		}
+		
+		if(secondFingerTouching){
+			System.out.println("Touched at ( " + Gdx.input.getX(1) + 
+					", " +  Gdx.input.getY(1)+ ")");
+			secondX = Gdx.input.getX(1);
+			secondY = Gdx.input.getY(1);
+		}
+    	
     	// store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
+				
 		
 		if (actor != null && actor instanceof PauseButton) {
 			pauseGame();

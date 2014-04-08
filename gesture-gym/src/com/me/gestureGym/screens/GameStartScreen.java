@@ -87,7 +87,7 @@ public class GameStartScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof StartButton) {
-			game.setScreen(new LoadingScreen(game));
+			game.setScreen(new LoadingScreen(game, true));
 			dispose();
 		}
 

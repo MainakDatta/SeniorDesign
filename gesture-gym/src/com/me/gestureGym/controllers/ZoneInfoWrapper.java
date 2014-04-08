@@ -52,7 +52,7 @@ public class ZoneInfoWrapper {
 		return singleTouchIsReady() && multiTouchIsReady();
 	}
 	
-	private static boolean singleTouchIsReady() {
+	public static boolean singleTouchIsReady() {
 		//Returns true if array is fully loaded
 		if (zoneInfo != null) {
 			for (int i = 0; i< zoneInfo.length; i++){
@@ -65,7 +65,7 @@ public class ZoneInfoWrapper {
 		return false;
 	}
 	
-	private static boolean multiTouchIsReady() {
+	public static boolean multiTouchIsReady() {
 		//Returns true if array is fully loaded
 		if (mtZoneInfo != null) {
 			for (int i = 0; i < mtZoneInfo.length; i++){
