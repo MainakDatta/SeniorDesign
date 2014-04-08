@@ -106,15 +106,14 @@ public class GameScreen implements Screen {
         img.setFillParent(true);
         _stage.addActor(img);
         
-        
         // used for score and time display
         Image score = new Image(Assets.getManager().get("data/ui_elements/ui_score.png", Texture.class));
         TextFieldStyle tfs = new TextFieldStyle();
         tfs.fontColor = Color.BLACK;
         
-        BitmapFont bmf = Assets.getManager().get("data/gabriola.fnt", BitmapFont.class);
+        //BitmapFont bmf = Assets.getManager().get("data/gabriola.fnt", BitmapFont.class);
         
-        tfs.font = bmf;
+        tfs.font = new BitmapFont();
         
         score_points = 0;
         points = new TextField("" + score_points, tfs);
@@ -291,7 +290,7 @@ public class GameScreen implements Screen {
 		}
 		
 		if(secondFingerTouching){
-			System.out.println("Touched at ( " + Gdx.input.getX(1) + 
+			System.out.println("Touched second finger at ( " + Gdx.input.getX(1) + 
 					", " +  Gdx.input.getY(1)+ ")");
 			secondX = Gdx.input.getX(1);
 			secondY = Gdx.input.getY(1);
@@ -358,8 +357,6 @@ public class GameScreen implements Screen {
 	    	if (sequenceOver()) {
 	    		getNewSequence();
 	    	}
-	    	
-	    	
 	    	
 	    	unshowEndedCues();
 	    	showStartedCues();

@@ -19,7 +19,7 @@ import com.me.gestureGym.models.LoadingBar;
 
 public class LoadingScreen implements Screen {
 
-    private GestureGym game;
+    private GestureGym _game;
 
     private Stage stage;
 
@@ -35,10 +35,10 @@ public class LoadingScreen implements Screen {
     private Actor loadingBar;
     private boolean multiTouch;
     
-    public LoadingScreen(GestureGym g, boolean isMultiTouchGame) {
+    public LoadingScreen(GestureGym game, boolean isMultiTouchGame) {
         Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
 				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
-        this.game = game;
+        _game = game;
         multiTouch = isMultiTouchGame;
     }
     
@@ -131,13 +131,13 @@ public class LoadingScreen implements Screen {
         	System.out.println("Waiting on parse");
         	if(multiTouch){
         		if(ZoneInfoWrapper.multiTouchIsReady()){
-        			game.setScreen(new GameScreen(game, true));
+        			_game.setScreen(new GameScreen(_game, true));
         			dispose();
         		}
         	}
         	else{
 	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
-	        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+	        		_game.setScreen(new GameScreen(_game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
 	        		dispose();
 	        	}
         	}
