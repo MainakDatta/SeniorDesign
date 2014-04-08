@@ -135,8 +135,9 @@ public class LoadingScreen implements Screen {
         if (Assets.getManager().update()) { // Load some, will return true if done loading
         	//Another check here to see if array is loaded
         	System.out.println("Waiting on parse");
-        	if(ZoneInfoWrapper.isReady()){        		
+        	if(ZoneInfoWrapper.isReady()){
         		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+        		dispose();
         	}
         }
         
@@ -147,7 +148,7 @@ public class LoadingScreen implements Screen {
     @Override
     public void hide() {
         // Dispose the loading assets as we no longer need them
-    	Assets.getManager().unload("data/loading.pack");
+    	
     }
 
 	@Override
@@ -164,7 +165,9 @@ public class LoadingScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		stage.dispose();
+    	
+    	Assets.getManager().unload("data/loading.pack");
 		
 	}
 }

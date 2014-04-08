@@ -112,7 +112,7 @@ public class GameScreen implements Screen {
         TextFieldStyle tfs = new TextFieldStyle();
         tfs.fontColor = Color.BLACK;
         
-        BitmapFont bmf = Assets.getManager().get("data/cocktail.fnt", BitmapFont.class);
+        BitmapFont bmf = Assets.getManager().get("data/gabriola.fnt", BitmapFont.class);
         
         tfs.font = bmf;
         

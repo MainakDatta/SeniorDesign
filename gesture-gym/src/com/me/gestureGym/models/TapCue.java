@@ -67,11 +67,6 @@ public class TapCue extends Actor{
         batch.draw(_texture, _x, _y);
     }
     
-    public void end(SpriteBatch batch, float alpha){
-        //batch.draw(hit_texture,cueX,cueY);
-    }
-    
-    
     @Override
     public void act(float delta){
     	if(hit){
