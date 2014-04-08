@@ -48,7 +48,7 @@ public class Assets implements Disposable, AssetErrorListener {
         assets.load("data/ui_elements/ui_score.png", Texture.class);
         assets.load("data/ui_elements/ui_time.png", Texture.class);
         
-        assets.load("data/cocktail.fnt", BitmapFont.class);
+        assets.load("data/gabriola.fnt", BitmapFont.class);
         
         // Wait until they are finished loading
         assets.finishLoading();

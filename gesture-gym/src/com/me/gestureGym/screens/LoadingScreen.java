@@ -132,23 +132,24 @@ public class LoadingScreen implements Screen {
         	if(multiTouch){
         		if(ZoneInfoWrapper.multiTouchIsReady()){
         			game.setScreen(new GameScreen(game, true));
+        			dispose();
         		}
         	}
         	else{
 	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
 	        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+	        		dispose();
 	        	}
         	}
         }
         
-        ZoneInfoWrapper.getZoneInfo(true);
-        ZoneInfoWrapper.getZoneInfo(false);
+        ZoneInfoWrapper.getZoneInfo(multiTouch);
     }
 
     @Override
     public void hide() {
         // Dispose the loading assets as we no longer need them
-    	Assets.getManager().unload("data/loading.pack");
+    	
     }
 
 	@Override
@@ -165,7 +166,9 @@ public class LoadingScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		stage.dispose();
+    	
+    	Assets.getManager().unload("data/loading.pack");
 		
 	}
 }
