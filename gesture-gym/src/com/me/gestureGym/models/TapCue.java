@@ -39,7 +39,7 @@ public class TapCue extends Actor{
 	//private double timeBetweenCues;
 
     
-	public TapCue(float x, float y, int zone, float start, float end) {
+	public TapCue(float x, float y, int zone, float start, float end, boolean isMT) {
 		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
 		
 		_x = x;
@@ -48,7 +48,12 @@ public class TapCue extends Actor{
 		_endTime = end;
 		_zone = zone;
 		
-		_texture = Assets.getManager().get("data/ui_elements/tapCue.png", Texture.class);
+		if(isMT){
+			_texture = Assets.getManager().get("data/ui_elements/MTTapCue.png", Texture.class);
+		}
+		else{
+			_texture = Assets.getManager().get("data/ui_elements/tapCue.png", Texture.class);
+		}
 		
         setBounds(x, y, _texture.getWidth(),_texture.getHeight());
         addListener(new InputListener(){

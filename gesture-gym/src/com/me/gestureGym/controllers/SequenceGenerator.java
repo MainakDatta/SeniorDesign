@@ -53,7 +53,7 @@ public class SequenceGenerator {
 //				System.out.println("zone number is " + zoneNum);
 //				System.out.println("adding cue with coordinate (" + x + ", " + y + ")");
 //				System.out.println("cue has start time " + startTime + " and end time " + (startTime + duration));
-				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration));				
+				cues.add(new TapCue(x, y, zoneNum, startTime, startTime + duration, false));				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;
 				zone.setNumCues(zone.getNumCues() + 1);

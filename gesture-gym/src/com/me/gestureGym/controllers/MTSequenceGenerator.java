@@ -34,11 +34,11 @@ public class MTSequenceGenerator {
 			if (zoneCounts[which] > 0) {
 				float x1 = getRandomXFromZone(firstZone);
 				float y1 = getRandomYFromZone(firstZone);
-				cues.add(new TapCue(x1, y1, firstZoneNum, startTime, startTime + duration));
+				cues.add(new TapCue(x1, y1, firstZoneNum, startTime, startTime + duration, true));
 				
 				float x2 = getRandomXFromZone(secondZone);
 				float y2 = getRandomYFromZone(secondZone);
-				cues.add(new TapCue(x2, y2, secondZoneNum, startTime, startTime + duration));
+				cues.add(new TapCue(x2, y2, secondZoneNum, startTime, startTime + duration, true));
 				
 				startTime += timeBetweenCues;
 				zoneCounts[which]--;

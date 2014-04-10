@@ -44,6 +44,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		assets.load("data/ui_elements/SINGLE_TOUCH.png", Texture.class);
 		assets.load("data/ui_elements/pause.png", Texture.class);
 		assets.load("data/ui_elements/play.png", Texture.class);
+		assets.load("data/ui_elements/MTTapCue.png", Texture.class);
         assets.load("data/ui_elements/tapCue.png", Texture.class);
         assets.load("data/ui_elements/tapCueBoom.png", Texture.class);
         assets.load("data/ui_elements/ui_score.png", Texture.class);
