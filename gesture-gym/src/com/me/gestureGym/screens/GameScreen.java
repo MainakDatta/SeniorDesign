@@ -130,7 +130,7 @@ public class GameScreen implements Screen {
         _stage.addActor(score_display);
         
         Image time = new Image(Assets.getManager().get("data/ui_elements/ui_time.png", Texture.class));
-        time_seconds = 180.0f;
+        time_seconds = 3.0f;
         seconds = new TextField("" + time_seconds, tfs);
         
         time_display = new Table();
@@ -211,7 +211,7 @@ public class GameScreen implements Screen {
     
     private void endAndSwitchScreens() {
     	_backgroundMusic.stop();
-		_game.setScreen(new GameEndScreen(_game));
+		_game.setScreen(new GameEndScreen(_game, _isMultiTouchGame));
 		dispose();
     }
     
@@ -396,7 +396,7 @@ public class GameScreen implements Screen {
 				_timeLeft -= delta;
 			}
 			
-			if (_timeLeft <= 0) {
+			if (time_seconds <= 0) {
 				endAndSwitchScreens();
 			}
 			
