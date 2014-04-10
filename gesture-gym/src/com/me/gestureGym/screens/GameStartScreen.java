@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.StartButton;
+import com.me.gestureGym.models.TapCue;
 
 // main menu
 
@@ -22,7 +23,8 @@ public class GameStartScreen implements Screen {
 	private Stage _stage;
 	private final Vector2 _stageCoords = new Vector2();
 	private OrthographicCamera camera;
-	private StartButton _startButton;	
+	private StartButton _multi_touch;	
+	private StartButton _single_touch;	
 	private static final int START_BUTTON_WIDTH = 256;
 	
 	private SpriteBatch spriteBatch;
@@ -30,8 +32,6 @@ public class GameStartScreen implements Screen {
 
 	float w;
 	float h;
-
-	
 
 	/**
 	 * Constructor for the splash screen
@@ -53,9 +53,13 @@ public class GameStartScreen implements Screen {
 		// GameStartScreen comes before LoadingScreen
 		// Therefore some file have to be handled here
 		splash = new Texture(Gdx.files.internal("data/title.png"));
+		boolean multi_touch = true;
 		//Start button
-        _startButton = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0);
-        _stage.addActor(_startButton);
+		_multi_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, multi_touch);
+        _stage.addActor(_multi_touch);
+		//Start button
+        _single_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _multi_touch.getHeight() + 10, !multi_touch);
+        _stage.addActor(_single_touch);
 
 	}
 
@@ -87,7 +91,10 @@ public class GameStartScreen implements Screen {
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
 		
 		if (actor != null && actor instanceof StartButton) {
-			game.setScreen(new LoadingScreen(game, false));
+			//Check which button it was
+			StartButton st = (StartButton) actor;
+			boolean multi = st.getType();
+			game.setScreen(new LoadingScreen(game, multi));
 			dispose();
 		}
 

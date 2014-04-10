@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
 	private PlayButton _playButton;
 	private OrthographicCamera _camera;
 	private final Vector2 _stageCoords = new Vector2();
+	private final Vector2 _stageCoords2 = new Vector2();
 	
 	private Zone[] _zones;
 	private ZoneResponseInfo[] _zoneInfos;
@@ -84,7 +85,10 @@ public class GameScreen implements Screen {
         _isMultiTouchGame = isMultiTouchGame;
         
         // get loaded audio file
-        _backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
+        if(!_isMultiTouchGame)
+        	_backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
+        else 
+        	_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
         
         _backgroundMusic.play();
         _backgroundMusic.setLooping(true);
@@ -255,6 +259,7 @@ public class GameScreen implements Screen {
     private void pauseGame() {
     	setCuesUntouchable();
 		_gameStatus = GAME_PAUSED;
+		_backgroundMusic.pause();
 		_pauseButton.setTouchable(Touchable.disabled);
 		_pauseButton.setVisible(false);
 		_playButton.setTouchable(Touchable.enabled);
@@ -264,6 +269,7 @@ public class GameScreen implements Screen {
     private void unpauseGame() {
     	showStartedCues();
 		_gameStatus = GAME_RUNNING;
+		_backgroundMusic.play();
 		_playButton.setTouchable(Touchable.disabled);
 		_playButton.setVisible(false);
 		_pauseButton.setTouchable(Touchable.enabled);
@@ -297,38 +303,79 @@ public class GameScreen implements Screen {
 		}
     	
     	// store input coordinates in stageCoords vector
-		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
+		//Vector for finger 1
+		_stage.screenToStageCoordinates(_stageCoords.set(firstX, firstY));    	
+		//Vector for finger 2
+		_stage.screenToStageCoordinates(_stageCoords2.set(secondX, secondY));	
+		
+		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
-				
+		//Actor for 2nd finger		
+		Actor actor2 = _stage.hit(_stageCoords2.x, _stageCoords2.y, true);
 		
-		if (actor != null && actor instanceof PauseButton) {
+		if ((actor != null && actor instanceof PauseButton) 
+				|| (actor2 != null && actor instanceof PauseButton)){
 			pauseGame();
 		}
 		
-		else if (actor != null && actor instanceof PlayButton) {
+		if ((actor != null && actor instanceof PlayButton) 
+				|| (actor2 != null && actor instanceof PlayButton)){
 			unpauseGame();
 		}
 		
+		boolean cueOneHit = false;
+		boolean cueTwoHit = false;
 		// checks if the tapped location is at a TapCue Actor in the Sequence Group
-		else if (actor != null && actor instanceof TapCue){
-			//System.out.println("TAPPED");
+		if (actor != null && actor instanceof TapCue){
 			TapCue tc = (TapCue) actor;
-//			System.out.println("BOOM");
+			// when hit, it plays the sound and changes image
+			cueOneHit = true;
+			//If its a multitouch-game, then dont allow cues to be hit unless hti together
+			if(!_isMultiTouchGame){
+				//Add to hit total for this zone
+				int zoneNum = tc.getZone();
+				Zone hit = _zones[zoneNum];
+				_zoneHits.put(hit, _zoneHits.get(hit) + 1);
+				tc.hit();	
+				score_points += 10;
+			}
+		}
+		//Check actor 2
+		if (actor2 != null && actor2 instanceof TapCue){
+			TapCue tc = (TapCue) actor2;
+			// when hit, it plays the sound and changes image
+			cueTwoHit = true;
+			//If its a multitouch-game, then dont allow cues to be hit unless hti together
+			if(!_isMultiTouchGame){
+				//Add to hit total for this zone
+				int zoneNum = tc.getZone();
+				Zone hit = _zones[zoneNum];
+				_zoneHits.put(hit, _zoneHits.get(hit) + 1);
+				tc.hit();	
+				score_points += 10;
+			}
+		}
+		//May or may not want this feature
+		//If its a multi-touch game, cues only count as "hit" if both are hit at once
+		if(_isMultiTouchGame && cueTwoHit && cueOneHit){
+			TapCue tc = (TapCue) actor;
+			TapCue tc2 = (TapCue) actor2;
 			//Add to hit total for this zone
 			int zoneNum = tc.getZone();
-//			System.out.println("Hit in zone " + zoneNum + "!");
+			int zoneNum2 = tc2.getZone();
+			//Cue 1
 			Zone hit = _zones[zoneNum];
 			_zoneHits.put(hit, _zoneHits.get(hit) + 1);
-//			System.out.println("Zone: " + zoneNum + " " + _zoneHits.get(hit) + " hits!");
-			
-			// when hit, it plays the sound and changes image
+			//Cue 2
+			Zone hit2 = _zones[zoneNum2];
+			_zoneHits.put(hit2, _zoneHits.get(hit2) + 1);
+
 			tc.hit();
-			
-			score_points += 10;
-			
-			//_currentSequence.removeActor(tc);
+			tc2.hit();
+			score_points += 20;
 		}
+		
     }
     
 	public void render(float delta) {		

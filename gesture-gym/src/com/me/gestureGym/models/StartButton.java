@@ -10,20 +10,30 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class StartButton extends Actor {
 	
-	private Texture _texture = new Texture(Gdx.files.internal("data/ui_elements/start_button.jpg"));
+	private Texture _texture;
 	private float _x, _y;
+	private boolean _buttonType;
 	
-	public StartButton(float x, float y) {
+	//Takes in a boolean to determine which text to show on button
+	public StartButton(float x, float y, boolean isMultiTouch) {
 		_x = x;
 		_y = y;
-		
+        //Pick image based on boolean param
+		if(isMultiTouch)
+        	_texture = new Texture(Gdx.files.internal("data/ui_elements/MULTI_TOUCH.png"));        
+        else
+        	_texture = new Texture(Gdx.files.internal("data/ui_elements/SINGLE_TOUCH.png"));
+        
+		_buttonType = isMultiTouch;
+        
+        
 		setBounds(_x, _y, _texture.getWidth(), _texture.getHeight());
         addListener(new InputListener(){
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
         });
-        
+
         setTouchable(Touchable.enabled);
         setVisible(true);
 	}
@@ -39,5 +49,9 @@ public class StartButton extends Actor {
 	
 	public float getY() {
 		return _y;
+	}
+	
+	public boolean getType() {
+		return _buttonType;
 	}
 }

@@ -40,7 +40,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		assets.load("data/audio/hit.wav", Sound.class);
         
         // Load all button assets (THESE SHOULD BE PACKED)
-		assets.load("data/ui_elements/start_button.jpg", Texture.class);
+		assets.load("data/ui_elements/MULTI_TOUCH.png", Texture.class);
+		assets.load("data/ui_elements/SINGLE_TOUCH.png", Texture.class);
 		assets.load("data/ui_elements/pause.png", Texture.class);
 		assets.load("data/ui_elements/play.png", Texture.class);
         assets.load("data/ui_elements/tapCue.png", Texture.class);

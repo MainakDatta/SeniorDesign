@@ -1,6 +1,7 @@
 package com.me.gestureGym.controllers;
 
 import almonds.ParseException;
+import almonds.ParseObject;
 
 import com.me.gestureGym.data.ParseWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
@@ -25,9 +26,15 @@ public class ZoneInfoWrapper {
 			}
 			
 			mtZoneInfo = new ZoneResponseInfo[N_ZONES];
-			for (int i = 0; i < mtZoneInfo.length; i++) {
-				parse.getZoneAsync(i, true);
-			}
+			//TEMPORARY FIX WHILE WE TRY TO FIGURE OUT PARSE ISSUES T_T
+			for(int i = 0; i< mtZoneInfo.length; i++){
+	     		 ZoneResponseInfo zres = new ZoneResponseInfo(i, (float) 2.0, 1.0);
+	     		mtZoneInfo[i] = zres;			
+			}	
+			
+//			for (int i = 0; i < mtZoneInfo.length; i++) {
+//				parse.getZoneAsync(i, true);
+//			}
 			
 			System.out.println("Had to hit db mt");
 			return mtZoneInfo;
@@ -38,12 +45,18 @@ public class ZoneInfoWrapper {
 				return zoneInfo;
 			}
 			//This needs to happen in background
-			zoneInfo = new ZoneResponseInfo[N_ZONES];		
+			zoneInfo = new ZoneResponseInfo[N_ZONES];	
+			
+			//TEMPORARY FIX WHILE WE TRY TO FIGURE OUT PARSE ISSUES
 			for(int i = 0; i< zoneInfo.length; i++){
-				parse.getZoneAsync(i, false);
-				
-			}				
-			System.out.println("Had to hit db");
+	     		 ZoneResponseInfo zres = new ZoneResponseInfo(i, (float) 2.0, 1.0);
+	     		 zoneInfo[i] = zres;			
+			}							
+//			for(int i = 0; i< zoneInfo.length; i++){
+//				parse.getZoneAsync(i, false);
+//				
+//			}				
+//			System.out.println("Had to hit db");
 			return zoneInfo;
 		}
 	}
