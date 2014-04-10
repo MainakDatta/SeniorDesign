@@ -115,9 +115,7 @@ public class GameScreen implements Screen {
         TextFieldStyle tfs = new TextFieldStyle();
         tfs.fontColor = Color.BLACK;
         
-        //BitmapFont bmf = Assets.getManager().get("data/gabriola.fnt", BitmapFont.class);
-        
-        tfs.font = new BitmapFont();
+        tfs.font = Assets.getManager().get("data/gabriola.fnt", BitmapFont.class);
         
         score_points = 0;
         points = new TextField("" + score_points, tfs);
