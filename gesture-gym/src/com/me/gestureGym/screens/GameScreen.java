@@ -128,7 +128,7 @@ public class GameScreen implements Screen {
         _stage.addActor(score_display);
         
         Image time = new Image(Assets.getManager().get("data/ui_elements/ui_time.png", Texture.class));
-        time_seconds = 3.0f;
+        time_seconds = 180.0f;
         seconds = new TextField("" + time_seconds, tfs);
         
         time_display = new Table();
