@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.models.MainMenuButton;
 import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.StartButton;
 import com.me.gestureGym.models.TapCue;
@@ -24,7 +26,10 @@ public class GameStartScreen implements Screen {
 	private final Vector2 _stageCoords = new Vector2();
 	private OrthographicCamera camera;
 	private StartButton _multi_touch;	
-	private StartButton _single_touch;	
+	private StartButton _single_touch;		
+	private MainMenuButton _patient_view;
+	private MainMenuButton _doc_view;
+	
 	private static final int START_BUTTON_WIDTH = 256;
 	
 	private SpriteBatch spriteBatch;
@@ -53,12 +58,24 @@ public class GameStartScreen implements Screen {
 		// GameStartScreen comes before LoadingScreen
 		// Therefore some file have to be handled here
 		splash = new Texture(Gdx.files.internal("data/title.png"));
-		boolean multi_touch = true;
-		//Start button
+		boolean patient = true;
+		//patient button
+		_patient_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, patient);
+        _stage.addActor(_patient_view);
+		//doctor button
+        _doc_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _patient_view.getHeight() + 10, !patient);
+        _stage.addActor(_doc_view);
+		
+        boolean multi_touch = true;
+		//Multi- button
 		_multi_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, multi_touch);
+		_multi_touch.setVisible(false);
+		_multi_touch.setTouchable(Touchable.disabled);
         _stage.addActor(_multi_touch);
-		//Start button
+		//Single-touch button
         _single_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _multi_touch.getHeight() + 10, !multi_touch);
+        _single_touch.setVisible(false);
+        _single_touch.setTouchable(Touchable.disabled);
         _stage.addActor(_single_touch);
 
 	}
@@ -89,8 +106,27 @@ public class GameStartScreen implements Screen {
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
 		Actor actor = _stage.hit(_stageCoords.x, _stageCoords.y, true);
+		if (actor != null && actor instanceof MainMenuButton) {
+			//Check which button it was
+			MainMenuButton mm = (MainMenuButton) actor;
+			boolean patient = mm.getType(); 
+			if(patient){
+				_patient_view.setVisible(false);
+				_patient_view.setTouchable(Touchable.disabled);
+				_doc_view.setVisible(false);
+				_doc_view.setTouchable(Touchable.disabled);
+				//Set game mode buttons visible
+				_single_touch.setVisible(true);
+				_single_touch.setTouchable(Touchable.enabled);
+				_multi_touch.setVisible(true);
+				_multi_touch.setTouchable(Touchable.enabled);
+			}
+			else{
+				//Take to doctor button
+			}
+		}
 		
-		if (actor != null && actor instanceof StartButton) {
+		else if (actor != null && actor instanceof StartButton) {
 			//Check which button it was
 			StartButton st = (StartButton) actor;
 			boolean multi = st.getType();
