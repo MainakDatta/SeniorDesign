@@ -22,4 +22,12 @@ public class ZoneResponseInfo {
 	public double getHitRate() {
 		return _hitRate;
 	}
+	
+	public void setSuccessDuration(float successDuration) {
+		_successDuration = successDuration;
+	}
+	
+	public void setHitRate(double hitRate) {
+		_hitRate = hitRate;
+	}
 }

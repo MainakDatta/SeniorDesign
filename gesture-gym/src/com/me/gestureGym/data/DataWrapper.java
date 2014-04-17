@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import com.badlogic.gdx.Gdx;
@@ -13,12 +15,109 @@ public class DataWrapper {
 	
 	private static final String CRLF = "\r\n";
 	
+	private class FileAndTimestamp implements Comparable {
+		public FileHandle _file;
+		public long _lastModified;
+		
+		public FileAndTimestamp(FileHandle file) {
+			_file = file;
+			_lastModified = file.lastModified();
+		}
+
+		@Override
+		/*
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 * 
+		 * Ensures they get sorted from newest to oldest
+		 */
+		public int compareTo(Object arg0) {
+			FileAndTimestamp other = (FileAndTimestamp) arg0;
+			return -1 * Long.compare(_lastModified, other._lastModified);
+		}
+	}
+	
 	private static ZoneResponseInfo[] defaultData() {
 		ZoneResponseInfo[] out = new ZoneResponseInfo[16];
 		for (int i = 0; i < 16; i++) {
 			out[i] = new ZoneResponseInfo(i, 2.0f, 1.0);
 		}
 		return out;
+	}
+	
+	private static HistoricalZoneResponseInfo[] defaultHistoricalData() {
+		HistoricalZoneResponseInfo[] out = new HistoricalZoneResponseInfo[16];
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		String dateString = df.format(cal.getTime());
+		
+		for (int i = 0; i < 16; i++) {
+			out[i] = new HistoricalZoneResponseInfo(i, 2.0f, 1.0, dateString);
+		}
+		return out;
+	}
+	
+	private static ZoneResponseInfo[] fileToZoneResponses(FileHandle f) 
+			throws IOException, ImproperFileFormatException {
+		BufferedReader r = new BufferedReader(f.reader());
+		ZoneResponseInfo[] out = new ZoneResponseInfo[16];
+		for (int i = 0; i < 16; i++) {
+			String[] line = r.readLine().split(",");
+			if (line.length != 3) throw new ImproperFileFormatException();
+			out[i] = new ZoneResponseInfo(Integer.parseInt(line[0]), 
+					                      Float.parseFloat(line[1]),
+					                      Double.parseDouble(line[2]));
+		}
+		
+		r.close();
+		
+		return out;
+	}
+	
+	private static HistoricalZoneResponseInfo[] fileToHistoricalZoneResponses(FileHandle f) 
+			throws IOException, ImproperFileFormatException {
+		BufferedReader r = new BufferedReader(f.reader());
+		HistoricalZoneResponseInfo[] out = new HistoricalZoneResponseInfo[16];
+		for (int i = 0; i < 16; i++) {
+			String[] line = r.readLine().split(",");
+			if (line.length != 3) throw new ImproperFileFormatException();
+			out[i] = new HistoricalZoneResponseInfo(Integer.parseInt(line[0]), 
+					                                Float.parseFloat(line[1]),
+					                                Double.parseDouble(line[2]),
+					                                f.toString().substring(f.toString().lastIndexOf('/') + 1));
+		}
+		
+		r.close();
+		
+		return out;
+	}
+	
+	public static String getCurrentPatient() throws LocalStorageDoesNotExistException, IOException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
+		}
+		
+		FileHandle cpFile = Gdx.files.local("data/currentpatient.txt");
+		if (!cpFile.exists()) return null;
+		
+		BufferedReader r = new BufferedReader(cpFile.reader());
+		String out = r.readLine();
+		r.close();
+		
+		return out;
+	}
+	
+	public static void setCurrentPatient(String patientName) throws LocalStorageDoesNotExistException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
+		}
+		
+		FileHandle cpFile = Gdx.files.local("data/currentpatient.txt");
+		cpFile.delete();
+		
+		cpFile.writeString(patientName + CRLF, true);
 	}
 	
 	public static boolean putPatient(String patientName, String doctorName) 
@@ -117,17 +216,35 @@ public class DataWrapper {
 		}
 		
 		FileHandle mostRecentFile = stDatas[fileIndex];
-		BufferedReader r = new BufferedReader(mostRecentFile.reader());
-		ZoneResponseInfo[] out = new ZoneResponseInfo[16];
-		for (int i = 0; i < 16; i++) {
-			String[] line = r.readLine().split(",");
-			if (line.length != 2) throw new ImproperFileFormatException();
-			out[i] = new ZoneResponseInfo(Integer.parseInt(line[0]), 
-					                      Float.parseFloat(line[1]),
-					                      Double.parseDouble(line[2]));
+		
+		return fileToZoneResponses(mostRecentFile);
+	}
+	
+	/*
+	 * ArrayList is sorted from newest data to oldest data
+	 */
+	public static ArrayList<HistoricalZoneResponseInfo[]> getAllSingleTouchData(String patientName) 
+			throws LocalStorageDoesNotExistException, IOException, ImproperFileFormatException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
 		}
 		
-		r.close();
+		ArrayList<HistoricalZoneResponseInfo[]> out = new ArrayList<HistoricalZoneResponseInfo[]>();
+		
+		FileHandle stDir = Gdx.files.local("data/" + patientName + "/st");
+		if (!stDir.exists()) {
+			out.add(defaultHistoricalData());
+			return out;
+		}
+		
+		FileHandle[] files = stDir.list();
+		FileAndTimestamp[] toSort = new FileAndTimestamp[files.length];
+		Arrays.sort(toSort);
+		
+		for (int i = 0; i < toSort.length; i++) {
+			out.add(fileToHistoricalZoneResponses(toSort[i]._file));
+		}
 		
 		return out;
 	}
@@ -179,17 +296,34 @@ public class DataWrapper {
 		}
 		
 		FileHandle mostRecentFile = stDatas[fileIndex];
-		BufferedReader r = new BufferedReader(mostRecentFile.reader());
-		ZoneResponseInfo[] out = new ZoneResponseInfo[16];
-		for (int i = 0; i < 16; i++) {
-			String[] line = r.readLine().split(",");
-			if (line.length != 2) throw new ImproperFileFormatException();
-			out[i] = new ZoneResponseInfo(Integer.parseInt(line[0]), 
-					                      Float.parseFloat(line[1]),
-					                      Double.parseDouble(line[2]));
+		return fileToZoneResponses(mostRecentFile);
+	}
+	
+	/*
+	 * ArrayList is sorted from newest data to oldest data
+	 */
+	public static ArrayList<HistoricalZoneResponseInfo[]> getAllMultiTouchData(String patientName) 
+			throws LocalStorageDoesNotExistException, IOException, ImproperFileFormatException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
 		}
 		
-		r.close();
+		ArrayList<HistoricalZoneResponseInfo[]> out = new ArrayList<HistoricalZoneResponseInfo[]>();
+		
+		FileHandle stDir = Gdx.files.local("data/" + patientName + "/mt");
+		if (!stDir.exists()) {
+			out.add(defaultHistoricalData());
+			return out;
+		}
+		
+		FileHandle[] files = stDir.list();
+		FileAndTimestamp[] toSort = new FileAndTimestamp[files.length];
+		Arrays.sort(toSort);
+		
+		for (int i = 0; i < toSort.length; i++) {
+			out.add(fileToHistoricalZoneResponses(toSort[i]._file));
+		}
 		
 		return out;
 	}
