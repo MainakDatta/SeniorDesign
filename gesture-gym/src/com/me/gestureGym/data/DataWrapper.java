@@ -15,7 +15,7 @@ public class DataWrapper {
 	
 	private static final String CRLF = "\r\n";
 	
-	private static class FileAndTimestamp implements Comparable {
+	private static class FileAndTimestamp implements Comparable<FileAndTimestamp> {
 		public FileHandle _file;
 		public long _lastModified;
 		
@@ -25,13 +25,10 @@ public class DataWrapper {
 		}
 
 		@Override
-		/*
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 * 
+		/* 
 		 * Ensures they get sorted from newest to oldest
 		 */
-		public int compareTo(Object arg0) {
-			FileAndTimestamp other = (FileAndTimestamp) arg0;
+		public int compareTo(FileAndTimestamp other) {
 			return -1 * Long.compare(_lastModified, other._lastModified);
 		}
 	}
