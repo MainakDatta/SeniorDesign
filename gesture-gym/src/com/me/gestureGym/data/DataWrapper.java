@@ -15,7 +15,7 @@ public class DataWrapper {
 	
 	private static final String CRLF = "\r\n";
 	
-	private class FileAndTimestamp implements Comparable {
+	private static class FileAndTimestamp implements Comparable {
 		public FileHandle _file;
 		public long _lastModified;
 		
@@ -240,6 +240,9 @@ public class DataWrapper {
 		
 		FileHandle[] files = stDir.list();
 		FileAndTimestamp[] toSort = new FileAndTimestamp[files.length];
+		for (int i = 0; i < files.length; i++) {
+			toSort[i] = new FileAndTimestamp(files[i]);
+		}
 		Arrays.sort(toSort);
 		
 		for (int i = 0; i < toSort.length; i++) {
