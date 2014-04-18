@@ -1,5 +1,7 @@
 package com.me.gestureGym.screens;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -9,6 +11,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
+import com.me.gestureGym.data.ZoneResponseInfo;
 
 public class HeatMapScreen implements Screen{
     
@@ -18,7 +23,7 @@ public class HeatMapScreen implements Screen{
     private ShapeRenderer shapeRenderer;
 	private float[][] times;
 	
-	public HeatMapScreen(GestureGym g, float[] patientData){
+	public HeatMapScreen(GestureGym g){
 		
 		game = g;
 		stage = new Stage();
@@ -27,7 +32,20 @@ public class HeatMapScreen implements Screen{
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 
 		shapeRenderer = new ShapeRenderer();
-		times = new float[][]{{1.99f, 1.93f, 1.97f, 2f}, {2f, 1.94f, 1.97f, 2f}, {1.89f, 2f, 1.93f, 2f}, {2f, 1.99f, 1.98f, 2f}};
+		
+		times = new float[4][4];
+		try {
+			String patient = DataWrapper.getCurrentPatient();
+			ZoneResponseInfo[] info = DataWrapper.getMostRecentMultiTouchData(patient);
+			for(int i = 0; i < info.length; i++){
+				System.out.println(info[i].getSuccessDuration() + " " + info[i].getZoneNumber());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//times = new float[][]{{1.99f, 1.93f, 1.97f, 2f}, {2f, 1.94f, 1.97f, 2f}, {1.89f, 2f, 1.93f, 2f}, {2f, 1.99f, 1.98f, 2f}};
 		
 	}
 	
@@ -71,7 +89,7 @@ public class HeatMapScreen implements Screen{
 		for(int i = 0; i < times.length; i++){
 			for(int j = 0; j < times[i].length; j++){
 				float red = (slow - times[i][j]) / (slow - fast);
-				System.out.println("i: " + i + " j: " + j + " time: " + times[i][j]+ " red: " +red);
+				//System.out.println("i: " + i + " j: " + j + " time: " + times[i][j]+ " red: " +red);
 				grads[i][j] = new Color(red, 0, 0, 1);
 			}
 		}
@@ -107,51 +125,46 @@ public class HeatMapScreen implements Screen{
 				Color bottomRight = edgeRed;
 				Color topRight = edgeRed;
 				Color topLeft = edgeRed;
-				System.out.println(i + " " + j);
 				
-				// work around to fit gradient overlay
-				if(i < 4 && j < 4){
-					
-					// four corner cases
-					if(i == 0 && j == 0){
-						topRight = reds[i][j];					
-					}
-					else if(i == 0 && j == reds[i].length - 1){
-						topLeft = reds[i][j-1];
-					}
-					else if(i == reds.length - 1 && j == reds[i].length - 1){
-						bottomLeft = reds[i-1][j-1];
-					}
-					else if(i == reds.length - 1 && j == 0){
-						bottomRight = reds[i-1][j];
-					}
-					
-					// four general sides
-					else if(i == 0 && j > 0 && j < reds[i].length){
-						topRight = reds[i][j];
-						topLeft = reds[i][j-1];
-					}
-					else if(i == reds.length - 1 && j > 0 && j < reds[i].length){
-						bottomLeft = reds[i-1][j-1];
-						bottomRight = reds[i-1][j];
-					}
-					else if(j == 0 && i > 0 && i < reds.length){
-						bottomRight = reds[i-1][j];
-						topRight = reds[i][j];
-					}
-					else if(j == reds[i].length - 1 && i > 0 && i < reds.length){
-						bottomLeft = reds[i-1][j-1];
-						topLeft = reds[i][j-1];
-					}
-					// internals
-					else{
-						bottomLeft = reds[i-1][j-1];
-						bottomRight = reds[i-1][j];
-						topRight = reds[i][j];
-						topLeft = reds[i][j-1];
-					}
-
+				// four corner cases
+				if(i == 0 && j == 0){
+					topRight = reds[i][j];					
 				}
+				else if(i == 0 && j == reds.length){
+					topLeft = reds[i][j-1];
+				}				
+				else if(i == reds.length && j == 0){
+					bottomRight = reds[i-1][j];
+				}
+				else if(i == reds.length && j == reds.length){
+					bottomLeft = reds[i-1][j-1];
+				}
+				// four general sides
+				else if(i == 0){
+					topRight = reds[i][j];
+					topLeft = reds[i][j-1];
+				}
+				else if(i == reds.length){
+					
+					bottomLeft = reds[i-1][j-1];
+					bottomRight = reds[i-1][j];
+				}
+				else if(j == 0){
+					bottomRight = reds[i-1][j];
+					topRight = reds[i][j];
+				}
+				else if(j == reds.length){
+					bottomLeft = reds[i-1][j-1];
+					topLeft = reds[i][j-1];
+				}
+				// internals
+				else{
+					bottomLeft = reds[i-1][j-1];
+					bottomRight = reds[i-1][j];
+					topRight = reds[i][j];
+					topLeft = reds[i][j-1];
+				}
+
 				shapeRenderer.rect(offset/2 + (boxWidth * j), offset/2 +(boxHeight*i), boxWidth, boxHeight, bottomLeft, bottomRight, topRight, topLeft);
 			}
 		}

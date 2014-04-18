@@ -29,7 +29,10 @@ public class ZoneInfoWrapper {
 			}
 			
 	        try {
+	        	//DataWrapper.setCurrentPatient("Mainak Datta");
 				currentPatient = DataWrapper.getCurrentPatient();
+				
+				// commented out cuz mainak said so
 				mtZoneInfo = DataWrapper.getMostRecentMultiTouchData(currentPatient);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -46,7 +49,9 @@ public class ZoneInfoWrapper {
 			}
 			
 			try {
+				//DataWrapper.setCurrentPatient("Mainak Datta");
 				currentPatient = DataWrapper.getCurrentPatient();
+				
 				zoneInfo = DataWrapper.getMostRecentSingleTouchData(currentPatient);
 			} catch (Exception e) {
 				e.printStackTrace();

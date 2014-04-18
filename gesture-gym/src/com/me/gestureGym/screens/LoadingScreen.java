@@ -129,7 +129,6 @@ public class LoadingScreen implements Screen {
 
         if (Assets.getManager().update()) { // Load some, will return true if done loading
         	//Another check here to see if array is loaded
-        	System.out.println("Waiting on parse");
         	if(multiTouch){
         		if(ZoneInfoWrapper.multiTouchIsReady()){
         			_game.setScreen(new GameScreen(_game, true));

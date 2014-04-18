@@ -94,8 +94,8 @@ public class DocViewScreen implements Screen {
 			DocOptionsButton dbt = (DocOptionsButton) actor;
 			boolean checkPatient = dbt.getType();
 			if (checkPatient) {
-				//Leads to check Patient option
-				
+				_myGame.setScreen(new HeatMapScreen(_myGame));
+				dispose();
 			} else {
 //				//Give tablet button
 //				_checkPatientButton.setVisible(false);
