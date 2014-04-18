@@ -15,16 +15,16 @@ public class DocOptionsButton extends Actor {
 	private boolean _buttonType;
 	
 	//Takes in a boolean to determine which text to show on button
-	public DocOptionsButton(float x, float y, boolean isPatient) {
+	public DocOptionsButton(float x, float y, boolean checkPatient) {
 		_x = x;
 		_y = y;
         //Pick image based on boolean param
-		if(isPatient)
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/PATIENT_VIEW.png"));        
+		if(checkPatient)
+        	_texture = new Texture(Gdx.files.internal("data/ui_elements/CHECK_PATIENTS.png"));        
         else
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/DOCTOR_VIEW.png"));
+        	_texture = new Texture(Gdx.files.internal("data/ui_elements/GIVE_TABLET.png"));
         
-		_buttonType = isPatient;
+		_buttonType = checkPatient;
         
         
 		setBounds(_x, _y, _texture.getWidth(), _texture.getHeight());
@@ -34,8 +34,8 @@ public class DocOptionsButton extends Actor {
             }
         });
 
-        setTouchable(Touchable.disabled);
-        setVisible(false);
+        setTouchable(Touchable.enabled);
+        setVisible(true);
 	}
 	
 	@Override	

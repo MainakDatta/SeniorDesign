@@ -124,6 +124,8 @@ public class GameStartScreen implements Screen {
 			}
 			else{
 				//Take to doctor button
+				game.setScreen(new DocViewScreen(game));
+				dispose();
 			}
 		}
 		
