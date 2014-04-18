@@ -66,6 +66,7 @@ public class GameStartScreen implements Screen {
         _doc_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _patient_view.getHeight() + 10, !patient);
         _stage.addActor(_doc_view);
 		
+        //GAMEPLAY BUTTONS
         boolean multi_touch = true;
 		//Multi- button
 		_multi_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, multi_touch);

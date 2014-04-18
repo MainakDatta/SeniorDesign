@@ -1,8 +1,12 @@
 package com.me.gestureGym.controllers;
 
+import java.io.IOException;
+
 import almonds.ParseException;
 import almonds.ParseObject;
 
+import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.data.ParseWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
 
@@ -16,54 +20,48 @@ public class ZoneInfoWrapper {
 	private static ZoneResponseInfo[] zoneInfo;
 	private static ZoneResponseInfo[] mtZoneInfo;
 	private static final int N_ZONES = 16;
+	private static String currentPatient;
 	
 	//Gives the caller the current status of db
 	public static ZoneResponseInfo[] getZoneInfo(boolean isMT){		
-		ParseWrapper parse = new ParseWrapper();
 		if (isMT) {
 			if (mtZoneInfo != null) {
 				return mtZoneInfo;
 			}
 			
-			mtZoneInfo = new ZoneResponseInfo[N_ZONES];
-			//TEMPORARY FIX WHILE WE TRY TO FIGURE OUT PARSE ISSUES T_T
-			for(int i = 0; i< mtZoneInfo.length; i++){
-	     		 ZoneResponseInfo zres = new ZoneResponseInfo(i, (float) 2.0, 1.0);
-	     		mtZoneInfo[i] = zres;			
-			}	
-			
-//			for (int i = 0; i < mtZoneInfo.length; i++) {
-//				parse.getZoneAsync(i, true);
-//			}
-			
-			System.out.println("Had to hit db mt");
+	        try {
+	        	//need to remove
+	        	DataWrapper.setCurrentPatient("Mainak Datta");
+				currentPatient = DataWrapper.getCurrentPatient();
+				mtZoneInfo = DataWrapper.getMostRecentMultiTouchData(currentPatient);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Problems getting current patient");
+			}
+	        
+	        
+		
 			return mtZoneInfo;
 		} else {
-			//Should do this every time after first time
+			//SINGLE TOUCH			
 			if (zoneInfo != null) {
-				//System.out.println("retrieved zone response infos without hitting db");
 				return zoneInfo;
 			}
-			//This needs to happen in background
-			zoneInfo = new ZoneResponseInfo[N_ZONES];	
 			
-			//TEMPORARY FIX WHILE WE TRY TO FIGURE OUT PARSE ISSUES
-			for(int i = 0; i< zoneInfo.length; i++){
-	     		 ZoneResponseInfo zres = new ZoneResponseInfo(i, (float) 2.0, 1.0);
-	     		 zoneInfo[i] = zres;			
-			}							
-//			for(int i = 0; i< zoneInfo.length; i++){
-//				parse.getZoneAsync(i, false);
-//				
-//			}				
-//			System.out.println("Had to hit db");
+			try {
+				//need to remove
+				DataWrapper.setCurrentPatient("Mainak Datta");
+				currentPatient = DataWrapper.getCurrentPatient();
+				zoneInfo = DataWrapper.getMostRecentSingleTouchData(currentPatient);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Problems getting current patient");
+			}
+
 			return zoneInfo;
 		}
 	}
-		
-	public static boolean isReady(){
-		return singleTouchIsReady() && multiTouchIsReady();
-	}
+
 	
 	public static boolean singleTouchIsReady() {
 		//Returns true if array is fully loaded
@@ -95,7 +93,7 @@ public class ZoneInfoWrapper {
 		return false;
 	}
 	
-	//Updates the static zoneInfo array for future calls
+//	//Updates the static zoneInfo array for future calls
 	public static void updateZone(ZoneResponseInfo updated_zone, boolean isMT){
 		if (isMT) {
 			//Creates zoneInfo if needed
@@ -113,20 +111,20 @@ public class ZoneInfoWrapper {
 			zoneInfo[index] = updated_zone;
 		}
 	}
-	
-	//Pushes current data to DB
-	public static boolean push(){	
-		try {
-			for(int i = 0; i < zoneInfo.length; i++){
-				ParseWrapper parse = new ParseWrapper();	
-				parse.putZoneInfo(zoneInfo[i]);				
-			}
-			return true;
-		}
-		 catch (ParseException e) {
-				//Dunno about this...but we have to handle it cleanly
-				return false;
-		}	
-	}
+//	
+//	//Pushes current data to DB
+//	public static boolean push(){	
+//		try {
+//			for(int i = 0; i < zoneInfo.length; i++){
+//				ParseWrapper parse = new ParseWrapper();	
+//				parse.putZoneInfo(zoneInfo[i]);				
+//			}
+//			return true;
+//		}
+//		 catch (ParseException e) {
+//				//Dunno about this...but we have to handle it cleanly
+//				return false;
+//		}	
+//	}
 	
 }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
+import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.models.LoadingBar;
 
 
@@ -142,7 +143,6 @@ public class LoadingScreen implements Screen {
 	        	}
         	}
         }
-        
         ZoneInfoWrapper.getZoneInfo(multiTouch);
     }
 

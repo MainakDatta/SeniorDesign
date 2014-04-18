@@ -99,10 +99,14 @@ public class DataWrapper {
 		}
 		
 		FileHandle cpFile = Gdx.files.local("data/currentpatient.txt");
-		if (!cpFile.exists()) return null;
+		if (!cpFile.exists()) {
+			System.out.println("lolwut...");
+			return null;
+		}
 		
 		BufferedReader r = new BufferedReader(cpFile.reader());
 		String out = r.readLine();
+		System.out.println("WE READ: " + out);
 		r.close();
 		
 		return out;
@@ -115,9 +119,15 @@ public class DataWrapper {
 		}
 		
 		FileHandle cpFile = Gdx.files.local("data/currentpatient.txt");
-		cpFile.delete();
-		
-		cpFile.writeString(patientName + CRLF, true);
+		if(cpFile.exists()){
+			System.out.println("Found it...");
+			cpFile.delete();
+			cpFile.writeString(patientName + CRLF, true);
+		}
+		else{
+			System.out.println("nope...");
+			cpFile.writeString(patientName + CRLF, true);
+		}
 	}
 	
 	public static boolean putPatient(String patientName, String doctorName) 
