@@ -16,8 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
+import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.models.DocOptionsButton;
 import com.me.gestureGym.models.EndScreenButton;
+import com.me.gestureGym.models.SubmitButton;
 
 public class DocViewScreen implements Screen {
 	final GestureGym _myGame;
@@ -36,6 +39,7 @@ public class DocViewScreen implements Screen {
 	
 	private TextFieldStyle tfs;
 	private TextField patient_name;
+	private SubmitButton submit;
 	
 	public DocViewScreen(final GestureGym g) {
 		_myGame = g;
@@ -45,12 +49,12 @@ public class DocViewScreen implements Screen {
 		_spriteBatch = new SpriteBatch();
 		//Text Field to enter patient name
         tfs = new TextFieldStyle();
-        tfs.fontColor = Color.BLACK;        
-        tfs.font = new BitmapFont();
-       
-        patient_name = new TextField("Type name of patient", tfs);
-        patient_name.setVisible(false);
-        patient_name.setTouchable(Touchable.disabled);
+        tfs.fontColor = Color.WHITE;  
+        BitmapFont font = new BitmapFont();
+        font.setScale( 2);
+        tfs.font = font;
+        
+
 		
 		// Scene-graph
 		_stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -61,10 +65,23 @@ public class DocViewScreen implements Screen {
 		_giveTabletButton = new DocOptionsButton((float) (3.0 * Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
                                               (float) (Gdx.graphics.getHeight() / 2.0 - BUTTON_HEIGHT / 2.0),
                                               false);
+		submit = new SubmitButton((float) (3.0 * Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
+                (float) (Gdx.graphics.getHeight() / 2.0 - BUTTON_HEIGHT / 2.0));
+		
+		
+	       
+        patient_name = new TextField("Patient_name", tfs);
+        patient_name.setVisible(false);
+        patient_name.setTouchable(Touchable.disabled);
+        patient_name.setBounds((float) (Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
+                			(float) (Gdx.graphics.getHeight() / 2.0 - BUTTON_HEIGHT / 2.0), 
+                			(BUTTON_WIDTH*5),BUTTON_HEIGHT*5);
+		
 		_stage.addActor(_checkPatientButton);
 		_stage.addActor(_giveTabletButton);
 		_stage.addActor(patient_name);
-
+		_stage.addActor(submit);
+		Gdx.input.setInputProcessor(_stage);
 	}
 
 	@Override
@@ -98,14 +115,32 @@ public class DocViewScreen implements Screen {
 				dispose();
 			} else {
 //				//Give tablet button
-//				_checkPatientButton.setVisible(false);
-//				_giveTabletButton.setVisible(false);
-//				_checkPatientButton.setTouchable(Touchable.disabled);
-//				_giveTabletButton.setTouchable(Touchable.disabled);
-//				patient_name.setVisible(true);
-//				patient_name.setTouchable(Touchable.enabled);
+				_checkPatientButton.setVisible(false);
+				_giveTabletButton.setVisible(false);
+				_checkPatientButton.setTouchable(Touchable.disabled);
+				_giveTabletButton.setTouchable(Touchable.disabled);
+				patient_name.setVisible(true);
+				patient_name.setTouchable(Touchable.enabled);
+				submit.setVisible(true);
+				submit.setTouchable(Touchable.enabled);
 			}
 			//dispose();
+		}
+		else if (actor != null && actor instanceof SubmitButton){
+			SubmitButton sub = (SubmitButton) actor;
+			String name = patient_name.getText();
+			System.out.println("name is:" + name);
+			if(name != null){
+				//change current patient
+				try {
+					DataWrapper.setCurrentPatient(name);
+				} catch (LocalStorageDoesNotExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//refresh screen
+				_myGame.setScreen(new DocViewScreen(_myGame));
+			}
 		}
 	}
 
