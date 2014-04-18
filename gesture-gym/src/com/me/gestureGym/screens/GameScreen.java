@@ -85,10 +85,13 @@ public class GameScreen implements Screen {
         _isMultiTouchGame = isMultiTouchGame;
         
         // get loaded audio file
-        if(!_isMultiTouchGame)
+        if(!_isMultiTouchGame){
         	_backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
-        else 
+        }
+        else{
         	_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
+        }
+        	
         
         _backgroundMusic.play();
         _backgroundMusic.setLooping(true);
@@ -405,16 +408,18 @@ public class GameScreen implements Screen {
 	    	
 	    	unshowEndedCues();
 	    	showStartedCues();
+	    	
+	    	points.setText("" + score_points);
+			
+	        time_seconds -= delta;
+			seconds.setText("" + ((int)time_seconds));
+	    	
 		}
 		
 		if (Gdx.input.justTouched()) {    		
     		handleTouch();
 		}
 		
-		points.setText("" + score_points);
-		
-        time_seconds -= delta;
-		seconds.setText("" + ((int)time_seconds));
 		
 		_stage.act(delta);
         _stage.draw();
@@ -502,7 +507,7 @@ public class GameScreen implements Screen {
 	    score_display.setPosition(0, height-128);
 	    
 	    time_display.setSize(128*3, 128);
-	    time_display.setPosition(width - 128*3, height - 128);
+	    time_display.setPosition(width - 64*5, height - 128);
 	}
 
 	@Override
