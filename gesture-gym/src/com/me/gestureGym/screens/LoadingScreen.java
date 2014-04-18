@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
+import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.models.LoadingBar;
 
 
@@ -128,7 +129,6 @@ public class LoadingScreen implements Screen {
 
         if (Assets.getManager().update()) { // Load some, will return true if done loading
         	//Another check here to see if array is loaded
-        	System.out.println("Waiting on parse");
         	if(multiTouch){
         		if(ZoneInfoWrapper.multiTouchIsReady()){
         			_game.setScreen(new GameScreen(_game, true));
@@ -142,7 +142,6 @@ public class LoadingScreen implements Screen {
 	        	}
         	}
         }
-        
         ZoneInfoWrapper.getZoneInfo(multiTouch);
     }
 

@@ -1,8 +1,3 @@
-/*
-1. Gets sequence S
-2. Calls BoardRenderer(S)
-3. Calls appropriate BoardRenderer method if detects input.
-*/
 package com.me.gestureGym.screens;
 
 import java.util.HashMap;
@@ -85,10 +80,13 @@ public class GameScreen implements Screen {
         _isMultiTouchGame = isMultiTouchGame;
         
         // get loaded audio file
-        if(!_isMultiTouchGame)
+        if(!_isMultiTouchGame){
         	_backgroundMusic = Assets.getManager().get("data/audio/broken_reality.mp3", Music.class);
-        else 
+        }
+        else{
         	_backgroundMusic = Assets.getManager().get("data/audio/invaders_must_die.mp3", Music.class);
+        }
+        	
         
         _backgroundMusic.play();
         _backgroundMusic.setLooping(true);
@@ -208,6 +206,8 @@ public class GameScreen implements Screen {
     }
     
     private void endAndSwitchScreens() {
+    	//Write to db
+    	ZoneInfoWrapper.push(_isMultiTouchGame);
     	_backgroundMusic.stop();
 		_game.setScreen(new GameEndScreen(_game, _isMultiTouchGame));
 		dispose();
@@ -287,15 +287,15 @@ public class GameScreen implements Screen {
 		int secondY = -1;
 		
 		if(firstFingerTouching){
-			System.out.println("Touched at ( " + Gdx.input.getX(0) + 
-					", " +  Gdx.input.getY(0)+ ")");
+//			System.out.println("Touched at ( " + Gdx.input.getX(0) + 
+//					", " +  Gdx.input.getY(0)+ ")");
 			firstX = Gdx.input.getX(0);
 			firstY = Gdx.input.getY(0);
 		}
 		
 		if(secondFingerTouching){
-			System.out.println("Touched second finger at ( " + Gdx.input.getX(1) + 
-					", " +  Gdx.input.getY(1)+ ")");
+//			System.out.println("Touched second finger at ( " + Gdx.input.getX(1) + 
+//					", " +  Gdx.input.getY(1)+ ")");
 			secondX = Gdx.input.getX(1);
 			secondY = Gdx.input.getY(1);
 		}
@@ -405,16 +405,18 @@ public class GameScreen implements Screen {
 	    	
 	    	unshowEndedCues();
 	    	showStartedCues();
+	    	
+	    	points.setText("" + score_points);
+			
+	        time_seconds -= delta;
+			seconds.setText("" + ((int)time_seconds));
+	    	
 		}
 		
 		if (Gdx.input.justTouched()) {    		
     		handleTouch();
 		}
 		
-		points.setText("" + score_points);
-		
-        time_seconds -= delta;
-		seconds.setText("" + ((int)time_seconds));
 		
 		_stage.act(delta);
         _stage.draw();
@@ -502,7 +504,7 @@ public class GameScreen implements Screen {
 	    score_display.setPosition(0, height-128);
 	    
 	    time_display.setSize(128*3, 128);
-	    time_display.setPosition(width - 128*3, height - 128);
+	    time_display.setPosition(width - 64*5, height - 128);
 	}
 
 	@Override
@@ -517,7 +519,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		pauseGame();
+		//pauseGame();
 	}
 
 	@Override

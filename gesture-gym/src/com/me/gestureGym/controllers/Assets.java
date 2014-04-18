@@ -42,6 +42,9 @@ public class Assets implements Disposable, AssetErrorListener {
         // Load all button assets (THESE SHOULD BE PACKED)
 		assets.load("data/ui_elements/MULTI_TOUCH.png", Texture.class);
 		assets.load("data/ui_elements/SINGLE_TOUCH.png", Texture.class);
+		assets.load("data/ui_elements/PATIENT_VIEW.png", Texture.class);
+		assets.load("data/ui_elements/DOCTOR_VIEW.png", Texture.class);
+		assets.load("data/ui_elements/SUBMIT.png", Texture.class);
 		assets.load("data/ui_elements/pause.png", Texture.class);
 		assets.load("data/ui_elements/play.png", Texture.class);
 		assets.load("data/ui_elements/MTTapCue.png", Texture.class);
