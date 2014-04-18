@@ -1,7 +1,5 @@
 package com.me.gestureGym.screens;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.data.DataWrapper;
-import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.data.ZoneResponseInfo;
 
 public class HeatMapScreen implements Screen{
@@ -36,9 +33,18 @@ public class HeatMapScreen implements Screen{
 		times = new float[4][4];
 		try {
 			String patient = DataWrapper.getCurrentPatient();
-			ZoneResponseInfo[] info = DataWrapper.getMostRecentMultiTouchData(patient);
+			ZoneResponseInfo[] info = DataWrapper.getMostRecentSingleTouchData(patient);
+			
+			int sqrt = (int) Math.sqrt(info.length);
+			int row = -1;
+			
 			for(int i = 0; i < info.length; i++){
-				System.out.println(info[i].getSuccessDuration() + " " + info[i].getZoneNumber());
+				
+				if (i%sqrt == 0){
+					row++;
+				}
+				System.out.println(row + " " + i % sqrt + " " + info[i].getSuccessDuration());
+				times[(row)][(i % sqrt)] = info[i].getSuccessDuration(); 
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
