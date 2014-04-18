@@ -19,7 +19,6 @@ public class ZoneInfoWrapper {
 	
 	private static ZoneResponseInfo[] zoneInfo;
 	private static ZoneResponseInfo[] mtZoneInfo;
-	private static final int N_ZONES = 16;
 	private static String currentPatient;
 	
 	//Gives the caller the current status of db
@@ -30,8 +29,6 @@ public class ZoneInfoWrapper {
 			}
 			
 	        try {
-	        	//need to remove
-	        	DataWrapper.setCurrentPatient("Mainak Datta");
 				currentPatient = DataWrapper.getCurrentPatient();
 				mtZoneInfo = DataWrapper.getMostRecentMultiTouchData(currentPatient);
 			} catch (Exception e) {
@@ -49,8 +46,6 @@ public class ZoneInfoWrapper {
 			}
 			
 			try {
-				//need to remove
-				DataWrapper.setCurrentPatient("Mainak Datta");
 				currentPatient = DataWrapper.getCurrentPatient();
 				zoneInfo = DataWrapper.getMostRecentSingleTouchData(currentPatient);
 			} catch (Exception e) {
@@ -96,35 +91,27 @@ public class ZoneInfoWrapper {
 //	//Updates the static zoneInfo array for future calls
 	public static void updateZone(ZoneResponseInfo updated_zone, boolean isMT){
 		if (isMT) {
-			//Creates zoneInfo if needed
-			if(mtZoneInfo == null){
-				mtZoneInfo = new ZoneResponseInfo[N_ZONES];
-			}
 			int index = updated_zone.getZoneNumber();
 			mtZoneInfo[index] = updated_zone;
 		} else {
-			//Creates zoneInfo if needed
-			if(zoneInfo == null){
-				zoneInfo = new ZoneResponseInfo[N_ZONES];
-			}
 			int index = updated_zone.getZoneNumber();
 			zoneInfo[index] = updated_zone;
 		}
 	}
-//	
-//	//Pushes current data to DB
-//	public static boolean push(){	
-//		try {
-//			for(int i = 0; i < zoneInfo.length; i++){
-//				ParseWrapper parse = new ParseWrapper();	
-//				parse.putZoneInfo(zoneInfo[i]);				
-//			}
-//			return true;
-//		}
-//		 catch (ParseException e) {
-//				//Dunno about this...but we have to handle it cleanly
-//				return false;
-//		}	
-//	}
+	
+	//Pushes current data to DB
+	public static boolean push(boolean isMultiTouch){	
+		try {
+			if(isMultiTouch)
+				DataWrapper.putMultiTouchData(currentPatient, mtZoneInfo);
+			else
+				DataWrapper.putSingleTouchData(currentPatient, zoneInfo);
+			return true;
+		}
+		 catch (Exception e) {
+			 e.printStackTrace();
+			 return false;
+		}	
+	}
 	
 }
