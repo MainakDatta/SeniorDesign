@@ -67,11 +67,11 @@ public class HeatMapScreen implements Screen{
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		generateHeatMap();
+		generateRegularHeatMap();
 		
 	}
 
-	private Color[][] generateGradients(){
+	private Color[][] generateSimpleGradients(){
 		
 		float fast = 02f;
 		float slow = 2f;
@@ -103,7 +103,68 @@ public class HeatMapScreen implements Screen{
 		return grads;
 	}
 	
-	private void generateHeatMap(){
+	private Color[][] generateBetterGradients(){
+		
+		Color[][] grads = new Color[4][4];
+		float red, green, blue;
+		for(int i = 0; i < times.length; i++){
+			for(int j = 0; j < times[i].length; j++){
+				if (times[i][j] >= 1.25) { // blue to green segment
+		            blue = ((times[i][j] - 1.25f) / (2.0f - 1.25f));
+		            green = 1-blue;
+		            red = 0;
+				} 
+				else { // green to red segment
+					green = ((times[i][j] - 0.5f) / (1.25f - 0.5f));
+					red =  1-green;
+		            blue = 0;
+				}
+				grads[i][j] = new Color(red, green, blue, 1);
+			}
+		}
+		
+		return grads;
+	}
+	
+	
+	private void generateRegularHeatMap(){
+		
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		float offset = 128f;
+		
+		float bW = (width - 2*offset) / 4;
+		float bH = (height - 2*offset) / 4;
+		
+		Color[][] reds = generateBetterGradients();
+		
+		camera.update();
+		
+		shapeRenderer.begin(ShapeType.Filled);
+
+		for(int i = 0; i < reds.length; i++){
+			for(int j = 0; j < reds[i].length; j++){
+				shapeRenderer.setColor(reds[i][j]);
+				shapeRenderer.rect(offset + (bW*j) , offset + (bH*i), bW, bH);
+			}
+		}
+		
+		shapeRenderer.end();
+		
+
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.WHITE);
+		for(int i = 1; i < reds.length; i++){
+			shapeRenderer.line(offset, offset + (i * bH), width-offset, offset + (i * bH));
+		}
+		for(int j = 1; j < reds[0].length; j++){
+			shapeRenderer.line(offset + (j * bW), offset, offset + (j * bW) , height - offset);
+		}
+		shapeRenderer.end();
+	}
+	
+	private void generateSmoothHeatMap(){
 		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
@@ -118,8 +179,8 @@ public class HeatMapScreen implements Screen{
 		
 		camera.update();
 		
-		Color[][] reds = generateGradients();
-		Color edgeRed = new Color (0.5f, 0f, 0f, 1f);
+		Color[][] reds = generateSimpleGradients();
+		Color edge = new Color (0f, 0f, 0f, 1f);
 		
 		shapeRenderer.begin(ShapeType.Filled);
 		
@@ -127,10 +188,10 @@ public class HeatMapScreen implements Screen{
 		for(int i = 0; i < 5; i++){
 			for(int j = 0; j < 5; j++){
 				
-				Color bottomLeft = edgeRed;
-				Color bottomRight = edgeRed;
-				Color topRight = edgeRed;
-				Color topLeft = edgeRed;
+				Color bottomLeft = edge;
+				Color bottomRight = edge;
+				Color topRight = edge;
+				Color topLeft = edge;
 				
 				// four corner cases
 				if(i == 0 && j == 0){
@@ -184,7 +245,7 @@ public class HeatMapScreen implements Screen{
 		
 
 		shapeRenderer.begin(ShapeType.Line);
-		
+		shapeRenderer.setColor(Color.WHITE);
 		for(int i = 1; i < reds.length; i++){
 			shapeRenderer.line(offset, offset + (i * borderHeight), width-offset, offset + (i * borderHeight));
 		}
