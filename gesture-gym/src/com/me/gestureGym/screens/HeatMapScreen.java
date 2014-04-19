@@ -109,14 +109,14 @@ public class HeatMapScreen implements Screen{
 		float red, green, blue;
 		for(int i = 0; i < times.length; i++){
 			for(int j = 0; j < times[i].length; j++){
-				if (times[i][j] >= 1.80f) { // blue to green segment
-		            blue = ((times[i][j] - 1.80f) / (2.0f - 1.80f));
-		            green = 1-blue;
-		            red = 0;
-				} else if (times[i][j] >= 1.0f) { // green to red segment
-					green = ((times[i][j] - 1.0f) / (1.80f - 1.0f));
+				if (times[i][j] >= 1.50f) { // blue to green segment
+		            blue = ((times[i][j] - 1.50f) / (2.0f - 1.50f));
+					green = 1-blue;
+					red = 0;
+				} else if (times[i][j] >= 1.0) { // green to red segment
+					green = ((times[i][j] - 1.0f) / (1.50f - 1.0f));
 					red =  1-green;
-					blue = 0;
+				    blue = 0;
 				} else {
 					red = 1;
 					green = 0;
