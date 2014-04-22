@@ -89,7 +89,7 @@ public class HeatMapScreen implements Screen{
 		}
 		
 		// delta value
-		slow += 0.025f; 
+		slow += 0.025f;
 		
 		Color[][] grads = new Color[4][4];
 		for(int i = 0; i < times.length; i++){
