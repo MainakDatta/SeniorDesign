@@ -178,6 +178,24 @@ public class DataWrapper {
 		return true;
 	}
 	
+	public static ArrayList<String> getAllPatients() 
+			throws LocalStorageDoesNotExistException, IOException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
+		}
+		
+		ArrayList<String> out = new ArrayList<String>();
+		
+		FileHandle patientsFile = Gdx.files.local("data/patients.txt");
+		BufferedReader r = new BufferedReader(patientsFile.reader());
+		while (r.ready()) {
+			out.add(r.readLine());
+		}
+		
+		return out;
+	}
+	
 	public static void putSingleTouchData(String patientName, ZoneResponseInfo[] data) 
 			throws LocalStorageDoesNotExistException {
 		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
