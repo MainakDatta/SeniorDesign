@@ -148,6 +148,8 @@ public class DataWrapper {
 		
 		patientsFile.writeString(patientName + CRLF, true);
 		
+		if (doctorName == null) return true;
+		
 		// add patient to list of patients that a doctor has
 		FileHandle doctorsFile = Gdx.files.local("data/doctors.txt");
 		StringBuilder doctorsFileContents = new StringBuilder();
@@ -174,6 +176,24 @@ public class DataWrapper {
 		doctorsFile.writeString(doctorsFileContents.toString(), true);
 		
 		return true;
+	}
+	
+	public static ArrayList<String> getAllPatients() 
+			throws LocalStorageDoesNotExistException, IOException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
+		}
+		
+		ArrayList<String> out = new ArrayList<String>();
+		
+		FileHandle patientsFile = Gdx.files.local("data/patients.txt");
+		BufferedReader r = new BufferedReader(patientsFile.reader());
+		while (r.ready()) {
+			out.add(r.readLine());
+		}
+		
+		return out;
 	}
 	
 	public static void putSingleTouchData(String patientName, ZoneResponseInfo[] data) 

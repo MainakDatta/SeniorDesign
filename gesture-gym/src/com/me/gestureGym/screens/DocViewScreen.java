@@ -1,5 +1,7 @@
 package com.me.gestureGym.screens;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.data.LocalStorageDoesNotExistException;
+import com.me.gestureGym.data.NoSuchDoctorException;
 import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.DocOptionsButton;
 import com.me.gestureGym.models.SubmitButton;
@@ -134,7 +137,14 @@ public class DocViewScreen implements Screen {
 				//change current patient
 				try {
 					DataWrapper.setCurrentPatient(name);
+					DataWrapper.putPatient(name, null);
 				} catch (LocalStorageDoesNotExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchDoctorException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
