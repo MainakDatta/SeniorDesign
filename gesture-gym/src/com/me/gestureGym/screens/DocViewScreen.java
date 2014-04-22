@@ -1,13 +1,11 @@
 package com.me.gestureGym.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,13 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.me.gestureGym.GestureGym;
-import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.DocOptionsButton;
-import com.me.gestureGym.models.EndScreenButton;
-import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.SubmitButton;
 
 public class DocViewScreen implements Screen {
@@ -35,8 +30,7 @@ public class DocViewScreen implements Screen {
 	private static final int BUTTON_WIDTH = 256;
 	private static final int BUTTON_HEIGHT = 128;
 	
-	private SpriteBatch _spriteBatch;
-	
+
 	private Stage _stage;
 	
 	private TextFieldStyle tfs;
@@ -49,7 +43,7 @@ public class DocViewScreen implements Screen {
 		_camera = new OrthographicCamera();
 		_camera.setToOrtho(false, 800, 480);
 		
-		_spriteBatch = new SpriteBatch();
+
 		//Text Field to enter patient name
         tfs = new TextFieldStyle();
         tfs.fontColor = Color.WHITE;  
@@ -122,7 +116,7 @@ public class DocViewScreen implements Screen {
 				_myGame.setScreen(new HeatMapScreen(_myGame));
 				dispose();
 			} else {
-//				//Give tablet button
+				//Give tablet button
 				_checkPatientButton.setVisible(false);
 				_giveTabletButton.setVisible(false);
 				_checkPatientButton.setTouchable(Touchable.disabled);
@@ -132,10 +126,8 @@ public class DocViewScreen implements Screen {
 				submit.setVisible(true);
 				submit.setTouchable(Touchable.enabled);
 			}
-			//dispose();
 		}
 		else if (actor != null && actor instanceof SubmitButton){
-			SubmitButton sub = (SubmitButton) actor;
 			String name = patient_name.getText();
 			System.out.println("name is:" + name);
 			if(name != null){
@@ -165,7 +157,7 @@ public class DocViewScreen implements Screen {
 				submit.setTouchable(Touchable.disabled);				
 			}
 			else{
-				//We are in main doc View 
+				//We are in main doc View and want to go back to main Screen
 				_myGame.setScreen(new GameStartScreen(_myGame));
 				dispose();
 			}
@@ -205,7 +197,7 @@ public class DocViewScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+		_stage.dispose();
 	}
 
 }

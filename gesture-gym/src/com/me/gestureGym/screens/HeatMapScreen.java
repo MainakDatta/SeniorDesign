@@ -7,10 +7,17 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.data.ZoneResponseInfo;
+import com.me.gestureGym.models.BackButton;
+import com.me.gestureGym.models.DocOptionsButton;
+import com.me.gestureGym.models.SubmitButton;
 
 public class HeatMapScreen implements Screen{
     
@@ -19,6 +26,9 @@ public class HeatMapScreen implements Screen{
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
 	private float[][] times;
+	
+	private BackButton _backButton;	
+	private final Vector2 _stageCoords = new Vector2();
 	
 	public HeatMapScreen(GestureGym g){
 		
@@ -53,6 +63,10 @@ public class HeatMapScreen implements Screen{
 		
 		//times = new float[][]{{1.99f, 1.93f, 1.97f, 2f}, {2f, 1.94f, 1.97f, 2f}, {1.89f, 2f, 1.93f, 2f}, {2f, 1.99f, 1.98f, 2f}};
 		
+		//BACK BUTTON CODE
+        _backButton = new BackButton(0, 0);
+        stage.addActor(_backButton);
+		
 	}
 	
 	@Override
@@ -62,12 +76,32 @@ public class HeatMapScreen implements Screen{
 		
 	}
 	
+	private void handleTouch() {
+		//store input coordinates in stageCoords vector
+		stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
+		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
+		Actor actor = stage.hit(_stageCoords.x, _stageCoords.y, true);
+		
+		if(actor != null && actor instanceof BackButton){
+			//We are in main doc View and want to go back to main Screen
+			game.setScreen(new DocViewScreen(game));
+			dispose();
+		}
+	}
+	
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		generateRegularHeatMap();
+		
+		if (Gdx.input.justTouched()) {
+			handleTouch();
+		}
+		stage.act(delta);
+        stage.draw();
 		
 	}
 
@@ -128,8 +162,7 @@ public class HeatMapScreen implements Screen{
 		
 		return grads;
 	}
-	
-	
+		
 	private void generateRegularHeatMap(){
 		
 		float width = Gdx.graphics.getWidth();

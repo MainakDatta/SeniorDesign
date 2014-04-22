@@ -4,13 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.models.EndScreenButton;
-import com.me.gestureGym.models.StartButton;
 
 public class GameEndScreen implements Screen {
 	final GestureGym _myGame;
@@ -23,8 +21,6 @@ public class GameEndScreen implements Screen {
 	private static final int BUTTON_WIDTH = 256;
 	private static final int BUTTON_HEIGHT = 128;
 	
-	private SpriteBatch _spriteBatch;
-	
 	private Stage _stage;
 	
 	private boolean _restartMT;
@@ -33,9 +29,7 @@ public class GameEndScreen implements Screen {
 		_myGame = g;
 		_camera = new OrthographicCamera();
 		_camera.setToOrtho(false, 800, 480);
-		
-		_spriteBatch = new SpriteBatch();
-		
+				
 		// Scene-graph
 		_stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		
@@ -57,9 +51,7 @@ public class GameEndScreen implements Screen {
 		
 		_camera.update();
 		_myGame.batch.setProjectionMatrix(_camera.combined);
-		
-		
-		
+
 		if (Gdx.input.justTouched()) {
 			handleTouch();
 		}
@@ -120,7 +112,7 @@ public class GameEndScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+		_stage.dispose();
 	}
 
 }

@@ -1,12 +1,12 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.me.gestureGym.controllers.Assets;
 
 public class EndScreenButton extends Actor {
 	private Texture _texture;
@@ -19,9 +19,9 @@ public class EndScreenButton extends Actor {
 		_y = y;
         //Pick image based on boolean param
 		if(isRestart)
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/PLAY_AGAIN.png"));        
+        	_texture = Assets.getManager().get("data/ui_elements/PLAY_AGAIN.png", Texture.class);        
         else
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/GO_HOME.png"));
+        	_texture = Assets.getManager().get("data/ui_elements/GO_HOME.png", Texture.class);
         
 		_buttonType = isRestart;
         

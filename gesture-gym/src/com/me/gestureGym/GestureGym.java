@@ -1,6 +1,6 @@
 package com.me.gestureGym;
 
-import com.me.gestureGym.screens.GameStartScreen;
+import com.me.gestureGym.screens.LoadingScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,7 +17,8 @@ public class GestureGym extends Game {
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
         
-		this.setScreen(new GameStartScreen(this));
+		this.setScreen(new LoadingScreen(this));
+
 	}
 	
 	public void render(){
