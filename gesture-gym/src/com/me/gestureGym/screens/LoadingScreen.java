@@ -1,6 +1,5 @@
 package com.me.gestureGym.screens;
 
-import almonds.Parse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
-import com.me.gestureGym.controllers.ZoneInfoWrapper;
-import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.models.LoadingBar;
 
 
@@ -34,13 +31,11 @@ public class LoadingScreen implements Screen {
     private float percent;
 
     private Actor loadingBar;
-    private boolean multiTouch;
+
     
-    public LoadingScreen(GestureGym game, boolean isMultiTouchGame) {
-        Parse.initialize("a9fgXH8y5WZxzucfA8ZrPOdQ6dEEsSLHfhykvyzY",
-				"et6FgY6BlRf7zbaarHBBY18g7v233x8V2HXty7DP");
+    public LoadingScreen(GestureGym game) {
+
         _game = game;
-        multiTouch = isMultiTouchGame;
     }
     
     @Override
@@ -109,8 +104,6 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
-       
         // Clear the screen
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -129,20 +122,22 @@ public class LoadingScreen implements Screen {
 
         if (Assets.getManager().update()) { // Load some, will return true if done loading
         	//Another check here to see if array is loaded
-        	if(multiTouch){
-        		if(ZoneInfoWrapper.multiTouchIsReady()){
-        			_game.setScreen(new GameScreen(_game, true));
-        			dispose();
-        		}
-        	}
-        	else{
-	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
-	        		_game.setScreen(new GameScreen(_game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
-	        		dispose();
-	        	}
-        	}
+//        	if(multiTouch){
+//        		if(ZoneInfoWrapper.multiTouchIsReady()){
+//        			_game.setScreen(new GameScreen(_game, true));
+//        			dispose();
+//        		}
+//        	}
+//        	else{
+//	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
+//	        		_game.setScreen(new GameScreen(_game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+//	        		dispose();
+//	        	}
+//        	}
+        	_game.setScreen(new GameStartScreen(_game));
+        	dispose();
         }
-        ZoneInfoWrapper.getZoneInfo(multiTouch);
+//        ZoneInfoWrapper.getZoneInfo(multiTouch);
     }
 
     @Override
@@ -165,8 +160,7 @@ public class LoadingScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		stage.dispose();
-    	
+		stage.dispose();    	
     	Assets.getManager().unload("data/loading.pack");
 		
 	}

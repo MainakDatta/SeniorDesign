@@ -11,11 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.MainMenuButton;
-import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.StartButton;
-import com.me.gestureGym.models.TapCue;
 
 // main menu
 
@@ -145,7 +144,24 @@ public class GameStartScreen implements Screen {
 			//Check which button it was
 			StartButton st = (StartButton) actor;
 			boolean multi = st.getType();
-			game.setScreen(new LoadingScreen(game, multi));
+			//game.setScreen(new LoadingScreen(game, multi));
+			ZoneInfoWrapper.getZoneInfo(multi);
+        	if(multi){
+	    		if(ZoneInfoWrapper.multiTouchIsReady()){
+	    			game.setScreen(new GameScreen(game, true));
+	    		}
+	        	else{
+	        		System.out.println("Error starting multi-touch game");
+	        	}
+        	}	
+        	else{
+	        	if(ZoneInfoWrapper.singleTouchIsReady()){        		
+	        		game.setScreen(new GameScreen(game, false)); // CURRENTLY STARTS SINGLE TOUCH GAME
+	        	}
+	        	else{
+	        		System.out.println("Error starting single-touch game");
+	        	}
+        	}
 			dispose();
 		}
 		else if (actor != null && actor instanceof BackButton) {

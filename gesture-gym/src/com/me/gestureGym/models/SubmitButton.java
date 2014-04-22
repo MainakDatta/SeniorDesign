@@ -1,6 +1,5 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,7 +13,7 @@ public class SubmitButton extends Actor {
 	private float _x, _y;
 	
 	public SubmitButton(float x, float y) {
-		_texture = new Texture(Gdx.files.internal("data/ui_elements/SUBMIT.png")); 
+		_texture = Assets.getManager().get("data/ui_elements/SUBMIT.png", Texture.class);
 		_x = x;
 		_y = y;
 		

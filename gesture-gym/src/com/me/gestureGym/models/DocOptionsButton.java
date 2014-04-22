@@ -1,12 +1,12 @@
 package com.me.gestureGym.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.me.gestureGym.controllers.Assets;
 
 public class DocOptionsButton extends Actor {
 	
@@ -20,9 +20,9 @@ public class DocOptionsButton extends Actor {
 		_y = y;
         //Pick image based on boolean param
 		if(checkPatient)
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/CHECK_PATIENTS.png"));        
+        	_texture = Assets.getManager().get("data/ui_elements/CHECK_PATIENTS.png", Texture.class);	
         else
-        	_texture = new Texture(Gdx.files.internal("data/ui_elements/GIVE_TABLET.png"));
+        	_texture = Assets.getManager().get("data/ui_elements/GIVE_TABLET.png", Texture.class);	
         
 		_buttonType = checkPatient;
         

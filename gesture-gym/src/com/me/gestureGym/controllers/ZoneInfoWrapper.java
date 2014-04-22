@@ -1,10 +1,6 @@
 package com.me.gestureGym.controllers;
 
-import java.io.IOException;
-
-
 import com.me.gestureGym.data.DataWrapper;
-import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 
 import com.me.gestureGym.data.ZoneResponseInfo;
 
@@ -24,38 +20,27 @@ public class ZoneInfoWrapper {
 		if (isMT) {
 			if (mtZoneInfo != null) {
 				return mtZoneInfo;
-			}
-			
+			}			
 	        try {
-	        	//DataWrapper.setCurrentPatient("Mainak Datta");
 				currentPatient = DataWrapper.getCurrentPatient();
-				
-				// commented out cuz mainak said so
 				mtZoneInfo = DataWrapper.getMostRecentMultiTouchData(currentPatient);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Problems getting current patient");
-			}
-	        
-	        
-		
-			return mtZoneInfo;
+			}	        	        	
+	        return mtZoneInfo;
 		} else {
 			//SINGLE TOUCH			
 			if (zoneInfo != null) {
 				return zoneInfo;
-			}
-			
+			}			
 			try {
-				//DataWrapper.setCurrentPatient("Mainak Datta");
-				currentPatient = DataWrapper.getCurrentPatient();
-				
+				currentPatient = DataWrapper.getCurrentPatient();				
 				zoneInfo = DataWrapper.getMostRecentSingleTouchData(currentPatient);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Problems getting current patient");
 			}
-
 			return zoneInfo;
 		}
 	}
@@ -67,8 +52,7 @@ public class ZoneInfoWrapper {
 			for (int i = 0; i< zoneInfo.length; i++){
 				if (zoneInfo[i] == null) return false;
 			}
-			
-			System.out.println("st is ready");
+//			System.out.println("st is ready");
 			return true;
 		}
 		return false;
@@ -84,10 +68,10 @@ public class ZoneInfoWrapper {
 				}
 			}
 			
-			System.out.println("mt is ready");
+//			System.out.println("mt is ready");
 			return true;
 		}
-		System.out.println("mt not ready, is null");
+//		System.out.println("mt not ready, is null");
 		return false;
 	}
 	
