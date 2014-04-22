@@ -2,12 +2,10 @@ package com.me.gestureGym.controllers;
 
 import java.io.IOException;
 
-import almonds.ParseException;
-import almonds.ParseObject;
 
 import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.data.LocalStorageDoesNotExistException;
-import com.me.gestureGym.data.ParseWrapper;
+
 import com.me.gestureGym.data.ZoneResponseInfo;
 
 /*

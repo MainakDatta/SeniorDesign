@@ -25,6 +25,7 @@ import com.me.gestureGym.controllers.MTSequenceGenerator;
 import com.me.gestureGym.controllers.SequenceGenerator;
 import com.me.gestureGym.controllers.ZoneInfoWrapper;
 import com.me.gestureGym.data.ZoneResponseInfo;
+import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.PlayButton;
 import com.me.gestureGym.models.Sequence;
@@ -73,6 +74,7 @@ public class GameScreen implements Screen {
 	private Table time_display;
 	private TextField seconds;
 	private float time_seconds;
+	private BackButton _backButton;
 	
     public GameScreen(GestureGym g, boolean isMultiTouchGame){
 
@@ -145,6 +147,12 @@ public class GameScreen implements Screen {
         
         _playButton = new PlayButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_playButton);
+        
+        _backButton = new BackButton(0, 0);
+        _backButton.setVisible(false);
+        _backButton.setTouchable(Touchable.disabled);
+        _stage.addActor(_backButton);
+        
     }
     
     // create zones, zone hits hashmap
@@ -203,6 +211,10 @@ public class GameScreen implements Screen {
     	_time = 0;
     	_sequenceIndex = 0;
     	_stage.addActor(_currentSequence);
+    	//Reset hashmap
+		for (Zone z : _zoneHits.keySet()) {
+			_zoneHits.put(z, 0);
+		}
     }
     
     private void endAndSwitchScreens() {
@@ -262,6 +274,8 @@ public class GameScreen implements Screen {
 		_pauseButton.setVisible(false);
 		_playButton.setTouchable(Touchable.enabled);
 		_playButton.setVisible(true);
+		_backButton.setTouchable(Touchable.enabled);
+		_backButton.setVisible(true);
     }
     
     private void unpauseGame() {
@@ -320,6 +334,15 @@ public class GameScreen implements Screen {
 		if ((actor != null && actor instanceof PlayButton) 
 				|| (actor2 != null && actor instanceof PlayButton)){
 			unpauseGame();
+		}
+		
+		if ((actor != null && actor instanceof BackButton) 
+				|| (actor2 != null && actor instanceof BackButton)){
+			//Push existing data
+	    	ZoneInfoWrapper.push(_isMultiTouchGame);
+	    	_backgroundMusic.stop();
+			_game.setScreen(new GameStartScreen(_game));
+			dispose();
 		}
 		
 		boolean cueOneHit = false;
