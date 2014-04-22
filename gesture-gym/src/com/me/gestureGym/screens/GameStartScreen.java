@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.MainMenuButton;
 import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.StartButton;
@@ -29,6 +30,7 @@ public class GameStartScreen implements Screen {
 	private StartButton _single_touch;		
 	private MainMenuButton _patient_view;
 	private MainMenuButton _doc_view;
+	private BackButton backButton;
 	
 	private static final int START_BUTTON_WIDTH = 256;
 	
@@ -37,6 +39,8 @@ public class GameStartScreen implements Screen {
 
 	float w;
 	float h;
+
+
 
 	/**
 	 * Constructor for the splash screen
@@ -79,7 +83,13 @@ public class GameStartScreen implements Screen {
         _single_touch.setTouchable(Touchable.disabled);
         _stage.addActor(_single_touch);
 
+        //Back button
+		backButton = new BackButton(0, 0);
+		backButton.setVisible(false);
+		backButton.setTouchable(Touchable.disabled);
+        _stage.addActor(backButton);
 	}
+	
 
 	@Override
 	public void render(float delta) {		
@@ -121,6 +131,8 @@ public class GameStartScreen implements Screen {
 				_single_touch.setTouchable(Touchable.enabled);
 				_multi_touch.setVisible(true);
 				_multi_touch.setTouchable(Touchable.enabled);
+				backButton.setVisible(true);
+				backButton.setTouchable(Touchable.enabled);
 			}
 			else{
 				//Take to doctor button
@@ -135,6 +147,19 @@ public class GameStartScreen implements Screen {
 			boolean multi = st.getType();
 			game.setScreen(new LoadingScreen(game, multi));
 			dispose();
+		}
+		else if (actor != null && actor instanceof BackButton) {
+			_patient_view.setVisible(true);
+			_patient_view.setTouchable(Touchable.enabled);
+			_doc_view.setVisible(true);
+			_doc_view.setTouchable(Touchable.enabled);
+			//Set game mode buttons visible
+			_single_touch.setVisible(false);
+			_single_touch.setTouchable(Touchable.disabled);
+			_multi_touch.setVisible(false);
+			_multi_touch.setTouchable(Touchable.disabled);
+			backButton.setVisible(false);
+			backButton.setTouchable(Touchable.disabled);
 		}
 
 		

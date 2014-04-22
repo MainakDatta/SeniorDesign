@@ -18,8 +18,10 @@ import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.data.DataWrapper;
 import com.me.gestureGym.data.LocalStorageDoesNotExistException;
+import com.me.gestureGym.models.BackButton;
 import com.me.gestureGym.models.DocOptionsButton;
 import com.me.gestureGym.models.EndScreenButton;
+import com.me.gestureGym.models.PauseButton;
 import com.me.gestureGym.models.SubmitButton;
 
 public class DocViewScreen implements Screen {
@@ -40,6 +42,7 @@ public class DocViewScreen implements Screen {
 	private TextFieldStyle tfs;
 	private TextField patient_name;
 	private SubmitButton submit;
+	private BackButton backButton;
 	
 	public DocViewScreen(final GestureGym g) {
 		_myGame = g;
@@ -65,6 +68,10 @@ public class DocViewScreen implements Screen {
 		_giveTabletButton = new DocOptionsButton((float) (3.0 * Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
                                               (float) (Gdx.graphics.getHeight() / 2.0 - BUTTON_HEIGHT / 2.0),
                                               false);
+		
+		//backButton = new BackButton(Gdx.graphics.getWidth() - 128, 0);
+		backButton = new BackButton(0, 0);
+        
 		submit = new SubmitButton((float) (3.0 * Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
                 (float) (Gdx.graphics.getHeight() / 2.0 - BUTTON_HEIGHT / 2.0));
 		
@@ -81,6 +88,7 @@ public class DocViewScreen implements Screen {
 		_stage.addActor(_giveTabletButton);
 		_stage.addActor(patient_name);
 		_stage.addActor(submit);
+		_stage.addActor(backButton);
 		Gdx.input.setInputProcessor(_stage);
 	}
 
@@ -140,6 +148,26 @@ public class DocViewScreen implements Screen {
 				}
 				//refresh screen
 				_myGame.setScreen(new DocViewScreen(_myGame));
+			}
+		}
+		else if(actor != null && actor instanceof BackButton){
+			//Check which state we are in. Kind of hacky approach that I might change later
+			if(!_giveTabletButton.isVisible()){
+				//We are in change patient screen
+//				//Give tablet button
+				_checkPatientButton.setVisible(true);
+				_giveTabletButton.setVisible(true);
+				_checkPatientButton.setTouchable(Touchable.enabled);
+				_giveTabletButton.setTouchable(Touchable.enabled);
+				patient_name.setVisible(false);
+				patient_name.setTouchable(Touchable.disabled);
+				submit.setVisible(false);
+				submit.setTouchable(Touchable.disabled);				
+			}
+			else{
+				//We are in main doc View 
+				_myGame.setScreen(new GameStartScreen(_myGame));
+				dispose();
 			}
 		}
 	}
