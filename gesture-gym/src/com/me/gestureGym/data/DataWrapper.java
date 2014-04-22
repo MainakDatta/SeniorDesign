@@ -148,6 +148,8 @@ public class DataWrapper {
 		
 		patientsFile.writeString(patientName + CRLF, true);
 		
+		if (doctorName == null) return true;
+		
 		// add patient to list of patients that a doctor has
 		FileHandle doctorsFile = Gdx.files.local("data/doctors.txt");
 		StringBuilder doctorsFileContents = new StringBuilder();
