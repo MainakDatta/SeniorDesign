@@ -14,7 +14,6 @@ public class GestureGym extends Game {
 	@Override
 	public void create() {	
 		batch = new SpriteBatch();
-        //Use LibGDX's default Arial font.
         font = new BitmapFont();
         
 		this.setScreen(new LoadingScreen(this));

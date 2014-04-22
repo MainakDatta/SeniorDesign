@@ -61,10 +61,6 @@ public class Assets implements Disposable, AssetErrorListener {
         // Wait until they are finished loading
         assets.finishLoading();
 
-		
-		//Gdx.app.debug(TAG,"# of assets loaded: " + assetManager.getAssetNames().size);
-		for (String a : assets.getAssetNames())
-			System.out.println("asset: " + a);
 	}
 
 	public static AssetManager getManager(){
@@ -77,7 +73,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 	@Override
-	public void error(AssetDescriptor asset, Throwable throwable) {
+	public void error(@SuppressWarnings("rawtypes") AssetDescriptor asset, Throwable throwable) {
 		// TODO Auto-generated method stub
 		
 	}
