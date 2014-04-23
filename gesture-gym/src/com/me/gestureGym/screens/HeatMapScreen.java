@@ -49,6 +49,9 @@ public class HeatMapScreen implements Screen {
 	private SelectBox patientDropdown;
 	private String currentPatient;
 	private SelectBox dataDropdown;
+	private String currentDate;
+	private ArrayList<HistoricalZoneResponseInfo[]> data;
+	
 	private CheckBox singleTouch;
 	private CheckBox multiTouch;
 	private boolean prev;
@@ -68,52 +71,37 @@ public class HeatMapScreen implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 		
-		times = new float[4][4];
-		try {
-			String patient = DataWrapper.getCurrentPatient();
-			ZoneResponseInfo[] info = DataWrapper.getMostRecentSingleTouchData(patient);
-			
-			int sqrt = (int) Math.sqrt(info.length);
-			int row = -1;
-			
-			for(int i = 0; i < info.length; i++){
-				
-				if (i%sqrt == 0){
-					row++;
-				}
-				//System.out.println(row + " " + i % sqrt + " " + info[i].getSuccessDuration());
-				times[(row)][(i % sqrt)] = info[i].getSuccessDuration(); 
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 		//BACK BUTTON CODE
         _backButton = new BackButton(0, 0);
         stage.addActor(_backButton);
 	
-        ArrayList<String> pList;
-		try {
+        // ALL OF THE INTERESTING THINGS
+        
+        ArrayList<String> pList;        
+
+        try {
+
 			currentPatient = DataWrapper.getCurrentPatient();
 			pList = DataWrapper.getAllPatients();
 			patientList = new String[pList.size()];
 	        for(int i = 0; i < pList.size(); i++ ){
 	            patientList[i] = pList.get(i);
 	        }
+		
 		} catch (LocalStorageDoesNotExistException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
         
+        times = new float[4][4];
+        loadInitialTimes();
+        		
         patientData = new String[]{""};
         
 		Skin skin = Assets.getManager().get("data/uiskin.json", Skin.class);
 		
 		patientDropdown = new SelectBox(patientList, skin);
-	
 		patientDropdown.setSelection(currentPatient);
 		
 		bg = new ButtonGroup();
@@ -127,9 +115,15 @@ public class HeatMapScreen implements Screen {
 		bg.setMinCheckCount(1);
 		
 		dataDropdown = new SelectBox(patientData, skin);
-		updateHistoryList(true);
+		dataDropdown.setSelection(patientData[0]);
 		
-		Label instructions = new Label("Please select a patient and a play record!", skin);
+		try {
+			updateHistoryList(true);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+        Label instructions = new Label("Please select a patient and a play record!", skin);
 
 		Table window = new Table(skin);
 		window.setPosition(offset, Gdx.graphics.getHeight() - (3*offset/4));
@@ -148,7 +142,72 @@ public class HeatMapScreen implements Screen {
 		stage.addActor(window);
 	}
 
+	private void loadInitialTimes(){
+		ZoneResponseInfo[] info;
+		try {
+			info = DataWrapper.getMostRecentSingleTouchData(currentPatient);
+			int sqrt = (int) Math.sqrt(info.length);
+			int row = -1;
+			
+			for(int i = 0; i < info.length; i++){
+				
+				if (i%sqrt == 0){
+					row++;
+				}
+				
+				times[(row)][(i % sqrt)] = info[i].getSuccessDuration(); 
+			}
+		} catch (LocalStorageDoesNotExistException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ImproperFileFormatException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	private void updateTimes(){
+		try {
+			HistoricalZoneResponseInfo[] info = new HistoricalZoneResponseInfo[0];
+			
+			for(int i = 0; i < data.size(); i++ ){
+				if(data.get(i)[0].getDate().equals(currentDate)){
+					info = data.get(i);
+				}
+			}
+
+			int sqrt = (int) Math.sqrt(info.length);
+			int row = -1;
+			
+			for(int i = 0; i < info.length; i++){
+				
+				if (i%sqrt == 0){
+					row++;
+				}
+				
+				times[(row)][(i % sqrt)] = info[i].getSuccessDuration(); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void handleTouch() throws ParseException {
+		
+		if(!patientDropdown.getSelection().equals(currentPatient)){
+			currentPatient = patientDropdown.getSelection();
+			updateHistoryList(true);
+		}
+		
+		if(!dataDropdown.getSelection().equals(currentDate)){
+			currentDate = dataDropdown.getSelection();
+			updateTimes();
+		}
+		
 		
 		if(singleTouch.isChecked() && !prev){
 			updateHistoryList(true);
@@ -171,14 +230,6 @@ public class HeatMapScreen implements Screen {
 			dispose();
 		}
 		
-		
-		if(actor == patientDropdown){
-			System.out.println("HERE MOTHERFUCKER");
-			if(!patientDropdown.getSelection().equals(currentPatient)){
-				currentPatient = patientDropdown.getSelection();
-			}
-		
-		}
 	}
 	
 	@Override
@@ -203,11 +254,10 @@ public class HeatMapScreen implements Screen {
 	}
 	
 	private void updateHistoryList(boolean mode) throws ParseException{
-		String curr;
+		
 		try {
-			curr = DataWrapper.getCurrentPatient();
+			String curr = currentPatient;
 			ArrayList<String> dates = new ArrayList<String>();
-			ArrayList<HistoricalZoneResponseInfo[]> data;
 			
 			if(mode){
 				data = DataWrapper.getAllSingleTouchData(curr);
