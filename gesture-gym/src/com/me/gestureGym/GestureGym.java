@@ -1,5 +1,9 @@
 package com.me.gestureGym;
 
+import java.io.IOException;
+
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
+import com.me.gestureGym.data.NoSuchDoctorException;
 import com.me.gestureGym.screens.LoadingScreen;
 
 import com.badlogic.gdx.Game;
@@ -16,7 +20,18 @@ public class GestureGym extends Game {
 		batch = new SpriteBatch();
         font = new BitmapFont();
         
-		this.setScreen(new LoadingScreen(this));
+		try {
+			this.setScreen(new LoadingScreen(this));
+		} catch (LocalStorageDoesNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchDoctorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 	
