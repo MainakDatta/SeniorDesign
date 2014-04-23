@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -194,6 +195,8 @@ public class DataWrapper {
 		while (r.ready()) {
 			out.add(r.readLine());
 		}
+		
+		Collections.sort(out);
 		
 		return out;
 	}
