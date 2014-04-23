@@ -56,7 +56,7 @@ public class HeatMapScreen implements Screen {
 	// used for UI adjustments
 	private float offset = 128f;
 	
-	public HeatMapScreen(GestureGym g) {
+	public HeatMapScreen(GestureGym g) throws ParseException {
 		
 		game = g;
 		
