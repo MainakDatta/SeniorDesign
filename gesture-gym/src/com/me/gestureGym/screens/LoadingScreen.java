@@ -1,6 +1,8 @@
 package com.me.gestureGym.screens;
 
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -12,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.me.gestureGym.GestureGym;
 import com.me.gestureGym.controllers.Assets;
+import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.LocalStorageDoesNotExistException;
+import com.me.gestureGym.data.NoSuchDoctorException;
 import com.me.gestureGym.models.LoadingBar;
 
 
@@ -33,7 +38,7 @@ public class LoadingScreen implements Screen {
     private Actor loadingBar;
 
     
-    public LoadingScreen(GestureGym game) {
+    public LoadingScreen(GestureGym game) throws LocalStorageDoesNotExistException, IOException, NoSuchDoctorException {
 
         _game = game;
         
@@ -42,6 +47,9 @@ public class LoadingScreen implements Screen {
 
         // PREPARE ALL MEDIA FILES FOR USE
         Assets.load();
+        
+        // load hardcoded headmaps into memory
+        DataWrapper.writeHardcodedHeatmaps();
         
         // Get our texture atlas from the manager
         TextureAtlas atlas = Assets.getManager().get("data/loading.pack", TextureAtlas.class);
