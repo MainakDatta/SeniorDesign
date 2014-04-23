@@ -153,12 +153,11 @@ public class HeatMapScreen implements Screen {
 		if(singleTouch.isChecked() && !prev){
 			updateHistoryList(true);
 			prev = true;
-			System.out.println("YES???");
+			
 		}
 		if(multiTouch.isChecked() && prev){
 			updateHistoryList(false);
 			prev = false;
-			System.out.println("NOO???");
 		}
 		
 		//store input coordinates in stageCoords vector
@@ -192,7 +191,6 @@ public class HeatMapScreen implements Screen {
 		if (Gdx.input.justTouched()) {
 			handleTouch();
 			
-			
 		}
 		
 		stage.act(delta);
@@ -219,9 +217,7 @@ public class HeatMapScreen implements Screen {
 			
 			patientData = dates.toArray(new String[0]);
 			dataDropdown.setItems(patientData);
-			for(String s : patientData){
-				System.out.println(s);
-			}
+			dataDropdown.invalidate();
 		
 		} catch (LocalStorageDoesNotExistException e) {
 			e.printStackTrace();
