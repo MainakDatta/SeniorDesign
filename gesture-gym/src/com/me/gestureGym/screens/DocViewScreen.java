@@ -1,6 +1,7 @@
 package com.me.gestureGym.screens;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -99,14 +100,19 @@ public class DocViewScreen implements Screen {
 		_myGame.batch.setProjectionMatrix(_camera.combined);
 		
 		if (Gdx.input.justTouched()) {
-			handleTouch();
+			try {
+				handleTouch();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		_stage.act(delta);
         _stage.draw();
 	}
 	
-	private void handleTouch() {
+	private void handleTouch() throws ParseException {
 		//store input coordinates in stageCoords vector
 		_stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
