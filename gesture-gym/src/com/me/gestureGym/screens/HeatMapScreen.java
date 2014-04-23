@@ -1,6 +1,7 @@
 package com.me.gestureGym.screens;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -126,6 +127,7 @@ public class HeatMapScreen implements Screen {
 		bg.setMinCheckCount(1);
 		
 		dataDropdown = new SelectBox(patientData, skin);
+		updateHistoryList(true);
 		
 		Label instructions = new Label("Please select a patient and a play record!", skin);
 
@@ -212,25 +214,24 @@ public class HeatMapScreen implements Screen {
 			}
 		
 			for(HistoricalZoneResponseInfo[] h : data){
-				for(int i = 0; i < h.length; i++){
-					dates.add(h[i].getDate());
-				}
+				dates.add(h[0].getDate());
 			}
 			
 			patientData = dates.toArray(new String[0]);
 			dataDropdown.setItems(patientData);
+			for(String s : patientData){
+				System.out.println(s);
+			}
 		
 		} catch (LocalStorageDoesNotExistException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ImproperFileFormatException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 		
 	}
 
