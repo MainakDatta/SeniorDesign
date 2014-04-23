@@ -136,15 +136,17 @@ public class DataWrapper {
 		
 		// put patient in patients file
 		FileHandle patientsFile = Gdx.files.local("data/patients.txt");
-		BufferedReader r = new BufferedReader(patientsFile.reader());
-		while (r.ready()) {
-			String user = r.readLine();
-			if (user.equals(patientName)) {
-				return false;
+		if (patientsFile.exists()) {
+			BufferedReader r = new BufferedReader(patientsFile.reader());
+			while (r.ready()) {
+				String user = r.readLine();
+				if (user.equals(patientName)) {
+					return false;
+				}
 			}
+			
+			r.close();
 		}
-		
-		r.close();
 		
 		patientsFile.writeString(patientName + CRLF, true);
 		
@@ -153,7 +155,7 @@ public class DataWrapper {
 		// add patient to list of patients that a doctor has
 		FileHandle doctorsFile = Gdx.files.local("data/doctors.txt");
 		StringBuilder doctorsFileContents = new StringBuilder();
-		r = new BufferedReader(doctorsFile.reader());
+		BufferedReader r = new BufferedReader(doctorsFile.reader());
 		
 		boolean doctorNameFound = false;
 		
@@ -311,21 +313,21 @@ public class DataWrapper {
 			throw new LocalStorageDoesNotExistException();
 		}
 		
-		FileHandle stDir = Gdx.files.local("data/" + patientName + "/mt");
-		if (!stDir.exists()) return defaultData();
+		FileHandle mtDir = Gdx.files.local("data/" + patientName + "/mt");
+		if (!mtDir.exists()) return defaultData();
 		
-		FileHandle[] stDatas = stDir.list();
+		FileHandle[] mtDatas = mtDir.list();
 		
 		int fileIndex = -1;
 		long lastModified = Long.MIN_VALUE;
-		for (int i = 0; i < stDatas.length; i++) {
-			if (stDatas[i].lastModified() > lastModified) {
-				lastModified = stDatas[i].lastModified();
+		for (int i = 0; i < mtDatas.length; i++) {
+			if (mtDatas[i].lastModified() > lastModified) {
+				lastModified = mtDatas[i].lastModified();
 				fileIndex = i;
 			}
 		}
 		
-		FileHandle mostRecentFile = stDatas[fileIndex];
+		FileHandle mostRecentFile = mtDatas[fileIndex];
 		return fileToZoneResponses(mostRecentFile);
 	}
 	
@@ -422,5 +424,15 @@ public class DataWrapper {
 		}
 		
 		return null;
+	}
+	
+	public static void writeHardcodedHeatmaps() throws LocalStorageDoesNotExistException {
+		boolean isLocalStorageAvailable = Gdx.files.isLocalStorageAvailable();
+		if (!isLocalStorageAvailable) {
+			throw new LocalStorageDoesNotExistException();
+		}
+		
+		// TODO: Finish this
+		
 	}
 }
