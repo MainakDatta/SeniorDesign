@@ -191,6 +191,7 @@ public class DataWrapper {
 		ArrayList<String> out = new ArrayList<String>();
 		
 		FileHandle patientsFile = Gdx.files.local("data/patients.txt");
+		if (!patientsFile.exists()) return out;
 		BufferedReader r = new BufferedReader(patientsFile.reader());
 		while (r.ready()) {
 			out.add(r.readLine());
