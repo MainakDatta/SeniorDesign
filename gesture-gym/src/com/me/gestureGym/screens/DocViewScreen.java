@@ -121,6 +121,7 @@ public class DocViewScreen implements Screen {
 		if (actor != null && actor instanceof DocOptionsButton) {
 			//Check which button it was
 			DocOptionsButton dbt = (DocOptionsButton) actor;
+			dbt.hit();
 			boolean checkPatient = dbt.getType();
 			if (checkPatient) {
 				_myGame.setScreen(new HeatMapScreen(_myGame));
@@ -139,7 +140,9 @@ public class DocViewScreen implements Screen {
 		}
 		else if (actor != null && actor instanceof SubmitButton){
 			String name = patient_name.getText();
-			System.out.println("name is:" + name);
+//			System.out.println("name is:" + name);
+			SubmitButton s = (SubmitButton) actor;
+			s.hit();
 			if(name != null){
 				//change current patient
 				try {
@@ -160,6 +163,8 @@ public class DocViewScreen implements Screen {
 			}
 		}
 		else if(actor != null && actor instanceof BackButton){
+			BackButton b = (BackButton) actor;
+			b.hit();
 			//Check which state we are in. Kind of hacky approach that I might change later
 			if(!_giveTabletButton.isVisible()){
 				//We are in change patient screen

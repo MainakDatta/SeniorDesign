@@ -1,5 +1,6 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,11 +14,14 @@ public class DocOptionsButton extends Actor {
 	private Texture _texture;
 	private float _x, _y;
 	private boolean _buttonType;
+	private Sound _hitSound;
 	
 	//Takes in a boolean to determine which text to show on button
 	public DocOptionsButton(float x, float y, boolean checkPatient) {
 		_x = x;
 		_y = y;
+		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
+
         //Pick image based on boolean param
 		if(checkPatient)
         	_texture = Assets.getManager().get("data/ui_elements/CHECK_PATIENTS.png", Texture.class);	
@@ -53,5 +57,9 @@ public class DocOptionsButton extends Actor {
 	
 	public boolean getType() {
 		return _buttonType;
+	}
+	
+	public void hit() {
+		_hitSound.play(1.0f);
 	}
 }

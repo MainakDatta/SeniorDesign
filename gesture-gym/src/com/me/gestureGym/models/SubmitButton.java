@@ -1,5 +1,6 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -11,8 +12,10 @@ import com.me.gestureGym.controllers.Assets;
 public class SubmitButton extends Actor {
 	private Texture _texture;
 	private float _x, _y;
+	private Sound _hitSound;
 	
 	public SubmitButton(float x, float y) {
+		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
 		_texture = Assets.getManager().get("data/ui_elements/SUBMIT.png", Texture.class);
 		_x = x;
 		_y = y;
@@ -39,5 +42,9 @@ public class SubmitButton extends Actor {
 	
 	public float getY() {
 		return _y;
+	}
+	
+	public void hit() {
+		_hitSound.play(1.0f);
 	}
 }

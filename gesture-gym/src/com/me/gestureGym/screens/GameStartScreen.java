@@ -119,7 +119,8 @@ public class GameStartScreen implements Screen {
 		if (actor != null && actor instanceof MainMenuButton) {
 			//Check which button it was
 			MainMenuButton mm = (MainMenuButton) actor;
-			boolean patient = mm.getType(); 
+			mm.hit();
+			boolean patient = mm.getType(); 			
 			if(patient){
 				_patient_view.setVisible(false);
 				_patient_view.setTouchable(Touchable.disabled);
@@ -143,6 +144,7 @@ public class GameStartScreen implements Screen {
 		else if (actor != null && actor instanceof StartButton) {
 			//Check which button it was
 			StartButton st = (StartButton) actor;
+			st.hit();
 			boolean multi = st.getType();
 			//game.setScreen(new LoadingScreen(game, multi));
 			ZoneInfoWrapper.getZoneInfo(multi);
@@ -165,6 +167,8 @@ public class GameStartScreen implements Screen {
 			dispose();
 		}
 		else if (actor != null && actor instanceof BackButton) {
+			BackButton b = (BackButton) actor;
+			b.hit();
 			_patient_view.setVisible(true);
 			_patient_view.setTouchable(Touchable.enabled);
 			_doc_view.setVisible(true);

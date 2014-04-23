@@ -1,5 +1,6 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,9 +13,11 @@ public class EndScreenButton extends Actor {
 	private Texture _texture;
 	private float _x, _y;
 	private boolean _buttonType;
+	private Sound _hitSound;
 	
 	//Takes in a boolean to determine which text to show on button
 	public EndScreenButton(float x, float y, boolean isRestart) {
+		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
 		_x = x;
 		_y = y;
         //Pick image based on boolean param
@@ -52,5 +55,9 @@ public class EndScreenButton extends Actor {
 	
 	public boolean getType() {
 		return _buttonType;
+	}
+	
+	public void hit() {
+		_hitSound.play(1.0f);
 	}
 }

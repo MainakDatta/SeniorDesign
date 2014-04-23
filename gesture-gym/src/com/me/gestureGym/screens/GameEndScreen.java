@@ -69,6 +69,7 @@ public class GameEndScreen implements Screen {
 		if (actor != null && actor instanceof EndScreenButton) {
 			//Check which button it was
 			EndScreenButton st = (EndScreenButton) actor;
+			st.hit();
 			boolean restart = st.getType();
 			if (restart) {
 				_myGame.setScreen(new GameScreen(_myGame, _restartMT));

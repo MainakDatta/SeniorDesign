@@ -1,5 +1,6 @@
 package com.me.gestureGym.models;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,9 +14,11 @@ public class MainMenuButton extends Actor {
 	private Texture _texture;
 	private float _x, _y;
 	private boolean _buttonType;
+	private Sound _hitSound;
 	
 	//Takes in a boolean to determine which text to show on button
 	public MainMenuButton(float x, float y, boolean isPatient) {
+		_hitSound = Assets.getManager().get("data/audio/hit.wav", Sound.class);
 		_x = x;
 		_y = y;
         //Pick image based on boolean param
@@ -53,5 +56,13 @@ public class MainMenuButton extends Actor {
 	
 	public boolean getType() {
 		return _buttonType;
+	}
+	
+	public Sound getSound() {
+		return _hitSound;
+	}
+	
+	public void hit(){
+		_hitSound.play(1.0f);
 	}
 }
