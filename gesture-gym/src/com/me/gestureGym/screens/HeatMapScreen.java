@@ -1,5 +1,8 @@
 package com.me.gestureGym.screens;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -10,33 +13,57 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
 import com.me.gestureGym.GestureGym;
+import com.me.gestureGym.controllers.Assets;
 import com.me.gestureGym.data.DataWrapper;
+import com.me.gestureGym.data.HistoricalZoneResponseInfo;
+import com.me.gestureGym.data.ImproperFileFormatException;
 import com.me.gestureGym.data.LocalStorageDoesNotExistException;
 import com.me.gestureGym.data.ZoneResponseInfo;
 import com.me.gestureGym.models.BackButton;
-import com.me.gestureGym.models.DocOptionsButton;
-import com.me.gestureGym.models.SubmitButton;
 
-public class HeatMapScreen implements Screen{
-    
+public class HeatMapScreen implements Screen {
+
 	private GestureGym game;
-    private Stage stage;
-    private OrthographicCamera camera;
-    private ShapeRenderer shapeRenderer;
+	private Stage stage;
+
+	private OrthographicCamera camera;
+	private ShapeRenderer shapeRenderer;
 	private float[][] times;
-	
-	private BackButton _backButton;	
+
+	private BackButton _backButton;
 	private final Vector2 _stageCoords = new Vector2();
+
+	private String[] patientList;
+	private String[] patientData;
+	private ButtonGroup bg;
 	
-	public HeatMapScreen(GestureGym g){
+	private SelectBox patientDropdown;
+	private String currentPatient;
+	private SelectBox dataDropdown;
+	private CheckBox singleTouch;
+	private CheckBox multiTouch;
+	private boolean prev;
+	
+	// used for UI adjustments
+	private float offset = 128f;
+	
+	public HeatMapScreen(GestureGym g) {
 		
 		game = g;
+		
 		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		shapeRenderer = new ShapeRenderer();
 		
@@ -53,7 +80,7 @@ public class HeatMapScreen implements Screen{
 				if (i%sqrt == 0){
 					row++;
 				}
-				System.out.println(row + " " + i % sqrt + " " + info[i].getSuccessDuration());
+				//System.out.println(row + " " + i % sqrt + " " + info[i].getSuccessDuration());
 				times[(row)][(i % sqrt)] = info[i].getSuccessDuration(); 
 			}
 		} catch (Exception e) {
@@ -61,22 +88,77 @@ public class HeatMapScreen implements Screen{
 			e.printStackTrace();
 		}
 		
-		//times = new float[][]{{1.99f, 1.93f, 1.97f, 2f}, {2f, 1.94f, 1.97f, 2f}, {1.89f, 2f, 1.93f, 2f}, {2f, 1.99f, 1.98f, 2f}};
 		
 		//BACK BUTTON CODE
         _backButton = new BackButton(0, 0);
         stage.addActor(_backButton);
-		
-	}
 	
-	@Override
-	public void show() {
-		// like Processing's setup()
-		// perform one time operations here
+        ArrayList<String> pList;
+		try {
+			currentPatient = DataWrapper.getCurrentPatient();
+			pList = DataWrapper.getAllPatients();
+			patientList = new String[pList.size()];
+	        for(int i = 0; i < pList.size(); i++ ){
+	            patientList[i] = pList.get(i);
+	        }
+		} catch (LocalStorageDoesNotExistException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        patientData = new String[]{""};
+        
+		Skin skin = Assets.getManager().get("data/uiskin.json", Skin.class);
 		
-	}
+		patientDropdown = new SelectBox(patientList, skin);
 	
+		patientDropdown.setSelection(currentPatient);
+		
+		bg = new ButtonGroup();
+		
+		singleTouch = new CheckBox(" Single-Touch", skin);
+		multiTouch = new CheckBox(" Multi-Touch", skin);
+		
+		bg.add(singleTouch, multiTouch);
+		bg.setChecked("Single-Touch");
+		bg.setMaxCheckCount(1);
+		bg.setMinCheckCount(1);
+		
+		dataDropdown = new SelectBox(patientData, skin);
+		
+		Label instructions = new Label("Please select a patient and a play record!", skin);
+
+		Table window = new Table(skin);
+		window.setPosition(offset, Gdx.graphics.getHeight() - (3*offset/4));
+		//window.setSize(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+		window.row();
+		window.add(instructions).center();
+		
+		window.row();
+		window.add(patientDropdown).colspan(5).width(2*offset);
+		window.add(singleTouch).colspan(10).width(3*offset/2);
+		window.add(multiTouch).colspan(10).width(3*offset/2);
+		window.add(dataDropdown).colspan(5).width(2*offset);
+		window.pack();
+
+		stage.addActor(window);
+	}
+
 	private void handleTouch() {
+		
+		if(singleTouch.isChecked() && !prev){
+			updateHistoryList(true);
+			prev = true;
+			System.out.println("YES???");
+		}
+		if(multiTouch.isChecked() && prev){
+			updateHistoryList(false);
+			prev = false;
+			System.out.println("NOO???");
+		}
+		
 		//store input coordinates in stageCoords vector
 		stage.screenToStageCoordinates(_stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));    		
 		// pass coordinates to Sequence object (which is a Group of TapCue Actors)
@@ -87,24 +169,72 @@ public class HeatMapScreen implements Screen{
 			game.setScreen(new DocViewScreen(game));
 			dispose();
 		}
+		
+		
+		if(actor == patientDropdown){
+			System.out.println("HERE MOTHERFUCKER");
+			if(!patientDropdown.getSelection().equals(currentPatient)){
+				currentPatient = patientDropdown.getSelection();
+			}
+		
+		}
 	}
-	
 	
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		generateRegularHeatMap();
 		
 		if (Gdx.input.justTouched()) {
 			handleTouch();
+			
+			
 		}
+		
 		stage.act(delta);
-        stage.draw();
+		stage.draw();
+	}
+	
+	private void updateHistoryList(boolean mode){
+		String curr;
+		try {
+			curr = DataWrapper.getCurrentPatient();
+			ArrayList<String> dates = new ArrayList<String>();
+			ArrayList<HistoricalZoneResponseInfo[]> data;
+			
+			if(mode){
+				data = DataWrapper.getAllSingleTouchData(curr);
+			}
+			else{
+				data = DataWrapper.getAllMultiTouchData(curr);
+			}
+		
+			for(HistoricalZoneResponseInfo[] h : data){
+				for(int i = 0; i < h.length; i++){
+					dates.add(h[i].getDate());
+				}
+			}
+			
+			patientData = dates.toArray(new String[0]);
+			dataDropdown.setItems(patientData);
+		
+		} catch (LocalStorageDoesNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ImproperFileFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 	}
 
+	// not used
 	private Color[][] generateSimpleGradients(){
 		
 		float fast = 02f;
@@ -168,7 +298,7 @@ public class HeatMapScreen implements Screen{
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		
-		float offset = 128f;
+		
 		
 		float bW = (width - 2*offset) / 4;
 		float bH = (height - 2*offset) / 4;
@@ -200,6 +330,7 @@ public class HeatMapScreen implements Screen{
 		shapeRenderer.end();
 	}
 	
+	@SuppressWarnings("unused")
 	private void generateSmoothHeatMap(){
 		
 		float width = Gdx.graphics.getWidth();
@@ -292,6 +423,12 @@ public class HeatMapScreen implements Screen{
 	}
 	
 	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		
@@ -319,7 +456,7 @@ public class HeatMapScreen implements Screen{
 	public void dispose() {
 		shapeRenderer.dispose();
 		stage.dispose();
-		
 	}
+	
 
 }
