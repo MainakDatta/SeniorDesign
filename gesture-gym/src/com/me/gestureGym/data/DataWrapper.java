@@ -454,8 +454,8 @@ public class DataWrapper {
 		}
 		
 		// TODO: Finish this
-		putPatient("Tony Parker", null);
-		FileHandle f = Gdx.files.local("data/Tony Parker/mt/2014-04-10");
+		putPatient("Tony Stark", null);
+		FileHandle f = Gdx.files.local("data/Tony Stark/mt/2014-04-10");
 		f.delete();
 		f.writeString("0,1.7472783,1.0" + CRLF, true);
 		f.writeString("1,1.856894,1.0" + CRLF, true);
@@ -474,7 +474,7 @@ public class DataWrapper {
 		f.writeString("14,1.806894,1.0" + CRLF, true);
 		f.writeString("15,2.0,1.0" + CRLF, true);
 
-		f = Gdx.files.local("data/Tony Parker/mt/2014-04-11");
+		f = Gdx.files.local("data/Tony Stark/mt/2014-04-11");
 		f.delete();
 		f.writeString("0,1.7272783,1.0" + CRLF, true);
 		f.writeString("1,1.856894,1.0" + CRLF, true);
@@ -493,7 +493,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.806894,1.0");
 		appendLineToFile(f, "15,2.0,1.0");
 		
-		f = Gdx.files.local("data/Tony Parker/mt/2014-04-12");
+		f = Gdx.files.local("data/Tony Stark/mt/2014-04-12");
 		appendLineToFile(f, "0,1.6473288,1.0");
 		appendLineToFile(f, "1,1.770756,0.95");
 		appendLineToFile(f, "2,1.6473288,0.95");
@@ -511,7 +511,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.7473288,0.7142857142857143");
 		appendLineToFile(f, "15,1.816894,1.0");
 
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-10");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-10");
 		f.delete();
 		appendLineToFile(f, "0,1.6472783,1.0");
 		appendLineToFile(f, "1,1.806894,1.0");
@@ -530,7 +530,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.806894,1.0");
 		appendLineToFile(f, "15,1.806894,1.0");
 		
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-11");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-11");
 		f.delete();
 		appendLineToFile(f, "0,1.6072783,1.0");
 		appendLineToFile(f, "1,1.706894,1.0");
@@ -549,7 +549,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.706894,1.0");
 		appendLineToFile(f, "15,1.806894,1.0");
 		
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-12");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-12");
 		f.delete();
 		appendLineToFile(f, "0,1.4473288,1.0");
 		appendLineToFile(f, "1,1.570756,0.95");
@@ -568,7 +568,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.6473288,0.7142857142857143");
 		appendLineToFile(f, "15,1.816894,1.0");
 		
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-14");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-14");
 		f.delete();
 		appendLineToFile(f, "0,1.1407307,1.0");
 		appendLineToFile(f, "1,1.14,1.0");
@@ -587,7 +587,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.4739784,0.95");
 		appendLineToFile(f, "15,1.716894,1.0");
 
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-15");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-15");
 		f.delete();
 		appendLineToFile(f, "0,0.8007307,1.0");
 		appendLineToFile(f, "1,0.81,1.0");
@@ -606,7 +606,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.4739784,0.95");
 		appendLineToFile(f, "15,1.5716892,1.0");
 
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-16");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-16");
 		f.delete();
 		appendLineToFile(f, "0,0.8007307,1.0");
 		appendLineToFile(f, "1,0.81,1.0");
@@ -625,7 +625,7 @@ public class DataWrapper {
 		appendLineToFile(f, "14,1.4739784,0.95");
 		appendLineToFile(f, "15,1.5716892,1.0");
 
-		f = Gdx.files.local("data/Tony Parker/st/2014-04-18");
+		f = Gdx.files.local("data/Tony Stark/st/2014-04-18");
 		f.delete();
 		appendLineToFile(f, "0,0.6507307,1.0");
 		appendLineToFile(f, "1,0.68,1.0");
@@ -643,6 +643,160 @@ public class DataWrapper {
 		appendLineToFile(f, "13,0.9640348,0.95");
 		appendLineToFile(f, "14,1.1239784,0.95");
 		appendLineToFile(f, "15,1.3516892,1.0");
+		
+		putPatient("Frank Underwood", null);
+		
+		f = Gdx.files.local("data/Frank Underwood/mt/2014-03-02");
+		f.delete();
+		appendLineToFile(f, "0,1.8507307,1.0");
+		appendLineToFile(f, "1,1.77,1.0");
+		appendLineToFile(f, "2,1.720347,0.95");
+		appendLineToFile(f, "3,1.71288,1.0");
+		appendLineToFile(f, "4,1.8632865,1.0");
+		appendLineToFile(f, "5,1.7932865,1.0");
+		appendLineToFile(f, "6,1.7173288,1.0");
+		appendLineToFile(f, "7,1.680948,1.0");
+		appendLineToFile(f, "8,1.8307307,1.0");
+		appendLineToFile(f, "9,1.76842,1.0");
+		appendLineToFile(f, "10,1.73873288,1.0");
+		appendLineToFile(f, "11,1.690756,0.95");
+		appendLineToFile(f, "12,1.8407307,1.0");
+		appendLineToFile(f, "13,1.8640348,0.95");
+		appendLineToFile(f, "14,1.7639784,0.95");
+		appendLineToFile(f, "15,1.7216892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/mt/2014-03-03");
+		f.delete();
+		appendLineToFile(f, "0,1.8007307,1.0");
+		appendLineToFile(f, "1,1.70,1.0");
+		appendLineToFile(f, "2,1.620347,0.95");
+		appendLineToFile(f, "3,1.52288,1.0");
+		appendLineToFile(f, "4,1.8032865,1.0");
+		appendLineToFile(f, "5,1.7032865,1.0");
+		appendLineToFile(f, "6,1.5873288,1.0");
+		appendLineToFile(f, "7,1.460948,1.0");
+		appendLineToFile(f, "8,1.8307307,1.0");
+		appendLineToFile(f, "9,1.72842,1.0");
+		appendLineToFile(f, "10,1.61873288,1.0");
+		appendLineToFile(f, "11,1.560756,0.95");
+		appendLineToFile(f, "12,1.8407307,1.0");
+		appendLineToFile(f, "13,1.7540348,0.95");
+		appendLineToFile(f, "14,1.5739784,0.95");
+		appendLineToFile(f, "15,1.4416892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/mt/2014-03-05");
+		f.delete();
+		appendLineToFile(f, "0,1.6007307,1.0");
+		appendLineToFile(f, "1,1.50,1.0");
+		appendLineToFile(f, "2,1.350347,0.95");
+		appendLineToFile(f, "3,1.22288,1.0");
+		appendLineToFile(f, "4,1.6032865,1.0");
+		appendLineToFile(f, "5,1.5032865,1.0");
+		appendLineToFile(f, "6,1.3373288,1.0");
+		appendLineToFile(f, "7,1.250948,1.0");
+		appendLineToFile(f, "8,1.6307307,1.0");
+		appendLineToFile(f, "9,1.52842,1.0");
+		appendLineToFile(f, "10,1.30873288,1.0");
+		appendLineToFile(f, "11,1.180756,0.95");
+		appendLineToFile(f, "12,1.6407307,1.0");
+		appendLineToFile(f, "13,1.5540348,0.95");
+		appendLineToFile(f, "14,1.2839784,0.95");
+		appendLineToFile(f, "15,1.2516892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/mt/2014-03-07");
+		f.delete();
+		appendLineToFile(f, "0,1.4007307,1.0");
+		appendLineToFile(f, "1,1.350,1.0");
+		appendLineToFile(f, "2,1.050347,0.95");
+		appendLineToFile(f, "3,0.822288,1.0");
+		appendLineToFile(f, "4,1.4032865,1.0");
+		appendLineToFile(f, "5,1.35032865,1.0");
+		appendLineToFile(f, "6,1.0250948,1.0");
+		appendLineToFile(f, "7,0.84307307,1.0");
+		appendLineToFile(f, "8,1.4007307,1.0");
+		appendLineToFile(f, "9,1.352842,1.0");
+		appendLineToFile(f, "10,1.0180756,1.0");
+		appendLineToFile(f, "11,0.88407307,0.95");
+		appendLineToFile(f, "12,1.4007307,1.0");
+		appendLineToFile(f, "13,1.35540348,0.95");
+		appendLineToFile(f, "14,1.02839784,0.95");
+		appendLineToFile(f, "15,0.82516892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/mt/2014-03-08");
+		f.delete();
+		appendLineToFile(f, "0,1.2007307,1.0");
+		appendLineToFile(f, "1,1.1350,1.0");
+		appendLineToFile(f, "2,0.750347,0.95");
+		appendLineToFile(f, "3,0.6822288,1.0");
+		appendLineToFile(f, "4,1.2032865,1.0");
+		appendLineToFile(f, "5,1.135032865,1.0");
+		appendLineToFile(f, "6,0.730250948,1.0");
+		appendLineToFile(f, "7,0.62307307,1.0");
+		appendLineToFile(f, "8,1.2007307,1.0");
+		appendLineToFile(f, "9,1.1352842,1.0");
+		appendLineToFile(f, "10,0.7980756,1.0");
+		appendLineToFile(f, "11,0.678407307,0.95");
+		appendLineToFile(f, "12,1.2007307,1.0");
+		appendLineToFile(f, "13,1.105540348,0.95");
+		appendLineToFile(f, "14,0.702839784,0.95");
+		appendLineToFile(f, "15,0.59516892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/st/2014-03-02");
+		f.delete();
+		appendLineToFile(f, "0,1.8207307,1.0");
+		appendLineToFile(f, "1,1.70,1.0");
+		appendLineToFile(f, "2,1.680347,0.95");
+		appendLineToFile(f, "3,1.54288,1.0");
+		appendLineToFile(f, "4,1.7832865,1.0");
+		appendLineToFile(f, "5,1.7332865,1.0");
+		appendLineToFile(f, "6,1.6373288,1.0");
+		appendLineToFile(f, "7,1.580948,1.0");
+		appendLineToFile(f, "8,1.7607307,1.0");
+		appendLineToFile(f, "9,1.74842,1.0");
+		appendLineToFile(f, "10,1.62873288,1.0");
+		appendLineToFile(f, "11,1.610756,0.95");
+		appendLineToFile(f, "12,1.8707307,1.0");
+		appendLineToFile(f, "13,1.7240348,0.95");
+		appendLineToFile(f, "14,1.6339784,0.95");
+		appendLineToFile(f, "15,1.5216892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/st/2014-03-05");
+		f.delete();
+		appendLineToFile(f, "0,1.55007307,1.0");
+		appendLineToFile(f, "1,1.40,1.0");
+		appendLineToFile(f, "2,1.250347,0.95");
+		appendLineToFile(f, "3,1.12288,1.0");
+		appendLineToFile(f, "4,1.45032865,1.0");
+		appendLineToFile(f, "5,1.4032865,1.0");
+		appendLineToFile(f, "6,1.2373288,1.0");
+		appendLineToFile(f, "7,1.150948,1.0");
+		appendLineToFile(f, "8,1.50307307,1.0");
+		appendLineToFile(f, "9,1.42842,1.0");
+		appendLineToFile(f, "10,1.20873288,1.0");
+		appendLineToFile(f, "11,1.080756,0.95");
+		appendLineToFile(f, "12,1.42407307,1.0");
+		appendLineToFile(f, "13,1.4540348,0.95");
+		appendLineToFile(f, "14,1.1839784,0.95");
+		appendLineToFile(f, "15,1.1516892,1.0");
+		
+		f = Gdx.files.local("data/Frank Underwood/st/2014-03-07");
+		f.delete();
+		appendLineToFile(f, "0,1.2307307,1.0");
+		appendLineToFile(f, "1,1.120,1.0");
+		appendLineToFile(f, "2,0.870347,0.95");
+		appendLineToFile(f, "3,0.622288,1.0");
+		appendLineToFile(f, "4,1.1832865,1.0");
+		appendLineToFile(f, "5,1.17032865,1.0");
+		appendLineToFile(f, "6,0.76250948,1.0");
+		appendLineToFile(f, "7,0.60307307,1.0");
+		appendLineToFile(f, "8,1.2007307,1.0");
+		appendLineToFile(f, "9,1.152842,1.0");
+		appendLineToFile(f, "10,0.8180756,1.0");
+		appendLineToFile(f, "11,0.68407307,0.95");
+		appendLineToFile(f, "12,1.2007307,1.0");
+		appendLineToFile(f, "13,1.06540348,0.95");
+		appendLineToFile(f, "14,0.88839784,0.95");
+		appendLineToFile(f, "15,0.62516892,1.0");
 	}
 	
 	private static void appendLineToFile(FileHandle f, String s) {
