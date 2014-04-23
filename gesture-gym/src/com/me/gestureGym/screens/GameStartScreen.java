@@ -38,9 +38,7 @@ public class GameStartScreen implements Screen {
 
 	float w;
 	float h;
-
-
-
+	
 	/**
 	 * Constructor for the splash screen
 	 * 
@@ -61,23 +59,24 @@ public class GameStartScreen implements Screen {
 		// GameStartScreen comes before LoadingScreen
 		// Therefore some file have to be handled here
 		splash = new Texture(Gdx.files.internal("data/title.png"));
+		int offset = 64;
 		boolean patient = true;
 		//patient button
-		_patient_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, patient);
+		_patient_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) + (offset)), offset/2, patient);
         _stage.addActor(_patient_view);
 		//doctor button
-        _doc_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _patient_view.getHeight() + 10, !patient);
+        _doc_view = new MainMenuButton((float) ((Gdx.graphics.getWidth()/2.0) - (START_BUTTON_WIDTH + offset)), offset/2, !patient);
         _stage.addActor(_doc_view);
 		
         //GAMEPLAY BUTTONS
         boolean multi_touch = true;
 		//Multi- button
-		_multi_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), 0, multi_touch);
+		_multi_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) + (offset)), offset/2, multi_touch);
 		_multi_touch.setVisible(false);
 		_multi_touch.setTouchable(Touchable.disabled);
         _stage.addActor(_multi_touch);
 		//Single-touch button
-        _single_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - START_BUTTON_WIDTH/2), _multi_touch.getHeight() + 10, !multi_touch);
+        _single_touch = new StartButton((float) ((Gdx.graphics.getWidth()/2.0) - (START_BUTTON_WIDTH + offset)), offset/2, !multi_touch);
         _single_touch.setVisible(false);
         _single_touch.setTouchable(Touchable.disabled);
         _stage.addActor(_single_touch);
@@ -93,12 +92,14 @@ public class GameStartScreen implements Screen {
 	@Override
 	public void render(float delta) {		
 		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		spriteBatch.begin();
-		spriteBatch.draw(splash, 0, 0);
-		spriteBatch.draw(splash, 0, 0, w, h, 0, 0, splash.getWidth(),splash.getHeight(), false, false);
+		
+		float x = (Gdx.graphics.getWidth() - splash.getWidth())/2;
+		float y = Gdx.graphics.getHeight() - splash.getHeight();
+		spriteBatch.draw(splash, x, y);
 		spriteBatch.end();
 
 		camera.update();

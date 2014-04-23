@@ -32,7 +32,6 @@ public class Assets implements Disposable, AssetErrorListener {
 		
 		assets.load("data/background.png", Texture.class);
 		
-		
         // Load all sound assets
 		assets.load("data/audio/broken_reality.mp3", Music.class);
 		assets.load("data/audio/invaders_must_die.mp3", Music.class);
