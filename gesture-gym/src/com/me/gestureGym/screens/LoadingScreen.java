@@ -36,22 +36,23 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(GestureGym game) {
 
         _game = game;
-    }
-    
-    @Override
-    public void show() {        
+        
         // Initialize the stage where we will place everything
         stage = new Stage();
+
         // PREPARE ALL MEDIA FILES FOR USE
         Assets.load();
+        
         // Get our texture atlas from the manager
         TextureAtlas atlas = Assets.getManager().get("data/loading.pack", TextureAtlas.class);
+        
         // Grab the regions from the atlas and create some images
         logo = new Image(atlas.findRegion("libgdx-logo"));
         loadingFrame = new Image(atlas.findRegion("loading-frame"));
         loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
         screenBg = new Image(atlas.findRegion("screen-bg"));
         loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
+
         // Add the loading bar animation
         Animation anim = new Animation(0.05f, atlas.findRegions("loading-bar-anim") );
         anim.setPlayMode(Animation.LOOP_REVERSED);
@@ -64,7 +65,12 @@ public class LoadingScreen implements Screen {
         stage.addActor(loadingBg);
         stage.addActor(loadingBarHidden);
         stage.addActor(loadingFrame);
-        stage.addActor(logo);                       
+        stage.addActor(logo);
+    }
+    
+    @Override
+    public void show() {        
+    	//
     }
 
     @Override
@@ -105,11 +111,10 @@ public class LoadingScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear the screen
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
+    	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
         // Interpolate the percentage to make it more smooth
         percent = Interpolation.linear.apply(percent, Assets.getManager().getProgress(), 0.1f);
-
         // Update positions (and size) to match the percentage
         loadingBarHidden.setX(startX + endX * percent);
         loadingBg.setX(loadingBarHidden.getX() + 30);
@@ -134,10 +139,11 @@ public class LoadingScreen implements Screen {
 //	        		dispose();
 //	        	}
 //        	}
-        	_game.setScreen(new GameStartScreen(_game));
-        	dispose();
+        	if (Gdx.input.isTouched()) {
+        		_game.setScreen(new GameStartScreen(_game));
+        		dispose();
+        	}
         }
-//        ZoneInfoWrapper.getZoneInfo(multiTouch);
     }
 
     @Override
@@ -160,8 +166,8 @@ public class LoadingScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		Assets.getManager().unload("data/loading.pack");
 		stage.dispose();    	
-    	Assets.getManager().unload("data/loading.pack");
 		
 	}
 }
