@@ -49,7 +49,7 @@ public class DocViewScreen implements Screen {
 
 		//Text Field to enter patient name
         tfs = new TextFieldStyle();
-        tfs.fontColor = Color.WHITE;  
+        tfs.fontColor = Color.BLACK;       
         BitmapFont font = new BitmapFont();
         font.setScale( 2);
         tfs.font = font;
@@ -75,6 +75,7 @@ public class DocViewScreen implements Screen {
 		
 	       
         patient_name = new TextField("Patient_name", tfs);
+        patient_name.setCursorPosition(0);
         patient_name.setVisible(false);
         patient_name.setTouchable(Touchable.disabled);
         patient_name.setBounds((float) (Gdx.graphics.getWidth() / 4.0 - BUTTON_WIDTH / 2.0),
@@ -91,7 +92,7 @@ public class DocViewScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		_camera.update();

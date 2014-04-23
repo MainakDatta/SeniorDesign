@@ -148,7 +148,7 @@ public class GameScreen implements Screen {
         _playButton = new PlayButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, 0);
         _stage.addActor(_playButton);
         
-        _backButton = new BackButton(0, 0);
+        _backButton = new BackButton(Gdx.graphics.getWidth() - PAUSE_BUTTON_SIZE, PAUSE_BUTTON_SIZE + 10);
         _backButton.setVisible(false);
         _backButton.setTouchable(Touchable.disabled);
         _stage.addActor(_backButton);
