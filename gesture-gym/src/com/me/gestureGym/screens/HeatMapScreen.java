@@ -1,6 +1,7 @@
 package com.me.gestureGym.screens;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -146,7 +147,7 @@ public class HeatMapScreen implements Screen {
 		stage.addActor(window);
 	}
 
-	private void handleTouch() {
+	private void handleTouch() throws ParseException {
 		
 		if(singleTouch.isChecked() && !prev){
 			updateHistoryList(true);
@@ -188,7 +189,12 @@ public class HeatMapScreen implements Screen {
 		generateRegularHeatMap();
 		
 		if (Gdx.input.justTouched()) {
-			handleTouch();
+			try {
+				handleTouch();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			
 		}
@@ -197,7 +203,7 @@ public class HeatMapScreen implements Screen {
 		stage.draw();
 	}
 	
-	private void updateHistoryList(boolean mode){
+	private void updateHistoryList(boolean mode) throws ParseException{
 		String curr;
 		try {
 			curr = DataWrapper.getCurrentPatient();
